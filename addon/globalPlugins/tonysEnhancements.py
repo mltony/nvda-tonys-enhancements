@@ -20,6 +20,7 @@ import itertools
 import json
 from logHandler import log
 import NVDAHelper
+from NVDAObjects import behaviors
 from NVDAObjects.window import winword
 import nvwave
 import operator
@@ -31,6 +32,7 @@ import speech
 import struct
 import textInfos
 import threading
+import time
 import tones
 import ui
 import wave
@@ -54,6 +56,9 @@ def initConfiguration():
     confspec = {
         "blockDoubleInsert" : "boolean( default=False)",
         "blockDoubleCaps" : "boolean( default=False)",
+        "consoleRealtime" : "boolean( default=False)",
+        "consoleBeep" : "boolean( default=False)",
+        "consoleUpdateThreshold" : "integer( default=100, min=0)",
     }
     config.conf.spec[module] = confspec
 
@@ -89,7 +94,16 @@ class SettingsDialog(gui.SettingsDialog):
         label = _("Block double Caps Lock")
         self.blockDoubleCapsCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.blockDoubleCapsCheckbox.Value = getConfig("blockDoubleCaps")
-        
+      # checkbox console realtime
+        # Translators: Checkbox for realtime console
+        label = _("Speak console output in realtime")
+        self.consoleRealtimeCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.consoleRealtimeCheckbox.Value = getConfig("consoleRealtime")        
+      # checkbox console beep
+        # Translators: Checkbox for console beep on update
+        label = _("Beep on update in consoles")
+        self.consoleBeepCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.consoleBeepCheckbox.Value = getConfig("consoleBeep")                
         
     def postInit(self):
         pass
@@ -97,6 +111,9 @@ class SettingsDialog(gui.SettingsDialog):
     def onOk(self, evt):
         setConfig("blockDoubleInsert", self.blockDoubleInsertCheckbox.Value)
         setConfig("blockDoubleCaps", self.blockDoubleCapsCheckbox.Value)
+        setConfig("consoleRealtime", self.consoleRealtimeCheckbox.Value)
+        setConfig("consoleBeep", self.consoleBeepCheckbox.Value)
+        super(SettingsDialog, self).onOk(evt)
 
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
@@ -106,7 +123,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         super(GlobalPlugin, self).__init__(*args, **kwargs)
         self.createMenu()
         self.injectHooks()
-        self.enabled = True
+        self.lastConsoleUpdateTime = 0
 
     def createMenu(self):
         def _popupMenu(evt):
@@ -121,9 +138,12 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def injectHooks(self):
         self.originalExecuteGesture = inputCore.InputManager.executeGesture
         inputCore.InputManager.executeGesture = lambda selfself, gesture, *args, **kwargs: self.preExecuteGesture(selfself, gesture, *args, **kwargs)
+        self.originalCalculateNewText = behaviors.LiveText._calculateNewText
+        behaviors.LiveText._calculateNewText = lambda selfself, *args, **kwargs: self.preCalculateNewText(selfself, *args, **kwargs)
 
     def  removeHooks(self):
         inputCore.InputManager.executeGesture = self.originalExecuteGesture
+        behaviors.LiveText._calculateNewText = self.originalCalculateNewText 
 
     def preExecuteGesture(self, selfself, gesture, *args, **kwargs):
         if (
@@ -141,4 +161,18 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             tones.beep(500, 50)
             return
         return self.originalExecuteGesture(selfself, gesture, *args, **kwargs)
-
+        
+    def preCalculateNewText(self, selfself, *args, **kwargs):
+        outLines =   self.originalCalculateNewText(selfself, *args, **kwargs)
+        if len(outLines) == 1 and len(outLines[0].strip()) == 1:
+            # Only a single character has changed - in this case NVDA thinks that's a typed character, so it is not spoken anyway. Con't interfere.
+            return outLines
+        if len(outLines) == 0:
+            return outLines
+        if getConfig("consoleBeep"):
+            tones.beep(100, 5)
+        if getConfig("consoleRealtime"):
+            #if time.time() > self.lastConsoleUpdateTime + 0.5:
+                #self.lastConsoleUpdateTime = time.time()
+            speech.cancelSpeech()
+        return outLines
