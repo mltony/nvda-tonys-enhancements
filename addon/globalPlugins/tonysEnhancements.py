@@ -39,6 +39,8 @@ import wave
 import winUser
 import wx
 
+winmm = ctypes.windll.winmm
+
 debug = False
 if debug:
     f = open("C:\\Users\\tony\\Dropbox\\2.txt", "w")
@@ -58,7 +60,8 @@ def initConfiguration():
         "blockDoubleCaps" : "boolean( default=False)",
         "consoleRealtime" : "boolean( default=False)",
         "consoleBeep" : "boolean( default=False)",
-        "consoleUpdateThreshold" : "integer( default=100, min=0)",
+        "masterVolume" : "integer( default=100, min=0, max=100)",
+
     }
     config.conf.spec[module] = confspec
 
@@ -98,13 +101,24 @@ class SettingsDialog(gui.SettingsDialog):
         # Translators: Checkbox for realtime console
         label = _("Speak console output in realtime")
         self.consoleRealtimeCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
-        self.consoleRealtimeCheckbox.Value = getConfig("consoleRealtime")        
+        self.consoleRealtimeCheckbox.Value = getConfig("consoleRealtime")
       # checkbox console beep
         # Translators: Checkbox for console beep on update
         label = _("Beep on update in consoles")
         self.consoleBeepCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
-        self.consoleBeepCheckbox.Value = getConfig("consoleBeep")                
-        
+        self.consoleBeepCheckbox.Value = getConfig("consoleBeep")
+      # Master volume slider
+        sizer=wx.BoxSizer(wx.HORIZONTAL)
+        # Translators: slider to select NVDA master volume
+        label=wx.StaticText(self,wx.ID_ANY,label=_("NVDA master volume"))
+        slider=wx.Slider(self, wx.NewId(), minValue=0,maxValue=100)
+        slider.SetValue(getConfig("masterVolume"))
+        sizer.Add(label)
+        sizer.Add(slider)
+        settingsSizer.Add(sizer)
+        self.masterVolumeSlider = slider
+
+
     def postInit(self):
         pass
 
@@ -113,8 +127,20 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("blockDoubleCaps", self.blockDoubleCapsCheckbox.Value)
         setConfig("consoleRealtime", self.consoleRealtimeCheckbox.Value)
         setConfig("consoleBeep", self.consoleBeepCheckbox.Value)
+        setConfig("masterVolume", self.masterVolumeSlider.Value)
         super(SettingsDialog, self).onOk(evt)
 
+originalWaveOpen = None
+
+
+def preWaveOpen(selfself, *args, **kwargs):
+    global originalWaveOpen
+    result = originalWaveOpen(selfself, *args, **kwargs)
+    volume = getConfig("masterVolume")
+    volume2 = int(0xFFFF * (volume / 100))
+    volume2 = volume2 | (volume2 << 16)
+    winmm.waveOutSetVolume(selfself._waveout, volume2)
+    return result
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     scriptCategory = _("Tony's Enhancements")
@@ -136,14 +162,19 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.removeHooks()
 
     def injectHooks(self):
+        global originalWaveOpen
         self.originalExecuteGesture = inputCore.InputManager.executeGesture
         inputCore.InputManager.executeGesture = lambda selfself, gesture, *args, **kwargs: self.preExecuteGesture(selfself, gesture, *args, **kwargs)
         self.originalCalculateNewText = behaviors.LiveText._calculateNewText
         behaviors.LiveText._calculateNewText = lambda selfself, *args, **kwargs: self.preCalculateNewText(selfself, *args, **kwargs)
+        originalWaveOpen = nvwave.WavePlayer.open
+        nvwave.WavePlayer.open = preWaveOpen
 
     def  removeHooks(self):
+        global originalWaveOpen
         inputCore.InputManager.executeGesture = self.originalExecuteGesture
-        behaviors.LiveText._calculateNewText = self.originalCalculateNewText 
+        behaviors.LiveText._calculateNewText = self.originalCalculateNewText
+        nvwave.WavePlayer.open = originalWaveOpen
 
     def preExecuteGesture(self, selfself, gesture, *args, **kwargs):
         if (
@@ -161,7 +192,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             tones.beep(500, 50)
             return
         return self.originalExecuteGesture(selfself, gesture, *args, **kwargs)
-        
+
     def preCalculateNewText(self, selfself, *args, **kwargs):
         outLines =   self.originalCalculateNewText(selfself, *args, **kwargs)
         if len(outLines) == 1 and len(outLines[0].strip()) == 1:
@@ -176,3 +207,22 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 #self.lastConsoleUpdateTime = time.time()
             speech.cancelSpeech()
         return outLines
+
+    @script(description='Increase master volume.', gestures=['kb:NVDA+control+PageUp'])
+    def script_increaseVolume(self, gesture):
+        self.adjustVolume(5)
+
+    @script(description='Decrease master volume.', gestures=['kb:NVDA+control+PageDown'])
+    def script_decreaseVolume(self, gesture):
+        self.adjustVolume(-5)
+
+    def adjustVolume(self, increment):
+        volume = getConfig("masterVolume")
+        volume += increment
+        if volume > 100:
+            volume = 100
+        if volume < 0:
+            volume = 0
+        setConfig("masterVolume", volume)
+        message = _("Master volume %d") % volume
+        ui.message(message)
