@@ -142,7 +142,7 @@ def preWaveOpen(selfself, *args, **kwargs):
     volume2 = volume2 | (volume2 << 16)
     winmm.waveOutSetVolume(selfself._waveout, volume2)
     return result
-    
+
 def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
     from scriptHandler import isScriptWaiting
     if isScriptWaiting():
@@ -157,7 +157,7 @@ def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
         # when the cursor is not within a table.
         ui.message(_("Not in a table cell"))
         return
-        
+
     MAX_TABLE_DIMENSION = 500
     edgeFound = False
     for attempt in range(MAX_TABLE_DIMENSION):
@@ -173,7 +173,7 @@ def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
         info.collapse()
         self.selection = info
         return
-        
+
     if index > 1:
         inverseMovement = "next" if movement == "previous" else "previous"
         for i in range(1, index):
@@ -255,37 +255,54 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 #self.lastConsoleUpdateTime = time.time()
             speech.cancelSpeech()
         return outLines
-        
+
     def injectTableFunctions(self):
         self.injectTableFunction(
-            scriptName="firstColumn", 
-            kb="Control+Alt+Home", 
-            doc="Move to the first column in table", 
-            movement="previous", 
+            scriptName="firstColumn",
+            kb="Control+Alt+Home",
+            doc="Move to the first column in table",
+            movement="previous",
             axis="column",
         )
         self.injectTableFunction(
-            scriptName="lastColumn", 
-            kb="Control+Alt+End", 
-            doc="Move to the last column in table", 
-            movement="next", 
+            scriptName="lastColumn",
+            kb="Control+Alt+End",
+            doc="Move to the last column in table",
+            movement="next",
             axis="column",
-        )        
+        )
         self.injectTableFunction(
-            scriptName="firstRow", 
-            kb="Control+Alt+PageUp", 
-            doc="Move to the first row in table", 
-            movement="previous", 
+            scriptName="firstRow",
+            kb="Control+Alt+PageUp",
+            doc="Move to the first row in table",
+            movement="previous",
             axis="row",
-        )        
+        )
         self.injectTableFunction(
-            scriptName="lastRow", 
-            kb="Control+Alt+PageDown", 
-            doc="Move to the last row in table", 
-            movement="next", 
+            scriptName="lastRow",
+            kb="Control+Alt+PageDown",
+            doc="Move to the last row in table",
+            movement="next",
             axis="row",
-        )        
-        
+        )
+        for i in range(1, 11):
+            self.injectTableFunction(
+                scriptName=f"jumpToColumn{i}",
+                kb="NVDA+Control+%d" % (i%10),
+                doc="Move to the %d-th column in table" % i,
+                movement="previous",
+                axis="column",
+                index = i,
+            )
+            self.injectTableFunction(
+                scriptName=f"jumpToRow{i}",
+                kb="NVDA+Shift+%d" % (i%10),
+                doc="Move to the %d-th row in table" % i,
+                movement="previous",
+                axis="row",
+                index = i,
+            )
+
     def injectTableFunction(self, scriptName, kb, doc, *args, **kwargs):
         cls = documentBase.DocumentWithTableNavigation
         funcName = "script_%s" % scriptName
