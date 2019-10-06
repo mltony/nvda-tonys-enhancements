@@ -159,6 +159,7 @@ def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
         return
 
     MAX_TABLE_DIMENSION = 500
+
     edgeFound = False
     for attempt in range(MAX_TABLE_DIMENSION):
         tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(info)
@@ -187,6 +188,33 @@ def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
     speech.speakTextInfo(info,formatConfig=formatConfig,reason=controlTypes.REASON_CARET)
     info.collapse()
     selfself.selection = info
+
+
+def speakColumn(selfself, gesture):
+    movement = "next"
+    axis = "row"
+    from scriptHandler import isScriptWaiting
+    if isScriptWaiting():
+        return
+    formatConfig=config.conf["documentFormatting"].copy()
+    formatConfig["reportTables"]=True
+    try:
+        tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(selfself.selection)
+        info = selfself._getTableCellAt(tableID, selfself.selection,origRow, origCol)
+    except LookupError:
+        # Translators: The message reported when a user attempts to use a table movement command
+        # when the cursor is not within a table.
+        ui.message(_("Not in a table cell"))
+        return
+
+    MAX_TABLE_DIMENSION = 500
+    for attempt in range(MAX_TABLE_DIMENSION):
+        speech.speakTextInfo(info, formatConfig=formatConfig, reason=controlTypes.REASON_CARET)
+        tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(info)
+        try:
+            info = selfself._getNearestTableCell(tableID, info, origRow, origCol, origRowSpan, origColSpan, movement, axis)
+        except LookupError:
+            break
 
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
@@ -302,12 +330,19 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 axis="row",
                 index = i,
             )
+        self.injectTableFunction(
+            scriptName="readColumn",
+            kb="NVDA+Shift+DownArrow",
+            doc="Read column starting from current cell",
+            function=speakColumn,
+        )            
 
-    def injectTableFunction(self, scriptName, kb, doc, *args, **kwargs):
+    def injectTableFunction(self, scriptName, kb, doc, function=findTableCell, *args, **kwargs):
         cls = documentBase.DocumentWithTableNavigation
         funcName = "script_%s" % scriptName
-        script = lambda self,gesture: findTableCell(self, gesture, *args, **kwargs)
+        script = lambda self,gesture: function(self, gesture, *args, **kwargs)
         script.__doc__ = doc
+        script.category = self.scriptCategory
         setattr(cls, funcName, script)
         cls._DocumentWithTableNavigation__gestures["kb:%s" % kb] = scriptName
 
