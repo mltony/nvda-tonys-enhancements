@@ -12,6 +12,7 @@ import controlTypes
 import copy
 import ctypes
 from ctypes import create_string_buffer, byref
+import documentBase
 import globalPluginHandler
 import gui
 from gui import guiHelper, nvdaControls
@@ -141,6 +142,52 @@ def preWaveOpen(selfself, *args, **kwargs):
     volume2 = volume2 | (volume2 << 16)
     winmm.waveOutSetVolume(selfself._waveout, volume2)
     return result
+    
+def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
+    from scriptHandler import isScriptWaiting
+    if isScriptWaiting():
+        return
+    formatConfig=config.conf["documentFormatting"].copy()
+    formatConfig["reportTables"]=True
+    try:
+        tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(selfself.selection)
+        info = selfself._getTableCellAt(tableID, selfself.selection,origRow, origCol)
+    except LookupError:
+        # Translators: The message reported when a user attempts to use a table movement command
+        # when the cursor is not within a table.
+        ui.message(_("Not in a table cell"))
+        return
+        
+    MAX_TABLE_DIMENSION = 500
+    edgeFound = False
+    for attempt in range(MAX_TABLE_DIMENSION):
+        tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(info)
+        try:
+            info = selfself._getNearestTableCell(tableID, info, origRow, origCol, origRowSpan, origColSpan, movement, axis)
+        except LookupError:
+            edgeFound = True
+            break
+    if not edgeFound:
+        ui.message(_("Cannot find edge of table in this direction"))
+        info = self._getTableCellAt(tableID, self.selection,origRow, origCol)
+        info.collapse()
+        self.selection = info
+        return
+        
+    if index > 1:
+        inverseMovement = "next" if movement == "previous" else "previous"
+        for i in range(1, index):
+            tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(info)
+            try:
+                info = selfself._getNearestTableCell(tableID, selfself.selection, origRow, origCol, origRowSpan, origColSpan, inverseMovement, axis)
+            except LookupError:
+                ui.message(_("Cannot find {axis} with index {index} in this table").format(**locals()))
+                return
+
+    speech.speakTextInfo(info,formatConfig=formatConfig,reason=controlTypes.REASON_CARET)
+    info.collapse()
+    selfself.selection = info
+
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     scriptCategory = _("Tony's Enhancements")
@@ -149,6 +196,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         super(GlobalPlugin, self).__init__(*args, **kwargs)
         self.createMenu()
         self.injectHooks()
+        self.injectTableFunctions()
         self.lastConsoleUpdateTime = 0
 
     def createMenu(self):
@@ -207,6 +255,44 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 #self.lastConsoleUpdateTime = time.time()
             speech.cancelSpeech()
         return outLines
+        
+    def injectTableFunctions(self):
+        self.injectTableFunction(
+            scriptName="firstColumn", 
+            kb="Control+Alt+Home", 
+            doc="Move to the first column in table", 
+            movement="previous", 
+            axis="column",
+        )
+        self.injectTableFunction(
+            scriptName="lastColumn", 
+            kb="Control+Alt+End", 
+            doc="Move to the last column in table", 
+            movement="next", 
+            axis="column",
+        )        
+        self.injectTableFunction(
+            scriptName="firstRow", 
+            kb="Control+Alt+PageUp", 
+            doc="Move to the first row in table", 
+            movement="previous", 
+            axis="row",
+        )        
+        self.injectTableFunction(
+            scriptName="lastRow", 
+            kb="Control+Alt+PageDown", 
+            doc="Move to the last row in table", 
+            movement="next", 
+            axis="row",
+        )        
+        
+    def injectTableFunction(self, scriptName, kb, doc, *args, **kwargs):
+        cls = documentBase.DocumentWithTableNavigation
+        funcName = "script_%s" % scriptName
+        script = lambda self,gesture: findTableCell(self, gesture, *args, **kwargs)
+        script.__doc__ = doc
+        setattr(cls, funcName, script)
+        cls._DocumentWithTableNavigation__gestures["kb:%s" % kb] = scriptName
 
     @script(description='Increase master volume.', gestures=['kb:NVDA+control+PageUp'])
     def script_increaseVolume(self, gesture):
