@@ -7,7 +7,7 @@ This add-on is only compatible with NVDA versions 2019.3 and above.
 * Control+Alt+Home/End - jump to the first/last column in the table.
 * Control+Alt+PageUp/PageDown - jump to the first/last row in the table.
 * NVDA+Control+digit - jump to 1st/2nd/3rd/... 10th column in the table.
-* NVDA+Shift+digit - jump to 1st/2nd/3rd/... 10th row in the table.
+* NVDA+Alt+digit - jump to 1st/2nd/3rd/... 10th row in the table.
 * NVDA+Shift+DownArrow - read current column in the table starting from current cell down.
 
 ## Real-time console output

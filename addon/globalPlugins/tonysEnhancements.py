@@ -61,7 +61,7 @@ def initConfiguration():
         "blockDoubleCaps" : "boolean( default=False)",
         "consoleRealtime" : "boolean( default=False)",
         "consoleBeep" : "boolean( default=False)",
-        "masterVolume" : "integer( default=100, min=0, max=100)",
+        "nvdaVolume" : "integer( default=100, min=0, max=100)",
 
     }
     config.conf.spec[module] = confspec
@@ -108,16 +108,16 @@ class SettingsDialog(gui.SettingsDialog):
         label = _("Beep on update in consoles")
         self.consoleBeepCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.consoleBeepCheckbox.Value = getConfig("consoleBeep")
-      # Master volume slider
+      # NVDA volume slider
         sizer=wx.BoxSizer(wx.HORIZONTAL)
-        # Translators: slider to select NVDA master volume
-        label=wx.StaticText(self,wx.ID_ANY,label=_("NVDA master volume"))
+        # Translators: slider to select NVDA  volume
+        label=wx.StaticText(self,wx.ID_ANY,label=_("NVDA volume"))
         slider=wx.Slider(self, wx.NewId(), minValue=0,maxValue=100)
-        slider.SetValue(getConfig("masterVolume"))
+        slider.SetValue(getConfig("nvdaVolume"))
         sizer.Add(label)
         sizer.Add(slider)
         settingsSizer.Add(sizer)
-        self.masterVolumeSlider = slider
+        self.nvdaVolumeSlider = slider
 
 
     def postInit(self):
@@ -128,7 +128,7 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("blockDoubleCaps", self.blockDoubleCapsCheckbox.Value)
         setConfig("consoleRealtime", self.consoleRealtimeCheckbox.Value)
         setConfig("consoleBeep", self.consoleBeepCheckbox.Value)
-        setConfig("masterVolume", self.masterVolumeSlider.Value)
+        setConfig("nvdaVolume", self.nvdaVolumeSlider.Value)
         super(SettingsDialog, self).onOk(evt)
 
 originalWaveOpen = None
@@ -137,7 +137,7 @@ originalWaveOpen = None
 def preWaveOpen(selfself, *args, **kwargs):
     global originalWaveOpen
     result = originalWaveOpen(selfself, *args, **kwargs)
-    volume = getConfig("masterVolume")
+    volume = getConfig("nvdaVolume")
     volume2 = int(0xFFFF * (volume / 100))
     volume2 = volume2 | (volume2 << 16)
     winmm.waveOutSetVolume(selfself._waveout, volume2)
@@ -236,6 +236,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
     def terminate(self):
         self.removeHooks()
+        prefMenu = gui.mainFrame.sysTrayIcon.preferencesMenu
+        prefMenu.Remove(self.prefsMenuItem)
+
 
     def injectHooks(self):
         global originalWaveOpen
@@ -324,7 +327,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             )
             self.injectTableFunction(
                 scriptName=f"jumpToRow{i}",
-                kb="NVDA+Shift+%d" % (i%10),
+                kb="NVDA+Alt+%d" % (i%10),
                 doc="Move to the %d-th row in table" % i,
                 movement="previous",
                 axis="row",
@@ -346,21 +349,21 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         setattr(cls, funcName, script)
         cls._DocumentWithTableNavigation__gestures["kb:%s" % kb] = scriptName
 
-    @script(description='Increase master volume.', gestures=['kb:NVDA+control+PageUp'])
+    @script(description='Increase NVDA volume.', gestures=['kb:NVDA+control+PageUp'])
     def script_increaseVolume(self, gesture):
         self.adjustVolume(5)
 
-    @script(description='Decrease master volume.', gestures=['kb:NVDA+control+PageDown'])
+    @script(description='Decrease NVDA volume.', gestures=['kb:NVDA+control+PageDown'])
     def script_decreaseVolume(self, gesture):
         self.adjustVolume(-5)
 
     def adjustVolume(self, increment):
-        volume = getConfig("masterVolume")
+        volume = getConfig("nvdaVolume")
         volume += increment
         if volume > 100:
             volume = 100
         if volume < 0:
             volume = 0
-        setConfig("masterVolume", volume)
-        message = _("Master volume %d") % volume
+        setConfig("nvdaVolume", volume)
+        message = _("NVDA volume %d") % volume
         ui.message(message)

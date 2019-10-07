@@ -11,7 +11,7 @@ addon_info = {
 	# for previously unpublished addons, please follow the community guidelines at:
 	# https://bitbucket.org/nvdaaddonteam/todo/raw/master/guideLines.txt
 	# add-on Name, internal for nvda
-	"addon_name" : "TonysEnhancements",
+	"addon_name" : "tonysEnhancements",
 	# Add-on summary, usually the user visible name of the addon.
 	# Translators: Summary for this add-on to be shown on installation and add-on information.
 	"addon_summary" : _("Tony's enhancements"),
@@ -19,7 +19,7 @@ addon_info = {
 	# Translators: Long description to be shown for this add-on on add-on information from add-ons manager
 	"addon_description" : _("""Various NVDA enhancements."""),
 	# version
-	"addon_version" : "0.2dev",
+	"addon_version" : "0.3dev",
 	# Author(s)
 	"addon_author" : u"Tony Malykh <anton.malykh@gmail.com>",
 	# URL for the add-on documentation support
