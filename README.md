@@ -3,6 +3,10 @@ This add-on contains a number of small improvements to NVDA screenreader, each o
 
 This add-on is only compatible with NVDA versions 2019.3 and above.
 
+## Downloads
+
+[Tony's enhancements latest stable version](https://github.com/mltony/nvda-tonys-enhancements/releases/latest/download/tonysEnhancements.nvda-addon)
+
 ## Enhanced table navigation commands
 * Control+Alt+Home/End - jump to the first/last column in the table.
 * Control+Alt+PageUp/PageDown - jump to the first/last row in the table.
