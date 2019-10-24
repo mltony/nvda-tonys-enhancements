@@ -36,6 +36,7 @@ import threading
 import time
 import tones
 import ui
+import watchdog
 import wave
 import winUser
 import wx
@@ -62,7 +63,7 @@ def initConfiguration():
         "consoleRealtime" : "boolean( default=False)",
         "consoleBeep" : "boolean( default=False)",
         "nvdaVolume" : "integer( default=100, min=0, max=100)",
-
+        "busyBeep" : "boolean( default=False)",
     }
     config.conf.spec[module] = confspec
 
@@ -108,6 +109,11 @@ class SettingsDialog(gui.SettingsDialog):
         label = _("Beep on update in consoles")
         self.consoleBeepCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.consoleBeepCheckbox.Value = getConfig("consoleBeep")
+      # checkbox Busy beep
+        # Translators: Checkbox for busy beep
+        label = _("Beep when NVDA is busy")
+        self.busyBeepCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.busyBeepCheckbox.Value = getConfig("busyBeep")
       # NVDA volume slider
         sizer=wx.BoxSizer(wx.HORIZONTAL)
         # Translators: slider to select NVDA  volume
@@ -128,11 +134,13 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("blockDoubleCaps", self.blockDoubleCapsCheckbox.Value)
         setConfig("consoleRealtime", self.consoleRealtimeCheckbox.Value)
         setConfig("consoleBeep", self.consoleBeepCheckbox.Value)
+        setConfig("busyBeep", self.busyBeepCheckbox.Value)
         setConfig("nvdaVolume", self.nvdaVolumeSlider.Value)
         super(SettingsDialog, self).onOk(evt)
 
 originalWaveOpen = None
-
+originalWatchdogAlive = None
+originalWatchdogAsleep = None
 
 def preWaveOpen(selfself, *args, **kwargs):
     global originalWaveOpen
@@ -215,6 +223,44 @@ def speakColumn(selfself, gesture):
             info = selfself._getNearestTableCell(tableID, info, origRow, origCol, origRowSpan, origColSpan, movement, axis)
         except LookupError:
             break
+            
+wdTime = 0
+wdAsleep = False
+wdTimeout = 0.3 # seconds
+def             preWatchdogAlive():
+    global wdTime, wdAsleep
+    current = time.time()
+    delta = current - wdTime
+    wdTime = current
+    wdAsleep = False
+    originalWatchdogAlive()
+    
+def             preWatchdogAsleep():    
+    global wdTime, wdAsleep
+    current = time.time()
+    delta = current - wdTime
+    wdTime = current
+    wdAsleep = True
+    originalWatchdogAsleep()
+    wdAsleep = True
+    
+class     MyWatchdog(threading.Thread):
+    def __init__(self):
+        super().__init__()
+        self.stopSignal = False
+        
+    def run(self):
+        global wdTime, wdAsleep, wdTimeout
+        time.sleep(5)
+        while not self.stopSignal:
+            if getConfig("busyBeep"):
+                while not wdAsleep and (time.time() - wdTime) > wdTimeout:
+                    tones.beep(150, 10, left=25, right=25)
+                    #time.sleep(0.01)
+            time.sleep(0.1)
+        
+    def terminate(self):
+        self.stopSignal = True
 
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
@@ -241,19 +287,29 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
     def injectHooks(self):
-        global originalWaveOpen
+        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep
         self.originalExecuteGesture = inputCore.InputManager.executeGesture
         inputCore.InputManager.executeGesture = lambda selfself, gesture, *args, **kwargs: self.preExecuteGesture(selfself, gesture, *args, **kwargs)
         self.originalCalculateNewText = behaviors.LiveText._calculateNewText
         behaviors.LiveText._calculateNewText = lambda selfself, *args, **kwargs: self.preCalculateNewText(selfself, *args, **kwargs)
         originalWaveOpen = nvwave.WavePlayer.open
         nvwave.WavePlayer.open = preWaveOpen
+        originalWatchdogAlive = watchdog.alive
+        watchdog.alive = preWatchdogAlive
+        originalWatchdogAsleep = watchdog.asleep
+        watchdog.asleep = preWatchdogAsleep
+        self.myWatchdog = MyWatchdog()
+        self.myWatchdog.setDaemon(True)
+        self.myWatchdog.start()
 
     def  removeHooks(self):
         global originalWaveOpen
         inputCore.InputManager.executeGesture = self.originalExecuteGesture
         behaviors.LiveText._calculateNewText = self.originalCalculateNewText
         nvwave.WavePlayer.open = originalWaveOpen
+        watchdog.alive = originalWatchdogAlive
+        watchdog.asleep = originalWatchdogAsleep
+        self.myWatchdog.terminate()
 
     def preExecuteGesture(self, selfself, gesture, *args, **kwargs):
         if (

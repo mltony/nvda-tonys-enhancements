@@ -22,9 +22,13 @@ This option makes NVDA to speak new lines immediately as they appear in console 
 
 There is also an option to beep on command line updates - this would give you a better idea when new lines are printed in the console.
 
-## Master volume
+## Beep when NVDA is busy
 
-* NVDA+Control+PageUp/PageDown - adjust NVDA master volume.
+Check this option for NVDA to provide audio feedback when NVDA is busy. NVDA being busy does not necessarily indicate a problem with NVDA, but rather this is a signal to the user that any NVDA commands will not be processed immediately.
+
+## NVDA volume
+
+* NVDA+Control+PageUp/PageDown - adjust NVDA volume.
 
 This option controls the volume of NVDA speech as well as all the other sounds and beeps produced by NVDA. The advantage of this option compared to adjusting volume of a speech synthesizer, is that it affects the volume of all the beeps proportionally.
 
