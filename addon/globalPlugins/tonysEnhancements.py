@@ -9,6 +9,7 @@ import api
 import bisect
 import config
 import controlTypes
+import core
 import copy
 import ctypes
 from ctypes import create_string_buffer, byref
@@ -19,6 +20,7 @@ from gui import guiHelper, nvdaControls
 import inputCore
 import itertools
 import json
+import keyboardHandler
 from logHandler import log
 import NVDAHelper
 from NVDAObjects import behaviors
@@ -43,17 +45,39 @@ import wx
 
 winmm = ctypes.windll.winmm
 
-debug = False
+debug = True
 if debug:
     f = open("C:\\Users\\tony\\Dropbox\\2.txt", "w")
 def mylog(s):
     if debug:
-        #print(str(s), file=f)
+        print(str(s), file=f)
         f.flush()
 
 def myAssert(condition):
     if not condition:
         raise RuntimeError("Assertion failed")
+
+defaultDynamicKeystrokes = """
+* F1
+* F2
+* F3
+* F4
+* F5
+* F6
+* F7
+* F8
+* F9
+* F9
+* F10
+* F11
+* F12
+code Alt+DownArrow
+code Alt+UpArrow
+code Alt+Home
+code Alt+End
+code Alt+PageUp
+code Alt+PageDown
+""".strip()
 
 module = "tonysEnhancements"
 def initConfiguration():
@@ -64,11 +88,10 @@ def initConfiguration():
         "consoleBeep" : "boolean( default=False)",
         "nvdaVolume" : "integer( default=100, min=0, max=100)",
         "busyBeep" : "boolean( default=False)",
+        "dynamicKeystrokesTable" : f"string( default='{defaultDynamicKeystrokes}')",
     }
     config.conf.spec[module] = confspec
 
-
-initConfiguration()
 def getConfig(key):
     value = config.conf[module][key]
     return value
@@ -76,9 +99,30 @@ def setConfig(key, value):
     config.conf[module][key] = value
 
 
+def parseDynamicKeystrokes(s):
+    result = set()
+    for line in s.splitlines():
+        tokens = line.strip().split()
+        if len(tokens) == 0:
+            continue
+        if len(tokens) != 2:
+            raise ValueError(f"INvalid line: {line}")
+        app = tokens[0]
+        try:
+            kb = keyboardHandler.KeyboardInputGesture.fromName(tokens[1]).normalizedIdentifiers[0]
+        except (KeyError, IndexError):
+            raise ValueError(f"Invalid kb shortcut {tokens[1]} ")
+        result.add((app, kb))
+    return result
 
+dynamicKeystrokes = None
+def reloadDynamicKeystrokes():
+    global dynamicKeystrokes
+    dynamicKeystrokes = parseDynamicKeystrokes(getConfig("dynamicKeystrokesTable"))
 
 addonHandler.initTranslation()
+initConfiguration()
+reloadDynamicKeystrokes()
 
 class SettingsDialog(gui.SettingsDialog):
     # Translators: Title for the settings dialog
@@ -124,18 +168,27 @@ class SettingsDialog(gui.SettingsDialog):
         sizer.Add(slider)
         settingsSizer.Add(sizer)
         self.nvdaVolumeSlider = slider
-
-
-    def postInit(self):
-        pass
+      # Dynamic keystrokes table
+        # Translators: Label for dynamic keystrokes table edit box
+        self.dynamicKeystrokesEdit = gui.guiHelper.LabeledControlHelper(self, _("Dynamic keystrokes table - see add-on documentation for more information"), wx.TextCtrl, style=wx.TE_MULTILINE).control
+        self.dynamicKeystrokesEdit.Value = getConfig("dynamicKeystrokesTable")
 
     def onOk(self, evt):
+        try:
+            parseDynamicKeystrokes(self.dynamicKeystrokesEdit.Value)
+        except Exception as e:
+            self.dynamicKeystrokesEdit.SetFocus()
+            ui.message(f"Error parsing dynamic keystrokes table: {e}")
+            return
+
         setConfig("blockDoubleInsert", self.blockDoubleInsertCheckbox.Value)
         setConfig("blockDoubleCaps", self.blockDoubleCapsCheckbox.Value)
         setConfig("consoleRealtime", self.consoleRealtimeCheckbox.Value)
         setConfig("consoleBeep", self.consoleBeepCheckbox.Value)
         setConfig("busyBeep", self.busyBeepCheckbox.Value)
         setConfig("nvdaVolume", self.nvdaVolumeSlider.Value)
+        setConfig("dynamicKeystrokesTable", self.dynamicKeystrokesEdit.Value)
+        reloadDynamicKeystrokes()
         super(SettingsDialog, self).onOk(evt)
 
 originalWaveOpen = None
@@ -223,7 +276,7 @@ def speakColumn(selfself, gesture):
             info = selfself._getNearestTableCell(tableID, info, origRow, origCol, origRowSpan, origColSpan, movement, axis)
         except LookupError:
             break
-            
+
 wdTime = 0
 wdAsleep = False
 wdTimeout = 0.3 # seconds
@@ -234,8 +287,8 @@ def             preWatchdogAlive():
     wdTime = current
     wdAsleep = False
     originalWatchdogAlive()
-    
-def             preWatchdogAsleep():    
+
+def             preWatchdogAsleep():
     global wdTime, wdAsleep
     current = time.time()
     delta = current - wdTime
@@ -243,12 +296,12 @@ def             preWatchdogAsleep():
     wdAsleep = True
     originalWatchdogAsleep()
     wdAsleep = True
-    
+
 class     MyWatchdog(threading.Thread):
     def __init__(self):
         super().__init__()
         self.stopSignal = False
-        
+
     def run(self):
         global wdTime, wdAsleep, wdTimeout
         time.sleep(5)
@@ -258,9 +311,44 @@ class     MyWatchdog(threading.Thread):
                     tones.beep(150, 10, left=25, right=25)
                     #time.sleep(0.01)
             time.sleep(0.1)
-        
+
     def terminate(self):
         self.stopSignal = True
+
+gestureCounter = 0
+storedText = None
+speakAnywayAfter = 0.1 # seconds
+def checkUpdate(localGestureCounter, attempt, originalTimestamp, gesture=None, spokenAnyway=False):
+    global gestureCounter, storedText
+    if gestureCounter != localGestureCounter:
+        return
+    try:
+        focus = api.getFocusObject()
+        textInfo = focus.makeTextInfo(textInfos.POSITION_CARET)
+        textInfo.expand(textInfos.UNIT_LINE)
+        text = textInfo.text
+    except Exception as e:
+        log.warning(f"Error retrieving text during dynamic keystroke handling: {e}")
+        return
+    if attempt == 0:
+        storedText = text
+    else:
+        if text != storedText:
+            speech.cancelSpeech()
+            speech.speakTextInfo(textInfo)
+            return
+    elapsed = time.time() - originalTimestamp
+    if not spokenAnyway and elapsed > speakAnywayAfter:
+        speech.speakTextInfo(textInfo)
+        spokenAnyway = True
+    if elapsed < 1.0:
+        sleepTime = 25 # ms
+    elif elapsed < 10:
+        sleepTime = 1000 # ms
+    else:
+        sleepTime = 5000
+    core.callLater(sleepTime, checkUpdate, localGestureCounter, attempt+1, originalTimestamp, spokenAnyway=spokenAnyway)
+
 
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
@@ -312,6 +400,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.myWatchdog.terminate()
 
     def preExecuteGesture(self, selfself, gesture, *args, **kwargs):
+        global gestureCounter
+        gestureCounter += 1
         if (
             getConfig("blockDoubleInsert")  and
             gesture.vkCode == winUser.VK_INSERT and
@@ -326,6 +416,29 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         ):
             tones.beep(500, 50)
             return
+
+        kb = gesture.normalizedIdentifiers
+        #mylog(str(kb))
+        #mylog(dynamicKeystrokes)
+        if len(kb) == 0:
+            #tones.beep(500, 50)
+            pass
+        else:
+            kb = kb[0]
+        focus = api.getFocusObject()
+        appName = focus.appModule.appName
+        if(
+            ("*", kb) in dynamicKeystrokes
+            or (appName, kb) in dynamicKeystrokes
+        ):
+        #if gesture.normalizedIdentifiers == keyboardHandler.KeyboardInputGesture.fromName("Alt+Home").normalizedIdentifiers:
+            #tones.beep(700, 50)
+            #mylog(str(gesture.normalizedIdentifiers))
+            core.callLater(0,
+                checkUpdate,
+                gestureCounter, 0, time.time(), gesture
+            )
+            pass
         return self.originalExecuteGesture(selfself, gesture, *args, **kwargs)
 
     def preCalculateNewText(self, selfself, *args, **kwargs):
@@ -394,7 +507,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             kb="NVDA+Shift+DownArrow",
             doc="Read column starting from current cell",
             function=speakColumn,
-        )            
+        )
 
     def injectTableFunction(self, scriptName, kb, doc, function=findTableCell, *args, **kwargs):
         cls = documentBase.DocumentWithTableNavigation
