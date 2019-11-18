@@ -334,12 +334,13 @@ def checkUpdate(localGestureCounter, attempt, originalTimestamp, gesture=None, s
         storedText = text
     else:
         if text != storedText:
-            speech.cancelSpeech()
-            speech.speakTextInfo(textInfo)
+            if spokenAnyway:
+                speech.cancelSpeech()
+            speech.speakTextInfo(textInfo, unit=textInfos.UNIT_LINE)
             return
     elapsed = time.time() - originalTimestamp
     if not spokenAnyway and elapsed > speakAnywayAfter:
-        speech.speakTextInfo(textInfo)
+        speech.speakTextInfo(textInfo, unit=textInfos.UNIT_LINE)
         spokenAnyway = True
     if elapsed < 1.0:
         sleepTime = 25 # ms

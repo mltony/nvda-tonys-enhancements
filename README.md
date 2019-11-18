@@ -14,6 +14,16 @@ This add-on is only compatible with NVDA versions 2019.3 and above.
 * NVDA+Alt+digit - jump to 1st/2nd/3rd/... 10th row in the table.
 * NVDA+Shift+DownArrow - read current column in the table starting from current cell down.
 
+## Dynamic keystrokes
+
+You can assign certain keystrokes to be dynamic. After issuing such a keystroke, NVDA will be checking currently focused window for any updates and if the line is updated, NVDA will speak it automatically. For example, certain keystrokes in text editors should be marked dynamic, such as Jump to bookmark, jump to another line and debugging keystrokes,such as step into/step over.
+
+The format of dynamic keystrokes table is simple: every line contains a rule in the following format:
+```
+appName keystroke
+```
+where `appName` is the name of the application where this keystroke is marked dynamic (or `*` to b marked dynamic in all applications), and`keystroke` is a keystroke in NVDA format, for example, `control+alt+shift+pagedown`.
+
 ## Real-time console output
 
 This option is disabled by default and must be enabled in the settings.
