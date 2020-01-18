@@ -58,25 +58,25 @@ def myAssert(condition):
         raise RuntimeError("Assertion failed")
 
 defaultDynamicKeystrokes = """
-* F1
-* F2
-* F3
-* F4
-* F5
-* F6
-* F7
-* F8
-* F9
-* F9
-* F10
-* F11
-* F12
-code Alt+DownArrow
-code Alt+UpArrow
-code Alt+Home
-code Alt+End
-code Alt+PageUp
-code Alt+PageDown
+*:F1
+*:F2
+*:F3
+*:F4
+*:F5
+*:F6
+*:F7
+*:F8
+*:F9
+*:F9
+*:F10
+*:F11
+*:F12
+code:Alt+DownArrow
+code:Alt+UpArrow
+code:Alt+Home
+code:Alt+End
+code:Alt+PageUp
+code:Alt+PageDown
 """.strip()
 
 module = "tonysEnhancements"
@@ -102,11 +102,11 @@ def setConfig(key, value):
 def parseDynamicKeystrokes(s):
     result = set()
     for line in s.splitlines():
-        tokens = line.strip().split()
-        if len(tokens) == 0:
+        tokens = line.strip().split(":")
+        if (len(tokens) == 0) or (len(line) == 0):
             continue
         if len(tokens) != 2:
-            raise ValueError(f"INvalid line: {line}")
+            raise ValueError(f"Dynamic shortcuts configuration: invalid line: {line}")
         app = tokens[0]
         try:
             kb = keyboardHandler.KeyboardInputGesture.fromName(tokens[1]).normalizedIdentifiers[0]
@@ -419,27 +419,22 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             return
 
         kb = gesture.normalizedIdentifiers
-        #mylog(str(kb))
-        #mylog(dynamicKeystrokes)
         if len(kb) == 0:
-            #tones.beep(500, 50)
             pass
         else:
             kb = kb[0]
         focus = api.getFocusObject()
         appName = focus.appModule.appName
         if(
-            ("*", kb) in dynamicKeystrokes
-            or (appName, kb) in dynamicKeystrokes
+            dynamicKeystrokes is not None and (
+                ("*", kb) in dynamicKeystrokes
+                or (appName, kb) in dynamicKeystrokes
+            )
         ):
-        #if gesture.normalizedIdentifiers == keyboardHandler.KeyboardInputGesture.fromName("Alt+Home").normalizedIdentifiers:
-            #tones.beep(700, 50)
-            #mylog(str(gesture.normalizedIdentifiers))
             core.callLater(0,
                 checkUpdate,
                 gestureCounter, 0, time.time(), gesture
             )
-            pass
         return self.originalExecuteGesture(selfself, gesture, *args, **kwargs)
 
     def preCalculateNewText(self, selfself, *args, **kwargs):
