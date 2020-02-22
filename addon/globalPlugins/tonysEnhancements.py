@@ -37,6 +37,7 @@ import textInfos
 import threading
 import time
 import tones
+import types
 import ui
 import watchdog
 import wave
@@ -45,13 +46,20 @@ import wx
 
 winmm = ctypes.windll.winmm
 
+
 debug = False
 if debug:
-    f = open("C:\\Users\\tony\\Dropbox\\2.txt", "w")
-def mylog(s):
-    if debug:
-        print(str(s), file=f)
-        f.flush()
+    import threading
+    LOG_FILE_NAME = "C:\\Users\\tony\\Dropbox\\2.txt"
+    f = open(LOG_FILE_NAME, "w")
+    f.close()
+    LOG_MUTEX = threading.Lock()
+    def mylog(s):
+        with LOG_MUTEX:
+            f = open(LOG_FILE_NAME, "a")
+            print(s, file=f)
+            f.close()
+
 
 def myAssert(condition):
     if not condition:
@@ -89,6 +97,7 @@ def initConfiguration():
         "nvdaVolume" : "integer( default=100, min=0, max=100)",
         "busyBeep" : "boolean( default=False)",
         "dynamicKeystrokesTable" : f"string( default='{defaultDynamicKeystrokes}')",
+        "fixWindowNumber" : "boolean( default=False)",
     }
     config.conf.spec[module] = confspec
 
@@ -158,6 +167,12 @@ class SettingsDialog(gui.SettingsDialog):
         label = _("Beep when NVDA is busy")
         self.busyBeepCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.busyBeepCheckbox.Value = getConfig("busyBeep")
+      # checkbox fix windows+Number
+        # Translators: Checkbox for windows_Number
+        label = _("Fix focus being stuck in the taskbar when pressing Windows+Number")
+        self.fixWindowNumberCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.fixWindowNumberCheckbox.Value = getConfig("fixWindowNumber")
+
       # NVDA volume slider
         sizer=wx.BoxSizer(wx.HORIZONTAL)
         # Translators: slider to select NVDA  volume
@@ -186,6 +201,7 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("consoleRealtime", self.consoleRealtimeCheckbox.Value)
         setConfig("consoleBeep", self.consoleBeepCheckbox.Value)
         setConfig("busyBeep", self.busyBeepCheckbox.Value)
+        setConfig("fixWindowNumber", self.fixWindowNumberCheckbox.Value)
         setConfig("nvdaVolume", self.nvdaVolumeSlider.Value)
         setConfig("dynamicKeystrokesTable", self.dynamicKeystrokesEdit.Value)
         reloadDynamicKeystrokes()
@@ -350,7 +366,32 @@ def checkUpdate(localGestureCounter, attempt, originalTimestamp, gesture=None, s
         sleepTime = 5000
     core.callLater(sleepTime, checkUpdate, localGestureCounter, attempt+1, originalTimestamp, spokenAnyway=spokenAnyway)
 
+allModifiers = [
+    winUser.VK_LCONTROL, winUser.VK_RCONTROL,
+    winUser.VK_LSHIFT, winUser.VK_RSHIFT, winUser.VK_LMENU,
+    winUser.VK_RMENU, winUser.VK_LWIN, winUser.VK_RWIN,
+]
 
+
+def executeAsynchronously(gen):
+    """
+    This function executes a generator-function in such a manner, that allows updates from the operating system to be processed during execution.
+    For an example of such generator function, please see GlobalPlugin.script_editJupyter.
+    Specifically, every time the generator function yilds a positive number,, the rest of the generator function will be executed
+    from within wx.CallLater() call.
+    If generator function yields a value of 0, then the rest of the generator function
+    will be executed from within wx.CallAfter() call.
+    This allows clear and simple expression of the logic inside the generator function, while still allowing NVDA to process update events from the operating system.
+    Essentially the generator function will be paused every time it calls yield, then the updates will be processed by NVDA and then the remainder of generator function will continue executing.
+    """
+    if not isinstance(gen, types.GeneratorType):
+        raise Exception("Generator function required")
+    try:
+        value = gen.__next__()
+    except StopIteration:
+        return
+    l = lambda gen=gen: executeAsynchronously(gen)
+    core.callLater(value, executeAsynchronously, gen)
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     scriptCategory = _("Tony's Enhancements")
@@ -435,7 +476,41 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 checkUpdate,
                 gestureCounter, 0, time.time(), gesture
             )
+        if getConfig("fixWindowNumber") and re.search(r':\d\+windows$', kb):
+            executeAsynchronously(self.asyncSwitchWindowHandler(gestureCounter))
         return self.originalExecuteGesture(selfself, gesture, *args, **kwargs)
+
+    def asyncSwitchWindowHandler(self, thisGestureCounter):
+        global gestureCounter
+        timeout = time.time() + 2
+        yield 1
+      # step 1. wait for all modifiers to be released
+        while True:
+            if time.time() > timeout:
+                return
+            if gestureCounter != thisGestureCounter:
+                return
+            status = [
+                winUser.getKeyState(k) & 32768
+                for k in allModifiers
+            ]
+            if not any(status):
+                break
+            yield 1
+      # Step 2
+        #for i in range(100):
+        yield 50
+        if gestureCounter != thisGestureCounter:
+            return
+        if True:
+            focus = api.getFocusObject()
+            if focus.appModule.appName == "explorer":
+                if focus.windowClassName == "TaskListThumbnailWnd":
+                    kbdEnter = keyboardHandler.KeyboardInputGesture.fromName("Enter")
+                    kbdEnter.send()
+                    tones.beep(100, 20)
+                    return
+
 
     def preCalculateNewText(self, selfself, *args, **kwargs):
         outLines =   self.originalCalculateNewText(selfself, *args, **kwargs)
