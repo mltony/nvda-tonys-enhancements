@@ -14,6 +14,12 @@ This add-on is only compatible with NVDA versions 2019.3 and above.
 * NVDA+Alt+digit - jump to 1st/2nd/3rd/... 10th row in the table.
 * NVDA+Shift+DownArrow - read current column in the table starting from current cell down.
 
+## Enhanced word navigation commands
+Most text editors support Control+LeftArrow/RightArrow commands for word navigation. However the definition of the word changes from one program to another. This is especially true of modern web-based text editors. NVDA should know the definition of word in given program in order to speak words correctly. If NVDA doesn't know the exact definition, then either words are going to be skipped, or pronounced multiple times. Moreover, some web-based text editors position the cursor in the end of the word, instead of the beginning, making editing much harder for visually impaired users. In order to combat this problem I have created enhanced word navigation commands, that take the word definition from Notepad++ and they do not rely on program's definition of words, but rather parse lines into words on NVDA's side. The Control+LeftArrow/RIghtArrow gesture is not even sent to the program, thus ensuring the consistency of the speech.
+* Control+Windows+LeftArrow/RightArrow - jump to previous/next word on the line
+
+Currently the drawback of this approach is that it only works within a single line.
+
 ## Dynamic keystrokes
 
 You can assign certain keystrokes to be dynamic. After issuing such a keystroke, NVDA will be checking currently focused window for any updates and if the line is updated, NVDA will speak it automatically. For example, certain keystrokes in text editors should be marked dynamic, such as Jump to bookmark, jump to another line and debugging keystrokes,such as step into/step over.

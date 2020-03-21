@@ -98,6 +98,7 @@ def initConfiguration():
         "busyBeep" : "boolean( default=False)",
         "dynamicKeystrokesTable" : f"string( default='{defaultDynamicKeystrokes}')",
         "fixWindowNumber" : "boolean( default=False)",
+        "overrideWordNav" : "boolean( default=False)",
     }
     config.conf.spec[module] = confspec
 
@@ -173,6 +174,12 @@ class SettingsDialog(gui.SettingsDialog):
         self.fixWindowNumberCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.fixWindowNumberCheckbox.Value = getConfig("fixWindowNumber")
 
+      # checkbox Fix word navigation
+        # Translators: Checkbox for word navigtaion
+        label = _("Override default word navigation behaviour in edit boxes using Control+LeftArrow/RIghtArrow")
+        self.overrideWordNavCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.overrideWordNavCheckbox.Value = getConfig("overrideWordNav")
+
       # NVDA volume slider
         sizer=wx.BoxSizer(wx.HORIZONTAL)
         # Translators: slider to select NVDA  volume
@@ -202,6 +209,7 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("consoleBeep", self.consoleBeepCheckbox.Value)
         setConfig("busyBeep", self.busyBeepCheckbox.Value)
         setConfig("fixWindowNumber", self.fixWindowNumberCheckbox.Value)
+        setConfig("overrideWordNav", self.overrideWordNavCheckbox.Value)
         setConfig("nvdaVolume", self.nvdaVolumeSlider.Value)
         setConfig("dynamicKeystrokesTable", self.dynamicKeystrokesEdit.Value)
         reloadDynamicKeystrokes()
@@ -607,3 +615,44 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         setConfig("nvdaVolume", volume)
         message = _("NVDA volume %d") % volume
         ui.message(message)
+
+    # Regular expression for the beginning of a word. Matches:
+    #  1. Beginning or end of string
+    # 2. Beginning of any word: \b\w
+    # 3. Punctuation mark preceded by non-punctuation mark: (?<=[\w\s])[^\w\s]
+    wordRe = re.compile(r'^|$|\b\w|(?<=[\w\s])[^\w\s]')
+    @script(description='Move by word in editables.', gestures=['kb:control+Windows+LeftArrow', 'kb:control+Windows+RightArrow'])
+    def script_caretMoveByWord(self, gesture):
+        if 'leftArrow' == gesture.mainKeyName:
+            direction = -1
+        elif 'rightArrow' == gesture.mainKeyName:
+            direction = 1
+        else:
+            return
+        focus = api.getFocusObject()
+        textInfo = focus.makeTextInfo(textInfos.POSITION_CARET)
+        textInfo.collapse(end=(direction > 0))
+        lineInfo = textInfo.copy()
+        lineInfo.expand(textInfos.UNIT_LINE)
+        lineText = lineInfo.text.rstrip('\r\n')
+        boundaries = [m.start() for m in self.wordRe.finditer(lineText)]
+        boundaries = sorted(list(set(boundaries)))
+        offsetInfo = lineInfo.copy()
+        offsetInfo.setEndPoint(textInfo, 'endToEnd')
+        caret = len(offsetInfo.text)
+        wordIndex = bisect.bisect_right(boundaries, caret) - 1
+        newWordIndex = wordIndex + direction
+        newWordIndex = max(0, newWordIndex)
+        newWordIndex = min(len(boundaries) - 1, newWordIndex)
+        newInfo = lineInfo
+        lineInfo = None
+        newInfo.collapse(end=False)
+        newInfo.move(textInfos.UNIT_CHARACTER, boundaries[newWordIndex])
+        if newWordIndex + 1 < len(boundaries):
+            newInfo.move(
+                textInfos.UNIT_CHARACTER, 
+                boundaries[newWordIndex + 1] - boundaries[newWordIndex],
+                endPoint='end',
+            )
+        newInfo.updateCaret()
+        speech.speakTextInfo(newInfo, reason=controlTypes.REASON_CARET)
