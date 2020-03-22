@@ -98,7 +98,7 @@ def initConfiguration():
         "busyBeep" : "boolean( default=False)",
         "dynamicKeystrokesTable" : f"string( default='{defaultDynamicKeystrokes}')",
         "fixWindowNumber" : "boolean( default=False)",
-        "overrideWordNav" : "boolean( default=False)",
+        "detectInsertMode" : "boolean( default=False)",
     }
     config.conf.spec[module] = confspec
 
@@ -143,6 +143,14 @@ class SettingsDialog(gui.SettingsDialog):
 
     def makeSettings(self, settingsSizer):
         sHelper = gui.guiHelper.BoxSizerHelper(self, sizer=settingsSizer)
+        
+      # checkbox Detect insert mode
+        # Translators: Checkbox for insert mode detection
+        label = _("Detect insert mode in text documents and beep on every keystroke when insert mode is on.")
+        self.detectInsertModeCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.detectInsertModeCheckbox.Value = getConfig("detectInsertMode")
+
+        
       # checkbox block double insert
         # Translators: Checkbox for block double insert
         label = _("Block double insert")
@@ -174,12 +182,6 @@ class SettingsDialog(gui.SettingsDialog):
         self.fixWindowNumberCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.fixWindowNumberCheckbox.Value = getConfig("fixWindowNumber")
 
-      # checkbox Fix word navigation
-        # Translators: Checkbox for word navigtaion
-        label = _("Override default word navigation behaviour in edit boxes using Control+LeftArrow/RIghtArrow")
-        self.overrideWordNavCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
-        self.overrideWordNavCheckbox.Value = getConfig("overrideWordNav")
-
       # NVDA volume slider
         sizer=wx.BoxSizer(wx.HORIZONTAL)
         # Translators: slider to select NVDA  volume
@@ -209,7 +211,7 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("consoleBeep", self.consoleBeepCheckbox.Value)
         setConfig("busyBeep", self.busyBeepCheckbox.Value)
         setConfig("fixWindowNumber", self.fixWindowNumberCheckbox.Value)
-        setConfig("overrideWordNav", self.overrideWordNavCheckbox.Value)
+        setConfig("detectInsertMode", self.detectInsertModeCheckbox.Value)
         setConfig("nvdaVolume", self.nvdaVolumeSlider.Value)
         setConfig("dynamicKeystrokesTable", self.dynamicKeystrokesEdit.Value)
         reloadDynamicKeystrokes()
@@ -449,6 +451,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         watchdog.asleep = originalWatchdogAsleep
         self.myWatchdog.terminate()
 
+    windowsSwitchingRe = re.compile(r':\d\+windows$')
+    typingKeystrokeRe = re.compile(r':(shift\+)?[A-Za-z0-9](\+shift)?$')
     def preExecuteGesture(self, selfself, gesture, *args, **kwargs):
         global gestureCounter
         gestureCounter += 1
@@ -484,8 +488,18 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 checkUpdate,
                 gestureCounter, 0, time.time(), gesture
             )
-        if getConfig("fixWindowNumber") and re.search(r':\d\+windows$', kb):
+        if getConfig("fixWindowNumber") and self.windowsSwitchingRe.search(kb):
             executeAsynchronously(self.asyncSwitchWindowHandler(gestureCounter))
+        if getConfig("detectInsertMode") and self.typingKeystrokeRe.search(kb):
+            text = None
+            caret = None
+            try:
+                #text, caret = self.getCurrentLineAndCaret()
+                pass
+            except NotImplementedError:
+                pass
+            #if text:
+            executeAsynchronously(self.insertModeDetector(gestureCounter, text, caret))
         return self.originalExecuteGesture(selfself, gesture, *args, **kwargs)
 
     def asyncSwitchWindowHandler(self, thisGestureCounter):
@@ -519,6 +533,52 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                     tones.beep(100, 20)
                     return
 
+    def getCurrentLineAndCaret(self):
+        focus = api.getFocusObject()
+        caretInfo = focus.makeTextInfo(textInfos.POSITION_CARET)
+        lineInfo = caretInfo.copy()
+        lineInfo.expand(textInfos.UNIT_LINE)
+        lineText = lineInfo.text
+        # Command line prompt reports every line containing ~120 whitespaces, therefore it appears as if insert mode is on and is overwriting spaces.
+        # To work around that, stripping whitespaces  from the right
+        lineText = lineText.rstrip()
+        lineInfo.setEndPoint(caretInfo, 'endToEnd')
+        caretOffset = len(lineInfo.text)
+        return lineText, caretOffset
+
+
+    def insertModeDetector(self, thisGestureCounter, originalText, originalCaret):
+        global gestureCounter
+        timeout = time.time() + 0.5
+        try:
+            originalText, originalCaret = self.getCurrentLineAndCaret()
+        except:
+            return
+        yield 10
+    
+        while True:
+            if gestureCounter != thisGestureCounter:
+                return
+            if time.time() > timeout:
+                return
+            try:
+                text, caret = self.getCurrentLineAndCaret()
+            except:
+                return
+            if (text != originalText) or (caret != originalCaret):
+                # state has changed, we will check for signs of insert mode, but we won't be running this loop anymore
+                #mylog(f'caret {originalCaret} {caret}')
+                #mylog(f'len(text) {len(originalText)} {len(text)}')
+                #mylog(f'"{text}"')
+                if (caret == originalCaret + 1) and (len(text) == len(originalText)):
+                    try:
+                        if (text[:originalCaret] == originalText[:originalCaret]) and (text[originalCaret+1:] == originalText[originalCaret+1:]) and (text[originalCaret] != originalText[originalCaret]):
+                            # Boom! Insert mode detected!
+                            tones.beep(150, 30)
+                    except IndexError:
+                        pass
+                return
+            yield 10
 
     def preCalculateNewText(self, selfself, *args, **kwargs):
         outLines =   self.originalCalculateNewText(selfself, *args, **kwargs)
@@ -650,7 +710,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         newInfo.move(textInfos.UNIT_CHARACTER, boundaries[newWordIndex])
         if newWordIndex + 1 < len(boundaries):
             newInfo.move(
-                textInfos.UNIT_CHARACTER, 
+                textInfos.UNIT_CHARACTER,
                 boundaries[newWordIndex + 1] - boundaries[newWordIndex],
                 endPoint='end',
             )

@@ -48,6 +48,10 @@ Check this option for NVDA to provide audio feedback when NVDA is busy. NVDA bei
 
 This option controls the volume of NVDA speech as well as all the other sounds and beeps produced by NVDA. The advantage of this option compared to adjusting volume of a speech synthesizer, is that it affects the volume of all the beeps proportionally.
 
+## Detecting insert mode in text editors
+
+If this option is enabled, NVDA will beep when it detects insert mode in text editors.
+
 ## Blocking double insert keystroke
 
 In NVDA pressing Insert key twice in a row toggles insert mode in applications. However, sometimes it happens accidentally and it triggers insert mode. Since this is a special keystroke, it cannot be disabled in the settings. This add-on provides a way to block this keyboard shortcut. When double insert is blocked, insert mode can stil be toggled by pressing NVDA+F2 and then Insert. 
