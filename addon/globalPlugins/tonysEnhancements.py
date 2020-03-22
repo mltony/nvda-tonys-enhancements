@@ -143,14 +143,14 @@ class SettingsDialog(gui.SettingsDialog):
 
     def makeSettings(self, settingsSizer):
         sHelper = gui.guiHelper.BoxSizerHelper(self, sizer=settingsSizer)
-        
+
       # checkbox Detect insert mode
         # Translators: Checkbox for insert mode detection
         label = _("Detect insert mode in text documents and beep on every keystroke when insert mode is on.")
         self.detectInsertModeCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.detectInsertModeCheckbox.Value = getConfig("detectInsertMode")
 
-        
+
       # checkbox block double insert
         # Translators: Checkbox for block double insert
         label = _("Block double insert")
@@ -216,6 +216,99 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("dynamicKeystrokesTable", self.dynamicKeystrokesEdit.Value)
         reloadDynamicKeystrokes()
         super(SettingsDialog, self).onOk(evt)
+
+class Beeper:
+    BASE_FREQ = speech.IDT_BASE_FREQUENCY
+    def getPitch(self, indent):
+        return self.BASE_FREQ*2**(indent/24.0) #24 quarter tones per octave.
+
+    BEEP_LEN = 10 # millis
+    PAUSE_LEN = 5 # millis
+    MAX_CRACKLE_LEN = 400 # millis
+    MAX_BEEP_COUNT = MAX_CRACKLE_LEN // (BEEP_LEN + PAUSE_LEN)
+
+    def __init__(self):
+        self.player = nvwave.WavePlayer(
+            channels=2,
+            samplesPerSec=int(tones.SAMPLE_RATE),
+            bitsPerSample=16,
+            outputDevice=config.conf["speech"]["outputDevice"],
+            wantDucking=False
+        )
+
+
+
+    def fancyCrackle(self, levels, volume):
+        levels = self.uniformSample(levels, self.MAX_BEEP_COUNT )
+        beepLen = self.BEEP_LEN
+        pauseLen = self.PAUSE_LEN
+        pauseBufSize = NVDAHelper.generateBeep(None,self.BASE_FREQ,pauseLen,0, 0)
+        beepBufSizes = [NVDAHelper.generateBeep(None,self.getPitch(l), beepLen, volume, volume) for l in levels]
+        bufSize = sum(beepBufSizes) + len(levels) * pauseBufSize
+        buf = ctypes.create_string_buffer(bufSize)
+        bufPtr = 0
+        for l in levels:
+            bufPtr += NVDAHelper.generateBeep(
+                ctypes.cast(ctypes.byref(buf, bufPtr), ctypes.POINTER(ctypes.c_char)),
+                self.getPitch(l), beepLen, volume, volume)
+            bufPtr += pauseBufSize # add a short pause
+        self.player.stop()
+        self.player.feed(buf.raw)
+
+    def simpleCrackle(self, n, volume):
+        return self.fancyCrackle([0] * n, volume)
+
+
+    NOTES = "A,B,H,C,C#,D,D#,E,F,F#,G,G#".split(",")
+    NOTE_RE = re.compile("[A-H][#]?")
+    BASE_FREQ = 220
+    def getChordFrequencies(self, chord):
+        myAssert(len(self.NOTES) == 12)
+        prev = -1
+        result = []
+        for m in self.NOTE_RE.finditer(chord):
+            s = m.group()
+            i =self.NOTES.index(s)
+            while i < prev:
+                i += 12
+            result.append(int(self.BASE_FREQ * (2 ** (i / 12.0))))
+            prev = i
+        return result
+
+    def fancyBeep(self, chord, length, left=10, right=10):
+        beepLen = length
+        freqs = self.getChordFrequencies(chord)
+        intSize = 8 # bytes
+        bufSize = max([NVDAHelper.generateBeep(None,freq, beepLen, right, left) for freq in freqs])
+        if bufSize % intSize != 0:
+            bufSize += intSize
+            bufSize -= (bufSize % intSize)
+        self.player.stop()
+        bbs = []
+        result = [0] * (bufSize//intSize)
+        for freq in freqs:
+            buf = ctypes.create_string_buffer(bufSize)
+            NVDAHelper.generateBeep(buf, freq, beepLen, right, left)
+            bytes = bytearray(buf)
+            unpacked = struct.unpack("<%dQ" % (bufSize // intSize), bytes)
+            result = map(operator.add, result, unpacked)
+        maxInt = 1 << (8 * intSize)
+        result = map(lambda x : x %maxInt, result)
+        packed = struct.pack("<%dQ" % (bufSize // intSize), *result)
+        self.player.feed(packed)
+
+    def uniformSample(self, a, m):
+        n = len(a)
+        if n <= m:
+            return a
+        # Here assume n > m
+        result = []
+        for i in range(0, m*n, n):
+            result.append(a[i  // m])
+        return result
+    def stop(self):
+        self.player.stop()
+
 
 originalWaveOpen = None
 originalWatchdogAlive = None
@@ -412,6 +505,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.injectHooks()
         self.injectTableFunctions()
         self.lastConsoleUpdateTime = 0
+        self.beeper = Beeper()
 
     def createMenu(self):
         def _popupMenu(evt):
@@ -555,7 +649,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         except:
             return
         yield 10
-    
+
         while True:
             if gestureCounter != thisGestureCounter:
                 return
@@ -694,25 +788,41 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         textInfo.collapse(end=(direction > 0))
         lineInfo = textInfo.copy()
         lineInfo.expand(textInfos.UNIT_LINE)
-        lineText = lineInfo.text.rstrip('\r\n')
-        boundaries = [m.start() for m in self.wordRe.finditer(lineText)]
-        boundaries = sorted(list(set(boundaries)))
         offsetInfo = lineInfo.copy()
         offsetInfo.setEndPoint(textInfo, 'endToEnd')
         caret = len(offsetInfo.text)
-        wordIndex = bisect.bisect_right(boundaries, caret) - 1
-        newWordIndex = wordIndex + direction
-        newWordIndex = max(0, newWordIndex)
-        newWordIndex = min(len(boundaries) - 1, newWordIndex)
-        newInfo = lineInfo
-        lineInfo = None
-        newInfo.collapse(end=False)
-        newInfo.move(textInfos.UNIT_CHARACTER, boundaries[newWordIndex])
-        if newWordIndex + 1 < len(boundaries):
-            newInfo.move(
-                textInfos.UNIT_CHARACTER,
-                boundaries[newWordIndex + 1] - boundaries[newWordIndex],
-                endPoint='end',
-            )
-        newInfo.updateCaret()
-        speech.speakTextInfo(newInfo, reason=controlTypes.REASON_CARET)
+        for lineAttempt in range(1000):
+            lineText = lineInfo.text.rstrip('\r\n')
+            isEmptyLine = len(lineText.strip()) == 0
+            boundaries = [m.start() for m in self.wordRe.finditer(lineText)]
+            boundaries = sorted(list(set(boundaries)))
+            if lineAttempt == 0:
+                wordIndex = bisect.bisect_right(boundaries, caret) - 1
+                newWordIndex = wordIndex + direction
+            else:
+                if direction > 0:
+                    newWordIndex = 0
+                else:
+                    newWordIndex = len(boundaries) - 1
+            if not isEmptyLine and (0 <= newWordIndex < len(boundaries)):
+                newInfo = lineInfo
+                lineInfo = None
+                newInfo.collapse(end=False)
+                newInfo.move(textInfos.UNIT_CHARACTER, boundaries[newWordIndex])
+                if newWordIndex + 1 < len(boundaries):
+                    newInfo.move(
+                        textInfos.UNIT_CHARACTER,
+                        boundaries[newWordIndex + 1] - boundaries[newWordIndex],
+                        endPoint='end',
+                    )
+                newInfo.updateCaret()
+                speech.speakTextInfo(newInfo, reason=controlTypes.REASON_CARET)
+                return
+            else:
+                result = lineInfo.move(textInfos.UNIT_LINE, direction)
+                if result == 0:
+                    self.beeper.fancyBeep('HF', 100, left=25, right=25)
+                    return
+                lineInfo.expand(textInfos.UNIT_LINE)
+                # now try to find next word again on next/previous line
+        raise Exception('Failed to find next word')

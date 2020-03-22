@@ -15,10 +15,10 @@ This add-on is only compatible with NVDA versions 2019.3 and above.
 * NVDA+Shift+DownArrow - read current column in the table starting from current cell down.
 
 ## Enhanced word navigation commands
-Most text editors support Control+LeftArrow/RightArrow commands for word navigation. However the definition of the word changes from one program to another. This is especially true of modern web-based text editors. NVDA should know the definition of word in given program in order to speak words correctly. If NVDA doesn't know the exact definition, then either words are going to be skipped, or pronounced multiple times. Moreover, some web-based text editors position the cursor in the end of the word, instead of the beginning, making editing much harder for visually impaired users. In order to combat this problem I have created enhanced word navigation commands, that take the word definition from Notepad++ and they do not rely on program's definition of words, but rather parse lines into words on NVDA's side. The Control+LeftArrow/RIghtArrow gesture is not even sent to the program, thus ensuring the consistency of the speech.
+Most text editors support Control+LeftArrow/RightArrow commands for word navigation. However the definition of the word changes from one program to another. This is especially true of modern web-based text editors, such as Monaco. NVDA should know the definition of word in given program in order to speak words correctly. If NVDA doesn't know the exact definition, then either words are going to be skipped, or pronounced multiple times. Moreover, some web-based text editors position the cursor in the end of the word, instead of the beginning, making editing much harder for visually impaired users. In order to combat this problem I have created enhanced word navigation commands, that take the word definition from Notepad++ and they do not rely on program's definition of words, but rather parse lines into words on NVDA's side. The Control+LeftArrow/RightArrow gesture is not even sent to the program, thus ensuring the consistency of the speech.
 * Control+Windows+LeftArrow/RightArrow - jump to previous/next word on the line
 
-Currently the drawback of this approach is that it only works within a single line.
+Currently the drawback of this approach is that sometimes it is not able to advance to next/previous line in some text editors, such as VSCode, since due to its internal optimizations, VSCode presents only a few lines of file contents at a time.
 
 ## Dynamic keystrokes
 
