@@ -773,11 +773,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         ui.message(message)
 
     # Regular expression for the beginning of a word. Matches:
-    #  1. Beginning or end of string
+    #  1. End of string
     # 2. Beginning of any word: \b\w
     # 3. Punctuation mark preceded by non-punctuation mark: (?<=[\w\s])[^\w\s]
-    wordRe = re.compile(r'^|$|\b\w|(?<=[\w\s])[^\w\s]')
-    @script(description='Move by word in editables.', gestures=['kb:control+Windows+LeftArrow', 'kb:control+Windows+RightArrow'])
+    wordRe = re.compile(r'$|\b\w|(?<=[\w\s])[^\w\s]')
+    @script(description='Move by word in editables.', gestures=['kb:control+LeftArrow', 'kb:control+RightArrow'])
     def script_caretMoveByWord(self, gesture):
         if 'leftArrow' == gesture.mainKeyName:
             direction = -1
@@ -793,14 +793,16 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         offsetInfo = lineInfo.copy()
         offsetInfo.setEndPoint(textInfo, 'endToEnd')
         caret = len(offsetInfo.text)
-        for lineAttempt in range(1000):
+        for lineAttempt in range(100):
             lineText = lineInfo.text.rstrip('\r\n')
             isEmptyLine = len(lineText.strip()) == 0
             boundaries = [m.start() for m in self.wordRe.finditer(lineText)]
             boundaries = sorted(list(set(boundaries)))
             if lineAttempt == 0:
-                wordIndex = bisect.bisect_right(boundaries, caret) - 1
-                newWordIndex = wordIndex + direction
+                if direction > 0:
+                    newWordIndex = bisect.bisect_right(boundaries, caret)
+                else:
+                    newWordIndex = bisect.bisect_left(boundaries, caret) - 1
             else:
                 if direction > 0:
                     newWordIndex = 0
@@ -827,4 +829,5 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                     return
                 lineInfo.expand(textInfos.UNIT_LINE)
                 # now try to find next word again on next/previous line
-        raise Exception('Failed to find next word')
+        #raise Exception('Failed to find next word')
+        self.beeper.fancyBeep('HF', 100, left=25, right=25)
