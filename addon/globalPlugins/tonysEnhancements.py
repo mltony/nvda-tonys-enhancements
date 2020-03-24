@@ -629,7 +629,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
     def getCurrentLineAndCaret(self):
         focus = api.getFocusObject()
-        caretInfo = focus.makeTextInfo(textInfos.POSITION_CARET)
+        caretInfo = focus.makeTextInfo(textInfos.POSITION_SELECTION)
+        if len(caretInfo.text) > 0:
+            return "", -10
         lineInfo = caretInfo.copy()
         lineInfo.expand(textInfos.UNIT_LINE)
         lineText = lineInfo.text
