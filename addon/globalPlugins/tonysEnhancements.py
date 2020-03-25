@@ -662,6 +662,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             originalText, originalCaret = self.getCurrentLineAndCaret()
         except:
             return
+        if originalCaret < 0:
+            # Something is selected, never mind
+            return
         yield 10
 
         while True:
