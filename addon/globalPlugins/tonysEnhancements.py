@@ -14,6 +14,7 @@ import copy
 import ctypes
 from ctypes import create_string_buffer, byref
 import documentBase
+import editableText
 import globalPluginHandler
 import gui
 from gui import guiHelper, nvdaControls
@@ -99,6 +100,7 @@ def initConfiguration():
         "dynamicKeystrokesTable" : f"string( default='{defaultDynamicKeystrokes}')",
         "fixWindowNumber" : "boolean( default=False)",
         "detectInsertMode" : "boolean( default=False)",
+        "overrideMoveByWord" : "boolean( default=False)",
     }
     config.conf.spec[module] = confspec
 
@@ -181,6 +183,12 @@ class SettingsDialog(gui.SettingsDialog):
         label = _("Fix focus being stuck in the taskbar when pressing Windows+Number")
         self.fixWindowNumberCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.fixWindowNumberCheckbox.Value = getConfig("fixWindowNumber")
+        
+      # checkbox override move by word
+        # Translators: Checkbox for override move by word
+        label = _("Use enhanced move by word commands for control+LeftArrow/RightArrow in editables.")
+        self.overrideMoveByWordCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.overrideMoveByWordCheckbox.Value = getConfig("overrideMoveByWord")
 
       # NVDA volume slider
         sizer=wx.BoxSizer(wx.HORIZONTAL)
@@ -211,6 +219,7 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("consoleBeep", self.consoleBeepCheckbox.Value)
         setConfig("busyBeep", self.busyBeepCheckbox.Value)
         setConfig("fixWindowNumber", self.fixWindowNumberCheckbox.Value)
+        setConfig("overrideMoveByWord", self.overrideMoveByWordCheckbox.Value)
         setConfig("detectInsertMode", self.detectInsertModeCheckbox.Value)
         setConfig("nvdaVolume", self.nvdaVolumeSlider.Value)
         setConfig("dynamicKeystrokesTable", self.dynamicKeystrokesEdit.Value)
@@ -535,6 +544,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.myWatchdog = MyWatchdog()
         self.myWatchdog.setDaemon(True)
         self.myWatchdog.start()
+        self.originalMoveByWord = editableText.EditableText.script_caret_moveByWord
+        editableText.EditableText.script_caret_moveByWord = lambda selfself, gesture, *args, **kwargs: self.script_caretMoveByWord(selfself, gesture, *args, **kwargs)
 
     def  removeHooks(self):
         global originalWaveOpen
@@ -544,6 +555,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         watchdog.alive = originalWatchdogAlive
         watchdog.asleep = originalWatchdogAsleep
         self.myWatchdog.terminate()
+        editableText.EditableText.script_caret_moveByWord = self.originalMoveByWord
 
     windowsSwitchingRe = re.compile(r':\d\+windows$')
     typingKeystrokeRe = re.compile(r':(shift\+)?[A-Za-z0-9](\+shift)?$')
@@ -777,8 +789,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     # 2. Beginning of any word: \b\w
     # 3. Punctuation mark preceded by non-punctuation mark: (?<=[\w\s])[^\w\s]
     wordRe = re.compile(r'$|\b\w|(?<=[\w\s])[^\w\s]')
-    @script(description='Move by word in editables.', gestures=['kb:control+LeftArrow', 'kb:control+RightArrow'])
-    def script_caretMoveByWord(self, gesture):
+    def script_caretMoveByWord(self, selfself, gesture):
+        if not getConfig('overrideMoveByWord'):
+            return self.originalMoveByWord(selfself, gesture)
         if 'leftArrow' == gesture.mainKeyName:
             direction = -1
         elif 'rightArrow' == gesture.mainKeyName:
@@ -798,16 +811,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             isEmptyLine = len(lineText.strip()) == 0
             boundaries = [m.start() for m in self.wordRe.finditer(lineText)]
             boundaries = sorted(list(set(boundaries)))
-            if lineAttempt == 0:
-                if direction > 0:
-                    newWordIndex = bisect.bisect_right(boundaries, caret)
-                else:
-                    newWordIndex = bisect.bisect_left(boundaries, caret) - 1
+            if direction > 0:
+                newWordIndex = bisect.bisect_right(boundaries, caret)
             else:
-                if direction > 0:
-                    newWordIndex = 0
-                else:
-                    newWordIndex = len(boundaries) - 1
+                newWordIndex = bisect.bisect_left(boundaries, caret) - 1
             if not isEmptyLine and (0 <= newWordIndex < len(boundaries)):
                 newInfo = lineInfo
                 lineInfo = None
@@ -820,14 +827,19 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                         endPoint='end',
                     )
                 newInfo.updateCaret()
-                speech.speakTextInfo(newInfo, reason=controlTypes.REASON_CARET)
+                speech.speakTextInfo(newInfo, unit=textInfos.UNIT_WORD, reason=controlTypes.REASON_CARET)
                 return
             else:
+                lineInfo.collapse()
                 result = lineInfo.move(textInfos.UNIT_LINE, direction)
                 if result == 0:
                     self.beeper.fancyBeep('HF', 100, left=25, right=25)
                     return
                 lineInfo.expand(textInfos.UNIT_LINE)
                 # now try to find next word again on next/previous line
+                if direction > 0:
+                    caret = -1
+                else:
+                    caret = len(lineInfo.text) + 10
         #raise Exception('Failed to find next word')
         self.beeper.fancyBeep('HF', 100, left=25, right=25)
