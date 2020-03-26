@@ -791,58 +791,61 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     #  1. End of string
     # 2. Beginning of any word: \b\w
     # 3. Punctuation mark preceded by non-punctuation mark: (?<=[\w\s])[^\w\s]
-    wordRe = re.compile(r'$|\b\w|(?<=[\w\s])[^\w\s]')
+    # 4. Punctuation mark preceded by beginning of the string
+    wordRe = re.compile(r'$|\b\w|(?<=[\w\s])[^\w\s]|^[^\w\s]')
     def script_caretMoveByWord(self, selfself, gesture):
         if not getConfig('overrideMoveByWord'):
             return self.originalMoveByWord(selfself, gesture)
-        if 'leftArrow' == gesture.mainKeyName:
-            direction = -1
-        elif 'rightArrow' == gesture.mainKeyName:
-            direction = 1
-        else:
-            return
-        focus = api.getFocusObject()
-        textInfo = focus.makeTextInfo(textInfos.POSITION_CARET)
-        textInfo.collapse(end=(direction > 0))
-        lineInfo = textInfo.copy()
-        lineInfo.expand(textInfos.UNIT_LINE)
-        offsetInfo = lineInfo.copy()
-        offsetInfo.setEndPoint(textInfo, 'endToEnd')
-        caret = len(offsetInfo.text)
-        for lineAttempt in range(100):
-            lineText = lineInfo.text.rstrip('\r\n')
-            isEmptyLine = len(lineText.strip()) == 0
-            boundaries = [m.start() for m in self.wordRe.finditer(lineText)]
-            boundaries = sorted(list(set(boundaries)))
-            if direction > 0:
-                newWordIndex = bisect.bisect_right(boundaries, caret)
+        try:
+            if 'leftArrow' == gesture.mainKeyName:
+                direction = -1
+            elif 'rightArrow' == gesture.mainKeyName:
+                direction = 1
             else:
-                newWordIndex = bisect.bisect_left(boundaries, caret) - 1
-            if not isEmptyLine and (0 <= newWordIndex < len(boundaries)):
-                newInfo = lineInfo
-                lineInfo = None
-                newInfo.collapse(end=False)
-                newInfo.move(textInfos.UNIT_CHARACTER, boundaries[newWordIndex])
-                if newWordIndex + 1 < len(boundaries):
-                    newInfo.move(
-                        textInfos.UNIT_CHARACTER,
-                        boundaries[newWordIndex + 1] - boundaries[newWordIndex],
-                        endPoint='end',
-                    )
-                newInfo.updateCaret()
-                speech.speakTextInfo(newInfo, unit=textInfos.UNIT_WORD, reason=controlTypes.REASON_CARET)
-                return
-            else:
-                lineInfo.collapse()
-                result = lineInfo.move(textInfos.UNIT_LINE, direction)
-                if result == 0:
-                    self.beeper.fancyBeep('HF', 100, left=25, right=25)
-                    return
-                lineInfo.expand(textInfos.UNIT_LINE)
-                # now try to find next word again on next/previous line
+                return self.originalMoveByWord(selfself, gesture)
+            focus = api.getFocusObject()
+            caretInfo = focus.makeTextInfo(textInfos.POSITION_CARET)
+            caretInfo.collapse(end=(direction > 0))
+            lineInfo = caretInfo.copy()
+            lineInfo.expand(textInfos.UNIT_PARAGRAPH)
+            offsetInfo = lineInfo.copy()
+            offsetInfo.setEndPoint(caretInfo, 'endToEnd')
+            caret = len(offsetInfo.text)
+            for lineAttempt in range(100):
+                lineText = lineInfo.text.rstrip('\r\n')
+                isEmptyLine = len(lineText.strip()) == 0
+                boundaries = [m.start() for m in self.wordRe.finditer(lineText)]
+                boundaries = sorted(list(set(boundaries)))
                 if direction > 0:
-                    caret = -1
+                    newWordIndex = bisect.bisect_right(boundaries, caret)
                 else:
-                    caret = len(lineInfo.text) + 10
-        #raise Exception('Failed to find next word')
-        self.beeper.fancyBeep('HF', 100, left=25, right=25)
+                    newWordIndex = bisect.bisect_left(boundaries, caret) - 1
+                if not isEmptyLine and (0 <= newWordIndex < len(boundaries)):
+                    adjustment = boundaries[newWordIndex] - caret
+                    newInfo = caretInfo
+                    newInfo.move(textInfos.UNIT_CHARACTER, adjustment)
+                    if newWordIndex + 1 < len(boundaries):
+                        newInfo.move(
+                            textInfos.UNIT_CHARACTER,
+                            boundaries[newWordIndex + 1] - boundaries[newWordIndex],
+                            endPoint='end',
+                        )
+                    newInfo.updateCaret()
+                    speech.speakTextInfo(newInfo, unit=textInfos.UNIT_WORD, reason=controlTypes.REASON_CARET)
+                    return
+                else:
+                    lineInfo.collapse()
+                    result = lineInfo.move(textInfos.UNIT_PARAGRAPH, direction)
+                    if result == 0:
+                        self.beeper.fancyBeep('HF', 100, left=25, right=25)
+                        return
+                    lineInfo.expand(textInfos.UNIT_PARAGRAPH)
+                    # now try to find next word again on next/previous line
+                    if direction > 0:
+                        caret = -1
+                    else:
+                        caret = len(lineInfo.text) + 10
+            #raise Exception('Failed to find next word')
+            self.beeper.fancyBeep('HF', 100, left=25, right=25)
+        except NotImplementedError:
+            return self.originalMoveByWord(selfself, gesture)
