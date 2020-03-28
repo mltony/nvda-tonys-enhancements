@@ -51,7 +51,7 @@ winmm = ctypes.windll.winmm
 debug = False
 if debug:
     import threading
-    LOG_FILE_NAME = "C:\\Users\\tony\\Dropbox\\2.txt"
+    LOG_FILE_NAME = "C:\\Users\\tony\\Dropbox\\1.txt"
     f = open(LOG_FILE_NAME, "w")
     f.close()
     LOG_MUTEX = threading.Lock()
@@ -60,7 +60,9 @@ if debug:
             f = open(LOG_FILE_NAME, "a")
             print(s, file=f)
             f.close()
-
+else:
+    def mylog(*arg, **kwarg):
+        pass
 
 def myAssert(condition):
     if not condition:
@@ -678,9 +680,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 return
             if (text != originalText) or (caret != originalCaret):
                 # state has changed, we will check for signs of insert mode, but we won't be running this loop anymore
-                #mylog(f'caret {originalCaret} {caret}')
-                #mylog(f'len(text) {len(originalText)} {len(text)}')
-                #mylog(f'"{text}"')
                 if (caret == originalCaret + 1) and (len(text) == len(originalText)):
                     try:
                         if (text[:originalCaret] == originalText[:originalCaret]) and (text[originalCaret+1:] == originalText[originalCaret+1:]) and (text[originalCaret] != originalText[originalCaret]):
@@ -813,6 +812,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             caret = len(offsetInfo.text)
             for lineAttempt in range(100):
                 lineText = lineInfo.text.rstrip('\r\n')
+                mylog(f'"{lineText}"')
                 isEmptyLine = len(lineText.strip()) == 0
                 boundaries = [m.start() for m in self.wordRe.finditer(lineText)]
                 boundaries = sorted(list(set(boundaries)))
@@ -821,9 +821,19 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 else:
                     newWordIndex = bisect.bisect_left(boundaries, caret) - 1
                 if not isEmptyLine and (0 <= newWordIndex < len(boundaries)):
-                    adjustment = boundaries[newWordIndex] - caret
-                    newInfo = caretInfo
-                    newInfo.move(textInfos.UNIT_CHARACTER, adjustment)
+                    if lineAttempt == 0:
+                        adjustment = boundaries[newWordIndex] - caret
+                        newInfo = caretInfo
+                        newInfo.move(textInfos.UNIT_CHARACTER, adjustment)
+                    else:
+                        newInfo = lineInfo
+                        if direction > 0:
+                            adjustment =  boundaries[newWordIndex]
+                            newInfo.collapse(end=False)
+                        else:
+                            adjustment =  boundaries[newWordIndex] - len(lineInfo.text)
+                            newInfo.collapse(end=True)
+                        result = newInfo.move(textInfos.UNIT_CHARACTER, adjustment)
                     if newWordIndex + 1 < len(boundaries):
                         newInfo.move(
                             textInfos.UNIT_CHARACTER,
@@ -844,7 +854,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                     if direction > 0:
                         caret = -1
                     else:
-                        caret = len(lineInfo.text) + 10
+                        caret = len(lineInfo.text)
             #raise Exception('Failed to find next word')
             self.beeper.fancyBeep('HF', 100, left=25, right=25)
         except NotImplementedError:
