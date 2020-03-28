@@ -7,6 +7,7 @@
 import addonHandler
 import api
 import bisect
+import collections
 import config
 import controlTypes
 import core
@@ -185,7 +186,7 @@ class SettingsDialog(gui.SettingsDialog):
         label = _("Fix focus being stuck in the taskbar when pressing Windows+Number")
         self.fixWindowNumberCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.fixWindowNumberCheckbox.Value = getConfig("fixWindowNumber")
-        
+
       # checkbox override move by word
         # Translators: Checkbox for override move by word
         label = _("Use enhanced move by word commands for control+LeftArrow/RightArrow in editables.")
@@ -507,6 +508,48 @@ def executeAsynchronously(gen):
     l = lambda gen=gen: executeAsynchronously(gen)
     core.callLater(value, executeAsynchronously, gen)
 
+class SpeechChunk:
+    def __init__(self, text, now):
+        self.text = text
+        self.timestamp = now
+        self.spoken = False
+        
+    def speak(self):
+        def callback():
+            global currentSpeechChunk
+            with speechChunksLock:
+                currentSpeechChunk = self
+        speech.speak([
+            speech.commands.CallbackCommand(callback),
+            self.text
+        ])
+
+
+speechChunks = collections.deque()
+currentSpeechChunk = None
+speechChunksLock = threading.Lock()
+originalReportNewText = None
+def newReportConsoleText(selfself, line, *args, **kwargs):
+    if getConfig("consoleBeep"):
+        tones.beep(100, 5)
+    if not getConfig("consoleRealtime"):
+        return originalReportNewText(selfself, line, *args, **kwargs)
+    now = time.time()
+    threshold = now - 1
+    newChunk = SpeechChunk(line, now)
+    speechChunks.append(newChunk)
+    with speechChunksLock:
+        while (len(speechChunks) > 0) and (speechChunks[0].timestamp < threshold):
+            speechChunks.popleft()
+        if currentSpeechChunk is not None and currentSpeechChunk.timestamp < threshold:
+            speech.cancelSpeech()
+            for chunk in speechChunks:
+                chunk.speak()
+        else:
+            newChunk.speak()
+            
+    
+
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     scriptCategory = _("Tony's Enhancements")
 
@@ -532,11 +575,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
     def injectHooks(self):
-        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep
+        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep, originalReportNewText
         self.originalExecuteGesture = inputCore.InputManager.executeGesture
         inputCore.InputManager.executeGesture = lambda selfself, gesture, *args, **kwargs: self.preExecuteGesture(selfself, gesture, *args, **kwargs)
-        self.originalCalculateNewText = behaviors.LiveText._calculateNewText
-        behaviors.LiveText._calculateNewText = lambda selfself, *args, **kwargs: self.preCalculateNewText(selfself, *args, **kwargs)
+        #self.originalCalculateNewText = behaviors.LiveText._calculateNewText
+        #behaviors.LiveText._calculateNewText = lambda selfself, *args, **kwargs: self.preCalculateNewText(selfself, *args, **kwargs)
+        originalReportNewText = behaviors.LiveText._reportNewText
+        behaviors.LiveText._reportNewText = newReportConsoleText
+        
         originalWaveOpen = nvwave.WavePlayer.open
         nvwave.WavePlayer.open = preWaveOpen
         originalWatchdogAlive = watchdog.alive
@@ -550,9 +596,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         editableText.EditableText.script_caret_moveByWord = lambda selfself, gesture, *args, **kwargs: self.script_caretMoveByWord(selfself, gesture, *args, **kwargs)
 
     def  removeHooks(self):
-        global originalWaveOpen
+        global originalWaveOpen, originalReportNewText
         inputCore.InputManager.executeGesture = self.originalExecuteGesture
-        behaviors.LiveText._calculateNewText = self.originalCalculateNewText
+        #behaviors.LiveText._calculateNewText = self.originalCalculateNewText
+        behaviors.LiveText._reportNewText = originalReportNewText
         nvwave.WavePlayer.open = originalWaveOpen
         watchdog.alive = originalWatchdogAlive
         watchdog.asleep = originalWatchdogAsleep
@@ -692,6 +739,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
     def preCalculateNewText(self, selfself, *args, **kwargs):
         outLines =   self.originalCalculateNewText(selfself, *args, **kwargs)
+        return outLines
         if len(outLines) == 1 and len(outLines[0].strip()) == 1:
             # Only a single character has changed - in this case NVDA thinks that's a typed character, so it is not spoken anyway. Con't interfere.
             return outLines
