@@ -513,23 +513,40 @@ class SpeechChunk:
         self.text = text
         self.timestamp = now
         self.spoken = False
-        
+        self.nextChunk = None
+
     def speak(self):
         def callback():
-            global currentSpeechChunk
+            global currentSpeechChunk, latestSpeechChunk
             with speechChunksLock:
-                currentSpeechChunk = self
+                if self != currentSpeechChunk:
+                    # This can happen when this callback has already been scheduled, but new speech has arrived
+                    # and this chunk was cancelled due to timeout.
+                    return
+                my_assert(
+                    (
+                        currentSpeechChunk == latestSpeechChunk
+                        and self.nextChunk is None
+                    )
+                    or (
+                        currentSpeechChunk != latestSpeechChunk
+                        and self.nextChunk is not  None
+                    )
+                )
+                self.nextChunk.speak()
         speech.speak([
+            self.text,
             speech.commands.CallbackCommand(callback),
-            self.text
         ])
 
 
-speechChunks = collections.deque()
+#speechChunks = collections.deque()
 currentSpeechChunk = None
+latestSpeechChunk = None
 speechChunksLock = threading.Lock()
 originalReportNewText = None
 def newReportConsoleText(selfself, line, *args, **kwargs):
+    global currentSpeechChunk, latestSpeechChunk
     if getConfig("consoleBeep"):
         tones.beep(100, 5)
     if not getConfig("consoleRealtime"):
@@ -537,18 +554,22 @@ def newReportConsoleText(selfself, line, *args, **kwargs):
     now = time.time()
     threshold = now - 1
     newChunk = SpeechChunk(line, now)
-    speechChunks.append(newChunk)
+
     with speechChunksLock:
-        while (len(speechChunks) > 0) and (speechChunks[0].timestamp < threshold):
-            speechChunks.popleft()
-        if currentSpeechChunk is not None and currentSpeechChunk.timestamp < threshold:
-            speech.cancelSpeech()
-            for chunk in speechChunks:
-                chunk.speak()
+        myAssert((currentSpeechChunk is not None) == (latestSpeechChunk is not None))
+        if latestSpeechChunk is not None:
+            latestSpeechChunk.nextChunk = newChunk
+            latestSpeechChunk = newChunk
+            if currentSpeechChunk.timestamp < threshold:
+                speech.cancelSpeech()
+                while currentSpeechChunk.timestamp < threshold:
+                    currentSpeechChunk = currentSpeechChunk.nextChunk
+                currentSpeechChunk.speak()
         else:
+            currentSpeechChunk = latestSpeechChunk = newChunk
             newChunk.speak()
-            
-    
+
+
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     scriptCategory = _("Tony's Enhancements")
@@ -582,7 +603,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         #behaviors.LiveText._calculateNewText = lambda selfself, *args, **kwargs: self.preCalculateNewText(selfself, *args, **kwargs)
         originalReportNewText = behaviors.LiveText._reportNewText
         behaviors.LiveText._reportNewText = newReportConsoleText
-        
+
         originalWaveOpen = nvwave.WavePlayer.open
         nvwave.WavePlayer.open = preWaveOpen
         originalWatchdogAlive = watchdog.alive
