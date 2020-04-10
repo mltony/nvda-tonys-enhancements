@@ -104,6 +104,7 @@ def initConfiguration():
         "fixWindowNumber" : "boolean( default=False)",
         "detectInsertMode" : "boolean( default=False)",
         "overrideMoveByWord" : "boolean( default=False)",
+        "suppressUnselected" : "boolean( default=False)",
     }
     config.conf.spec[module] = confspec
 
@@ -193,6 +194,12 @@ class SettingsDialog(gui.SettingsDialog):
         self.overrideMoveByWordCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.overrideMoveByWordCheckbox.Value = getConfig("overrideMoveByWord")
 
+      # checkbox suppress unselected
+        # Translators: Checkbox for suppress unselected
+        label = _("Suppress saying of 'unselected'.")
+        self.suppressUnselectedCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.suppressUnselectedCheckbox.Value = getConfig("suppressUnselected")
+
       # NVDA volume slider
         sizer=wx.BoxSizer(wx.HORIZONTAL)
         # Translators: slider to select NVDA  volume
@@ -223,6 +230,7 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("busyBeep", self.busyBeepCheckbox.Value)
         setConfig("fixWindowNumber", self.fixWindowNumberCheckbox.Value)
         setConfig("overrideMoveByWord", self.overrideMoveByWordCheckbox.Value)
+        setConfig("suppressUnselected", self.suppressUnselectedCheckbox.Value)
         setConfig("detectInsertMode", self.detectInsertModeCheckbox.Value)
         setConfig("nvdaVolume", self.nvdaVolumeSlider.Value)
         setConfig("dynamicKeystrokesTable", self.dynamicKeystrokesEdit.Value)
@@ -535,7 +543,7 @@ class SpeechChunk:
                         and self.nextChunk is not  None
                     )
                 )
-                
+
                 currentSpeechChunk = self.nextChunk
                 if self.nextChunk is not None:
                     mylog(f'chunk.callback, this="{self.text}", speacking next="{self.nextChunk.text}"')
@@ -584,8 +592,17 @@ def newReportConsoleText(selfself, line, *args, **kwargs):
             currentSpeechChunk = latestSpeechChunk = newChunk
             newChunk.speak()
 
-
-
+originalSpeakSelectionChange = None
+originalCaretMovementScriptHelper = None
+performingShiftGesture = False
+def preSpeakSelectionChange(oldInfo, newInfo, *args, **kwargs):
+    if getConfig('suppressUnselected') and not performingShiftGesture:
+        # Setting speakUnselected to false if user is not intending to select/unselect things
+        if len(args) >= 2:
+            args[1] = False
+        else:
+            kwargs['speakUnselected'] = False
+    return originalSpeakSelectionChange(oldInfo, newInfo, *args, **kwargs)
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     scriptCategory = _("Tony's Enhancements")
 
@@ -611,7 +628,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
     def injectHooks(self):
-        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep, originalReportNewText
+        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep, originalReportNewText, originalSpeakSelectionChange, originalCaretMovementScriptHelper
         self.originalExecuteGesture = inputCore.InputManager.executeGesture
         inputCore.InputManager.executeGesture = lambda selfself, gesture, *args, **kwargs: self.preExecuteGesture(selfself, gesture, *args, **kwargs)
         #self.originalCalculateNewText = behaviors.LiveText._calculateNewText
@@ -630,6 +647,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.myWatchdog.start()
         self.originalMoveByWord = editableText.EditableText.script_caret_moveByWord
         editableText.EditableText.script_caret_moveByWord = lambda selfself, gesture, *args, **kwargs: self.script_caretMoveByWord(selfself, gesture, *args, **kwargs)
+        originalSpeakSelectionChange = speech.speakSelectionChange
+        speech.speakSelectionChange = preSpeakSelectionChange
 
     def  removeHooks(self):
         global originalWaveOpen, originalReportNewText
@@ -641,12 +660,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         watchdog.asleep = originalWatchdogAsleep
         self.myWatchdog.terminate()
         editableText.EditableText.script_caret_moveByWord = self.originalMoveByWord
+        speech.speakSelectionChange = originalSpeakSelectionChange
 
     windowsSwitchingRe = re.compile(r':\d\+windows$')
     typingKeystrokeRe = re.compile(r':(shift\+)?[A-Za-z0-9](\+shift)?$')
     def preExecuteGesture(self, selfself, gesture, *args, **kwargs):
-        global gestureCounter
+        global gestureCounter, editorMovingCaret, performingShiftGesture
         gestureCounter += 1
+        editorMovingCaret = False
         if (
             getConfig("blockDoubleInsert")  and
             gesture.vkCode == winUser.VK_INSERT and
@@ -691,6 +712,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 pass
             #if text:
             executeAsynchronously(self.insertModeDetector(gestureCounter, text, caret))
+        if (
+            (winUser.VK_SHIFT, False) in gesture.modifiers
+            or (winUser.VK_LSHIFT, False) in gesture.modifiers
+            or (winUser.VK_RSHIFT, False) in gesture.modifiers
+        ):
+            performingShiftGesture = True
+        else:
+            performingShiftGesture = False
         return self.originalExecuteGesture(selfself, gesture, *args, **kwargs)
 
     def asyncSwitchWindowHandler(self, thisGestureCounter):

@@ -20,6 +20,10 @@ Most text editors support Control+LeftArrow/RightArrow commands for word navigat
 
 Currently the drawback of this approach is that sometimes it is not able to advance to next/previous line in some text editors, such as VSCode, since due to its internal optimizations, VSCode presents only a few lines of file contents at a time.
 
+## Suppress unwanted 'unselected' speech from NVDA
+
+Suppose you have some text selected in text editors. Then you press a key, such as Home, or UpArrow, that is supposed to take you to another part of the document. NVDA would announce 'unselected' and then speak the former selection, which can be inconvenient at times. This feature prevents NVDA from speaking formerly selected text in situations like this.
+
 ## Dynamic keystrokes
 
 You can assign certain keystrokes to be dynamic. After issuing such a keystroke, NVDA will be checking currently focused window for any updates and if the line is updated, NVDA will speak it automatically. For example, certain keystrokes in text editors should be marked dynamic, such as Jump to bookmark, jump to another line and debugging keystrokes,such as step into/step over.
