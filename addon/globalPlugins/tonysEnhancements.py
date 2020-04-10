@@ -524,14 +524,12 @@ class SpeechChunk:
         self.nextChunk = None
 
     def speak(self):
-        mylog(f'chunk.speak "{self.text}"')
         def callback():
             global currentSpeechChunk, latestSpeechChunk
             with speechChunksLock:
                 if self != currentSpeechChunk:
                     # This can happen when this callback has already been scheduled, but new speech has arrived
                     # and this chunk was cancelled due to timeout.
-                    mylog(f'chunk.callback "{self.text}" self != currentSpeechChunk')
                     return
                 myAssert(
                     (
@@ -546,7 +544,6 @@ class SpeechChunk:
 
                 currentSpeechChunk = self.nextChunk
                 if self.nextChunk is not None:
-                    mylog(f'chunk.callback, this="{self.text}", speacking next="{self.nextChunk.text}"')
                     self.nextChunk.speak()
                 else:
                     latestSpeechChunk = None
@@ -555,8 +552,6 @@ class SpeechChunk:
             speech.commands.CallbackCommand(callback),
         ])
 
-
-#speechChunks = collections.deque()
 currentSpeechChunk = None
 latestSpeechChunk = None
 speechChunksLock = threading.Lock()
@@ -570,25 +565,17 @@ def newReportConsoleText(selfself, line, *args, **kwargs):
     now = time.time()
     threshold = now - 1
     newChunk = SpeechChunk(line, now)
-    mylog(f'new chunk "{line}"')
-
     with speechChunksLock:
         myAssert((currentSpeechChunk is not None) == (latestSpeechChunk is not None))
         if latestSpeechChunk is not None:
-            mylog('latestSpeechChunk is not None!')
             latestSpeechChunk.nextChunk = newChunk
             latestSpeechChunk = newChunk
             if currentSpeechChunk.timestamp < threshold:
-                #tones.beep(1000, 30)
-                mylog(f'Current chunk "{currentSpeechChunk.text}" is too old, cancelling some...')
                 speech.cancelSpeech()
                 while currentSpeechChunk.timestamp < threshold:
-                    mylog(f'Current chunk "{currentSpeechChunk.text}" is too old, cancelling it')
                     currentSpeechChunk = currentSpeechChunk.nextChunk
-                mylog(f'Speaking chunk "{currentSpeechChunk.text}"')
                 currentSpeechChunk.speak()
         else:
-            mylog('latestSpeechChunk is None!')
             currentSpeechChunk = latestSpeechChunk = newChunk
             newChunk.speak()
 
@@ -705,12 +692,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         if getConfig("detectInsertMode") and self.typingKeystrokeRe.search(kb):
             text = None
             caret = None
-            try:
-                #text, caret = self.getCurrentLineAndCaret()
-                pass
-            except NotImplementedError:
-                pass
-            #if text:
             executeAsynchronously(self.insertModeDetector(gestureCounter, text, caret))
         if (
             (winUser.VK_SHIFT, False) in gesture.modifiers
@@ -925,7 +906,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             caret = len(offsetInfo.text)
             for lineAttempt in range(100):
                 lineText = lineInfo.text.rstrip('\r\n')
-                mylog(f'"{lineText}"')
                 isEmptyLine = len(lineText.strip()) == 0
                 boundaries = [m.start() for m in self.wordRe.finditer(lineText)]
                 boundaries = sorted(list(set(boundaries)))
