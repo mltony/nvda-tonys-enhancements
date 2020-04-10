@@ -125,7 +125,7 @@ def parseDynamicKeystrokes(s):
             raise ValueError(f"Dynamic shortcuts configuration: invalid line: {line}")
         app = tokens[0]
         try:
-            kb = keyboardHandler.KeyboardInputGesture.fromName(tokens[1]).normalizedIdentifiers[0]
+            kb = keyboardHandler.KeyboardInputGesture.fromName(tokens[1]).identifiers[0]
         except (KeyError, IndexError):
             raise ValueError(f"Invalid kb shortcut {tokens[1]} ")
         result.add((app, kb))
@@ -649,8 +649,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         editableText.EditableText.script_caret_moveByWord = self.originalMoveByWord
         speech.speakSelectionChange = originalSpeakSelectionChange
 
-    windowsSwitchingRe = re.compile(r':\d\+windows$')
-    typingKeystrokeRe = re.compile(r':(shift\+)?[A-Za-z0-9](\+shift)?$')
+    windowsSwitchingRe = re.compile(r':windows\+\d$')
+    typingKeystrokeRe = re.compile(r':((shift\+)?[A-Za-z0-9]|space)$')
+    shiftSelectionKeystroke = re.compile(r':(control\+)?shift\+((up|down|left|right)Arrow|home|end|pageUp|pageDown)$')
     def preExecuteGesture(self, selfself, gesture, *args, **kwargs):
         global gestureCounter, editorMovingCaret, performingShiftGesture
         gestureCounter += 1
@@ -670,7 +671,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             tones.beep(500, 50)
             return
 
-        kb = gesture.normalizedIdentifiers
+        kb = gesture.identifiers
         if len(kb) == 0:
             pass
         else:
@@ -687,17 +688,15 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 checkUpdate,
                 gestureCounter, 0, time.time(), gesture
             )
-        if getConfig("fixWindowNumber") and self.windowsSwitchingRe.search(kb):
+        
+        if getConfig("fixWindowNumber") and self.windowsSwitchingRe.search(kb) is not None:
+            
             executeAsynchronously(self.asyncSwitchWindowHandler(gestureCounter))
         if getConfig("detectInsertMode") and self.typingKeystrokeRe.search(kb):
             text = None
             caret = None
             executeAsynchronously(self.insertModeDetector(gestureCounter, text, caret))
-        if (
-            (winUser.VK_SHIFT, False) in gesture.modifiers
-            or (winUser.VK_LSHIFT, False) in gesture.modifiers
-            or (winUser.VK_RSHIFT, False) in gesture.modifiers
-        ):
+        if getConfig('suppressUnselected') and self.shiftSelectionKeystroke.search(kb) is not None:
             performingShiftGesture = True
         else:
             performingShiftGesture = False
