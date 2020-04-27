@@ -618,8 +618,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep, originalReportNewText, originalSpeakSelectionChange, originalCaretMovementScriptHelper
         self.originalExecuteGesture = inputCore.InputManager.executeGesture
         inputCore.InputManager.executeGesture = lambda selfself, gesture, *args, **kwargs: self.preExecuteGesture(selfself, gesture, *args, **kwargs)
-        #self.originalCalculateNewText = behaviors.LiveText._calculateNewText
-        #behaviors.LiveText._calculateNewText = lambda selfself, *args, **kwargs: self.preCalculateNewText(selfself, *args, **kwargs)
+        self.originalCalculateNewText = behaviors.LiveText._calculateNewText
+        behaviors.LiveText._calculateNewText = lambda selfself, *args, **kwargs: self.preCalculateNewText(selfself, *args, **kwargs)
         originalReportNewText = behaviors.LiveText._reportNewText
         behaviors.LiveText._reportNewText = newReportConsoleText
 
@@ -640,7 +640,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def  removeHooks(self):
         global originalWaveOpen, originalReportNewText
         inputCore.InputManager.executeGesture = self.originalExecuteGesture
-        #behaviors.LiveText._calculateNewText = self.originalCalculateNewText
+        behaviors.LiveText._calculateNewText = self.originalCalculateNewText
         behaviors.LiveText._reportNewText = originalReportNewText
         nvwave.WavePlayer.open = originalWaveOpen
         watchdog.alive = originalWatchdogAlive
@@ -783,7 +783,24 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             yield 10
 
     def preCalculateNewText(self, selfself, *args, **kwargs):
+        oldLines = args[1]
+        newLines = args[0]
+        if oldLines == newLines:
+            return []
+        import difflib
+        #d = difflib.ndiff(oldLines, newLines)
+        #mylog('old')
+        #mylog('\n'.join(oldLines))
+        #mylog('new')
+        #mylog('\n'.join(newLines))
+        #mylog('diff')
+        #for dd in d:
+            #mylog(dd)
         outLines =   self.originalCalculateNewText(selfself, *args, **kwargs)
+        mylog('asdf outLines')
+        mylog(selfself)
+        mylog(type(selfself))
+        mylog('\n'.join(outLines))
         return outLines
         if len(outLines) == 1 and len(outLines[0].strip()) == 1:
             # Only a single character has changed - in this case NVDA thinks that's a typed character, so it is not spoken anyway. Con't interfere.
