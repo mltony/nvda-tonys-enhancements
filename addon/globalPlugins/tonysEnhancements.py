@@ -556,6 +556,7 @@ currentSpeechChunk = None
 latestSpeechChunk = None
 speechChunksLock = threading.Lock()
 originalReportNewText = None
+originalCancelSpeech = None
 def newReportConsoleText(selfself, line, *args, **kwargs):
     global currentSpeechChunk, latestSpeechChunk
     if getConfig("consoleBeep"):
@@ -578,6 +579,12 @@ def newReportConsoleText(selfself, line, *args, **kwargs):
         else:
             currentSpeechChunk = latestSpeechChunk = newChunk
             newChunk.speak()
+            
+def newCancelSpeech(*args, **kwargs):
+    global currentSpeechChunk, latestSpeechChunk
+    with speechChunksLock:
+        currentSpeechChunk = latestSpeechChunk = None
+    return originalCancelSpeech(*args, **kwargs)
 
 originalSpeakSelectionChange = None
 originalCaretMovementScriptHelper = None
@@ -615,11 +622,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
     def injectHooks(self):
-        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep, originalReportNewText, originalSpeakSelectionChange, originalCaretMovementScriptHelper
+        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep, originalReportNewText, originalSpeakSelectionChange, originalCaretMovementScriptHelper, originalCancelSpeech
         self.originalExecuteGesture = inputCore.InputManager.executeGesture
         inputCore.InputManager.executeGesture = lambda selfself, gesture, *args, **kwargs: self.preExecuteGesture(selfself, gesture, *args, **kwargs)
-        self.originalCalculateNewText = behaviors.LiveText._calculateNewText
-        behaviors.LiveText._calculateNewText = lambda selfself, *args, **kwargs: self.preCalculateNewText(selfself, *args, **kwargs)
+        #self.originalCalculateNewText = behaviors.LiveText._calculateNewText
+        #behaviors.LiveText._calculateNewText = lambda selfself, *args, **kwargs: self.preCalculateNewText(selfself, *args, **kwargs)
         originalReportNewText = behaviors.LiveText._reportNewText
         behaviors.LiveText._reportNewText = newReportConsoleText
 
@@ -636,11 +643,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         editableText.EditableText.script_caret_moveByWord = lambda selfself, gesture, *args, **kwargs: self.script_caretMoveByWord(selfself, gesture, *args, **kwargs)
         originalSpeakSelectionChange = speech.speakSelectionChange
         speech.speakSelectionChange = preSpeakSelectionChange
+        originalCancelSpeech = speech.cancelSpeech
+        speech.cancelSpeech = newCancelSpeech
 
     def  removeHooks(self):
         global originalWaveOpen, originalReportNewText
         inputCore.InputManager.executeGesture = self.originalExecuteGesture
-        behaviors.LiveText._calculateNewText = self.originalCalculateNewText
+        #behaviors.LiveText._calculateNewText = self.originalCalculateNewText
         behaviors.LiveText._reportNewText = originalReportNewText
         nvwave.WavePlayer.open = originalWaveOpen
         watchdog.alive = originalWatchdogAlive
@@ -648,6 +657,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.myWatchdog.terminate()
         editableText.EditableText.script_caret_moveByWord = self.originalMoveByWord
         speech.speakSelectionChange = originalSpeakSelectionChange
+        speech.cancelSpeech = originalCancelSpeech
 
     windowsSwitchingRe = re.compile(r':windows\+\d$')
     typingKeystrokeRe = re.compile(r':((shift\+)?[A-Za-z0-9]|space)$')
@@ -787,20 +797,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         newLines = args[0]
         if oldLines == newLines:
             return []
-        import difflib
-        #d = difflib.ndiff(oldLines, newLines)
-        #mylog('old')
-        #mylog('\n'.join(oldLines))
-        #mylog('new')
-        #mylog('\n'.join(newLines))
-        #mylog('diff')
-        #for dd in d:
-            #mylog(dd)
         outLines =   self.originalCalculateNewText(selfself, *args, **kwargs)
-        mylog('asdf outLines')
-        mylog(selfself)
-        mylog(type(selfself))
-        mylog('\n'.join(outLines))
         return outLines
         if len(outLines) == 1 and len(outLines[0].strip()) == 1:
             # Only a single character has changed - in this case NVDA thinks that's a typed character, so it is not spoken anyway. Con't interfere.
