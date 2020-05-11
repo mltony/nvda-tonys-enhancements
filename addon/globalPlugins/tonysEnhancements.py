@@ -49,7 +49,7 @@ import wx
 winmm = ctypes.windll.winmm
 
 
-debug = False
+debug = True
 if debug:
     import threading
     LOG_FILE_NAME = "C:\\Users\\tony\\Dropbox\\1.txt"
@@ -526,7 +526,9 @@ class SpeechChunk:
     def speak(self):
         def callback():
             global currentSpeechChunk, latestSpeechChunk
+            #mylog(f'callback, pre acquire "{self.text}"')
             with speechChunksLock:
+                #mylog(f'callback lock acquired!')
                 if self != currentSpeechChunk:
                     # This can happen when this callback has already been scheduled, but new speech has arrived
                     # and this chunk was cancelled due to timeout.
@@ -566,24 +568,31 @@ def newReportConsoleText(selfself, line, *args, **kwargs):
     now = time.time()
     threshold = now - 1
     newChunk = SpeechChunk(line, now)
+    #mylog(f'newReportConsoleText pre acquire line="{line}"')
     with speechChunksLock:
+        #mylog(f'newReportConsoleText lock acquired!')
         myAssert((currentSpeechChunk is not None) == (latestSpeechChunk is not None))
         if latestSpeechChunk is not None:
             latestSpeechChunk.nextChunk = newChunk
             latestSpeechChunk = newChunk
             if currentSpeechChunk.timestamp < threshold:
-                speech.cancelSpeech()
+                originalCancelSpeech()
                 while currentSpeechChunk.timestamp < threshold:
                     currentSpeechChunk = currentSpeechChunk.nextChunk
                 currentSpeechChunk.speak()
         else:
             currentSpeechChunk = latestSpeechChunk = newChunk
             newChunk.speak()
+    #mylog(f'newReportConsoleText lock released!')
+            
             
 def newCancelSpeech(*args, **kwargs):
     global currentSpeechChunk, latestSpeechChunk
+    #mylog(f'newCancelSpeech pre acquire')
     with speechChunksLock:
+        #mylog(f'newCancelSpeech lock acquired!')
         currentSpeechChunk = latestSpeechChunk = None
+    #mylog(f'newCancelSpeech lock released!')
     return originalCancelSpeech(*args, **kwargs)
 
 originalSpeakSelectionChange = None
