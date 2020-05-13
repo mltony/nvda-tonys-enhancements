@@ -558,6 +558,7 @@ currentSpeechChunk = None
 latestSpeechChunk = None
 speechChunksLock = threading.Lock()
 originalReportNewText = None
+originalSpeechSpeak = None
 originalCancelSpeech = None
 def newReportConsoleText(selfself, line, *args, **kwargs):
     global currentSpeechChunk, latestSpeechChunk
@@ -584,8 +585,48 @@ def newReportConsoleText(selfself, line, *args, **kwargs):
             currentSpeechChunk = latestSpeechChunk = newChunk
             newChunk.speak()
     #mylog(f'newReportConsoleText lock released!')
-            
-            
+
+def processLanguages(command):
+    if isinstance(command, speech.commands.LangChangeCommand):
+        return
+    if not isinstance(command, str):
+        yield command
+        return
+    s = command
+    langMap = {
+        'en': re.compile(r'[a-zA-Z]'),
+        'ru': re.compile(r'[а-яА-Я]'),
+    }
+    curLang = None
+    i = -1
+    while i+1 < len(s):
+        minIndex = None
+        minLang = None
+        for lang, r in langMap.items():
+            if lang == curLang:
+                continue
+            m = r.search(s, pos=i+1)
+            if m is not None:
+                if minIndex is None or m.start(0) < minIndex:
+                    minIndex = m.start(0)
+                    minLang = lang
+        if minLang is not None:
+            if minIndex > 0:
+                yield s[:minIndex - 1]
+            yield speech.commands.LangChangeCommand(minLang)
+            curLang = minLang
+            i = minIndex
+        else:
+            break
+    if i < len(s):
+        yield s[i:]
+
+def newSpeechSpeak(speechSequence, *args, **kwargs):
+    sequence = speechSequence
+    #sequence = [c for c in sequence if not isinstance(c, speech.commands.LangChangeCommand)]
+    sequence = [subcommand for command in sequence for subcommand in processLanguages(command)]
+    return originalSpeechSpeak(sequence, *args, **kwargs)
+
 def newCancelSpeech(*args, **kwargs):
     global currentSpeechChunk, latestSpeechChunk
     #mylog(f'newCancelSpeech pre acquire')
@@ -631,7 +672,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
     def injectHooks(self):
-        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep, originalReportNewText, originalSpeakSelectionChange, originalCaretMovementScriptHelper, originalCancelSpeech
+        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep, originalReportNewText, originalSpeakSelectionChange, originalCaretMovementScriptHelper, originalCancelSpeech, originalSpeechSpeak
         self.originalExecuteGesture = inputCore.InputManager.executeGesture
         inputCore.InputManager.executeGesture = lambda selfself, gesture, *args, **kwargs: self.preExecuteGesture(selfself, gesture, *args, **kwargs)
         #self.originalCalculateNewText = behaviors.LiveText._calculateNewText
@@ -654,6 +695,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         speech.speakSelectionChange = preSpeakSelectionChange
         originalCancelSpeech = speech.cancelSpeech
         speech.cancelSpeech = newCancelSpeech
+        originalSpeechSpeak = speech.speak
+        speech.speak = newSpeechSpeak
 
     def  removeHooks(self):
         global originalWaveOpen, originalReportNewText
@@ -667,6 +710,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         editableText.EditableText.script_caret_moveByWord = self.originalMoveByWord
         speech.speakSelectionChange = originalSpeakSelectionChange
         speech.cancelSpeech = originalCancelSpeech
+        speech.speak = originalSpeechSpeak
 
     windowsSwitchingRe = re.compile(r':windows\+\d$')
     typingKeystrokeRe = re.compile(r':((shift\+)?[A-Za-z0-9]|space)$')
@@ -707,9 +751,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 checkUpdate,
                 gestureCounter, 0, time.time(), gesture
             )
-        
+
         if getConfig("fixWindowNumber") and self.windowsSwitchingRe.search(kb) is not None:
-            
+
             executeAsynchronously(self.asyncSwitchWindowHandler(gestureCounter))
         if getConfig("detectInsertMode") and self.typingKeystrokeRe.search(kb):
             text = None
