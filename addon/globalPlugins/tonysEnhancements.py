@@ -49,7 +49,7 @@ import wx
 winmm = ctypes.windll.winmm
 
 
-debug = True
+debug = False
 if debug:
     import threading
     LOG_FILE_NAME = "C:\\Users\\tony\\Dropbox\\1.txt"
@@ -58,8 +58,10 @@ if debug:
     LOG_MUTEX = threading.Lock()
     def mylog(s):
         with LOG_MUTEX:
-            f = open(LOG_FILE_NAME, "a")
+            f = open(LOG_FILE_NAME, "a", encoding='utf-8')
             print(s, file=f)
+            #f.write(s.encode('UTF-8'))
+            #f.write('\n')
             f.close()
 else:
     def mylog(*arg, **kwarg):
@@ -91,6 +93,12 @@ code:Alt+PageUp
 code:Alt+PageDown
 """.strip()
 
+defaultLangMap = '''
+en:[a-zA-Z]
+ru:[а-яА-Я]
+zh_CN:[⺀-⺙⺛-⻳⼀-⿕々〇〡-〩〸-〺〻㐀-䶵一-鿃豈-鶴侮-頻並-龎]
+'''.strip()
+
 module = "tonysEnhancements"
 def initConfiguration():
     confspec = {
@@ -105,6 +113,8 @@ def initConfiguration():
         "detectInsertMode" : "boolean( default=False)",
         "overrideMoveByWord" : "boolean( default=False)",
         "suppressUnselected" : "boolean( default=False)",
+        "enableLangMap" : "boolean( default=False)",
+        "langMap" : f"string( default='{defaultLangMap}')",
     }
     config.conf.spec[module] = confspec
 
@@ -136,9 +146,103 @@ def reloadDynamicKeystrokes():
     global dynamicKeystrokes
     dynamicKeystrokes = parseDynamicKeystrokes(getConfig("dynamicKeystrokesTable"))
 
+
+def parseLangMap(s):
+    result = {}
+    for line in s.splitlines():
+        tokens = line.strip().split(":")
+        if (len(tokens) == 0) or (len(line) == 0):
+            continue
+        if len(tokens) != 2:
+            raise ValueError(f"LangMap configuration: invalid line: {line}")
+        lang = tokens[0]
+        try:
+            r = re.compile(tokens[1])
+        except  Exception as e:
+            raise ValueError(f"Invalid regex for language {lang}: {tokens[1]}: {e}")
+        result[lang] = r
+    return result
+langMap = None
+def reloadLangMap():
+    global langMap
+    langMap = parseLangMap(getConfig("langMap"))
+
+
+
 addonHandler.initTranslation()
 initConfiguration()
 reloadDynamicKeystrokes()
+reloadLangMap()
+
+class MultilineEditTextDialog(wx.Dialog):
+    def __init__(self, parent, text, title_string, onTextComplete):
+        # Translators: Title of calibration dialog
+        super(MultilineEditTextDialog, self).__init__(parent, title=title_string)
+        self.text = text
+        self.onTextComplete = onTextComplete
+        mainSizer = wx.BoxSizer(wx.VERTICAL)
+        sHelper = gui.guiHelper.BoxSizerHelper(self, orientation=wx.VERTICAL)
+
+        self.textCtrl = wx.TextCtrl(self, style=wx.TE_MULTILINE)
+        self.textCtrl.Bind(wx.EVT_CHAR, self.onChar)
+        self.Bind(wx.EVT_CHAR_HOOK, self.OnKeyUP)
+        sHelper.addItem(self.textCtrl)
+        self.textCtrl.SetValue(text)
+        self.SetFocus()
+        #self.Maximize(True)
+        self.OkButton = sHelper.addItem (wx.Button (self, label = _('OK')))
+        self.OkButton.Bind(wx.EVT_BUTTON, self.onOk)
+        self.cancelButton = sHelper.addItem (wx.Button (self, label = _('Cancel')))
+        self.cancelButton.Bind(wx.EVT_BUTTON, self.onCancel)
+
+    def onChar(self, event):
+        control = event.ControlDown()
+        shift = event.ShiftDown()
+        alt = event.AltDown()
+        keyCode = event.GetKeyCode()
+        if event.GetKeyCode() == 1:
+            # Control+A
+            self.textCtrl.SetSelection(-1,-1)
+        elif event.GetKeyCode() == wx.WXK_HOME:
+            if not any([control, shift, alt]):
+                curPos = self.textCtrl.GetInsertionPoint()
+                lineNum = len(self.textCtrl.GetRange( 0, self.textCtrl.GetInsertionPoint() ).split("\n")) - 1
+                colNum = len(self.textCtrl.GetRange( 0, self.textCtrl.GetInsertionPoint() ).split("\n")[-1])
+                lineText = self.textCtrl.GetLineText(lineNum)
+                m = re.search("^\s*", lineText)
+                if not m:
+                    raise Exception("This regular expression must match always.")
+                indent = len(m.group(0))
+                if indent == colNum:
+                    newColNum = 0
+                else:
+                    newColNum = indent
+                self.textCtrl.SetInsertionPoint(curPos - colNum + newColNum)
+            else:
+                event.Skip()
+        else:
+            event.Skip()
+
+
+    def OnKeyUP(self, event):
+        keyCode = event.GetKeyCode()
+        if keyCode == wx.WXK_ESCAPE:
+            self.text = self.textCtrl.GetValue()
+            self.EndModal(wx.ID_CANCEL)
+            wx.CallAfter(lambda: self.onTextComplete(wx.ID_CANCEL, self.text, None))
+        event.Skip()
+
+    def onOk(self, evt):
+        self.text = self.textCtrl.GetValue()
+        self.EndModal(wx.ID_OK)
+        wx.CallAfter(lambda: self.onTextComplete(wx.ID_OK, self.text, None))
+
+    def onCancel(self, evt):
+        self.text = self.textCtrl.GetValue()
+        self.EndModal(wx.ID_CANCEL)
+        wx.CallAfter(lambda: self.onTextComplete(wx.ID_CANCEL, self.text, None))
+
+
 
 class SettingsDialog(gui.SettingsDialog):
     # Translators: Title for the settings dialog
@@ -146,6 +250,8 @@ class SettingsDialog(gui.SettingsDialog):
 
     def __init__(self, *args, **kwargs):
         super(SettingsDialog, self).__init__(*args, **kwargs)
+        self.dynamicKeystrokesTable = getConfig("dynamicKeystrokesTable")
+        self.langMap = getConfig("langMap")
 
     def makeSettings(self, settingsSizer):
         sHelper = gui.guiHelper.BoxSizerHelper(self, sizer=settingsSizer)
@@ -212,14 +318,79 @@ class SettingsDialog(gui.SettingsDialog):
         self.nvdaVolumeSlider = slider
       # Dynamic keystrokes table
         # Translators: Label for dynamic keystrokes table edit box
-        self.dynamicKeystrokesEdit = gui.guiHelper.LabeledControlHelper(self, _("Dynamic keystrokes table - see add-on documentation for more information"), wx.TextCtrl, style=wx.TE_MULTILINE).control
-        self.dynamicKeystrokesEdit.Value = getConfig("dynamicKeystrokesTable")
+        label = _("Edit dynamic keystrokes table - see add-on documentation for more information")
+        #self.dynamicKeystrokesEdit = gui.guiHelper.LabeledControlHelper(self, _("Dynamic keystrokes table - see add-on documentation for more information"), wx.TextCtrl, style=wx.TE_MULTILINE).control
+        #self.dynamicKeystrokesEdit.Value = getConfig("dynamicKeystrokesTable")
+        self.dynamicButton = sHelper.addItem (wx.Button (self, label = label))
+        self.dynamicButton.Bind(wx.EVT_BUTTON, self.onDynamicClick)
+      # LangMap checkbox and multiline edit button
+        label = _("Enable automatic language switching based on character set")
+        self.langMapCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.langMapCheckbox.Value = getConfig("enableLangMap")
+        label = _('Edit language map')
+        self.langMapButton = sHelper.addItem (wx.Button (self, label = label))
+        self.langMapButton.Bind(wx.EVT_BUTTON, self.onLangMapClick)
+        
+
+
+    def dynamicCallback(self, result, text, keystroke):
+        if result == wx.ID_OK:
+            try:
+                parseDynamicKeystrokes(text)
+            except Exception as e:
+                gui.messageBox(f"Error parsing dynamic keystrokes table: {e}",
+                    _("Error"),wx.OK|wx.ICON_INFORMATION,self)
+                self.popupDynamic(text=text)
+                
+                return
+            
+            self.dynamicKeystrokesTable = text
+
+    def onDynamicClick(self, evt):
+        self.popupDynamic(text=self.dynamicKeystrokesTable)
+        
+    def popupDynamic(self, text):
+        title = _('Edit dynamic keystrokes table')
+        gui.mainFrame.prePopup()
+        dialog = MultilineEditTextDialog(self,
+            text=text,
+            title_string=title,
+            onTextComplete=lambda result, text, keystroke: self.dynamicCallback(result, text, keystroke)
+        )
+        result = dialog.ShowModal()
+        gui.mainFrame.postPopup()
+    def langMapCallback(self, result, text, keystroke):
+        if result == wx.ID_OK:
+            try:
+                parseLangMap(text)
+            except Exception as e:
+                gui.messageBox(f"Error parsing language map: {e}",
+                    _("Error"),wx.OK|wx.ICON_INFORMATION,self)
+                self.popupLangMap(text=text)
+                return
+            
+            self.langMap = text
+
+    def onLangMapClick(self, evt):
+        self.popupLangMap(text=self.langMap)
+        
+    def popupLangMap(self, text):
+        title = _('Edit language amp')
+        gui.mainFrame.prePopup()
+        dialog = MultilineEditTextDialog(self,
+            text=text,
+            title_string=title,
+            onTextComplete=lambda result, text, keystroke: self.langMapCallback(result, text, keystroke)
+        )
+        result = dialog.ShowModal()
+        gui.mainFrame.postPopup()
+
 
     def onOk(self, evt):
         try:
-            parseDynamicKeystrokes(self.dynamicKeystrokesEdit.Value)
+            parseDynamicKeystrokes(self.dynamicKeystrokesTable)
         except Exception as e:
-            self.dynamicKeystrokesEdit.SetFocus()
+            self.dynamicButton.SetFocus()
             ui.message(f"Error parsing dynamic keystrokes table: {e}")
             return
 
@@ -233,8 +404,11 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("suppressUnselected", self.suppressUnselectedCheckbox.Value)
         setConfig("detectInsertMode", self.detectInsertModeCheckbox.Value)
         setConfig("nvdaVolume", self.nvdaVolumeSlider.Value)
-        setConfig("dynamicKeystrokesTable", self.dynamicKeystrokesEdit.Value)
+        setConfig("dynamicKeystrokesTable", self.dynamicKeystrokesTable)
         reloadDynamicKeystrokes()
+        setConfig("enableLangMap", self.langMapCheckbox.Value)
+        setConfig("langMap", self.langMap)
+        reloadLangMap()
         super(SettingsDialog, self).onOk(evt)
 
 class Beeper:
@@ -593,12 +767,15 @@ def processLanguages(command):
         yield command
         return
     s = command
-    langMap = {
-        'en': re.compile(r'[a-zA-Z]'),
-        'ru': re.compile(r'[а-яА-Я]'),
-    }
+    global langMap
+    if False:
+        langMap = {
+            'en': re.compile(r'[a-zA-Z]'),
+            'ru': re.compile(r'[а-яА-Я]'),
+        }
     curLang = None
     i = -1
+    prev = 0
     while i+1 < len(s):
         minIndex = None
         minLang = None
@@ -611,20 +788,23 @@ def processLanguages(command):
                     minIndex = m.start(0)
                     minLang = lang
         if minLang is not None:
-            if minIndex > 0:
-                yield s[:minIndex - 1]
+            if minIndex > prev:
+                yield s[prev:minIndex]
             yield speech.commands.LangChangeCommand(minLang)
             curLang = minLang
             i = minIndex
+            prev = minIndex
         else:
             break
     if i < len(s):
+        i = max(i, 0)
         yield s[i:]
 
 def newSpeechSpeak(speechSequence, *args, **kwargs):
     sequence = speechSequence
-    #sequence = [c for c in sequence if not isinstance(c, speech.commands.LangChangeCommand)]
-    sequence = [subcommand for command in sequence for subcommand in processLanguages(command)]
+    if getConfig('enableLangMap'):
+        sequence = [subcommand for command in sequence for subcommand in processLanguages(command)]
+        #mylog(str(sequence))
     return originalSpeechSpeak(sequence, *args, **kwargs)
 
 def newCancelSpeech(*args, **kwargs):
