@@ -20,8 +20,8 @@ Most text editors support Control+LeftArrow/RightArrow commands for word navigat
 
 Currently the drawback of this approach is that sometimes it is not able to advance to next/previous line in some text editors, such as VSCode, since due to its internal optimizations, VSCode presents only a few lines of file contents at a time.
 
-## Automatic language switching for non-Latin languages
-Allows to automatically switch the language of your synthesizer by character set. Refgular expression for every language can be configured in the preferences window for this add-on. Please make sure that your synthesizer supports all the languages you're interested in. Switching between two Latin-based languages is not supported at this time.
+## Automatic language switching
+Allows to automatically switch the language of your synthesizer by character set. Refgular expression for every language can be configured in the preferences window for this add-on. Please make sure that your synthesizer supports all the languages you're interested in. Switching between two Latin-based languages or two languages whose character sets are similar is not supported at this time.
 
 ## Suppress unwanted 'unselected' speech from NVDA
 
