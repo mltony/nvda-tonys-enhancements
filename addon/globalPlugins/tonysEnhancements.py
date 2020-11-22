@@ -49,7 +49,7 @@ import wx
 winmm = ctypes.windll.winmm
 
 
-debug = False
+debug = True
 if debug:
     import threading
     LOG_FILE_NAME = "C:\\Users\\tony\\Dropbox\\1.txt"
@@ -871,6 +871,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.myWatchdog.start()
         self.originalMoveByWord = editableText.EditableText.script_caret_moveByWord
         editableText.EditableText.script_caret_moveByWord = lambda selfself, gesture, *args, **kwargs: self.script_caretMoveByWord(selfself, gesture, *args, **kwargs)
+        editableText.EditableText.script_caret_moveByWordEx = lambda selfself, gesture, *args, **kwargs: self.script_caretMoveByWordEx(selfself, gesture, *args, **kwargs)
+        editableText.EditableText._EditableText__gestures["kb:control+Windows+leftArrow"] = "caret_moveByWordEx",
+        editableText.EditableText._EditableText__gestures["kb:control+Windows+RightArrow"] = "caret_moveByWordEx",
         originalSpeakSelectionChange = speech.speakSelectionChange
         speech.speakSelectionChange = preSpeakSelectionChange
         originalCancelSpeech = speech.cancelSpeech
@@ -1131,17 +1134,60 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     # 2. Beginning of any word: \b\w
     # 3. Punctuation mark preceded by non-punctuation mark: (?<=[\w\s])[^\w\s]
     # 4. Punctuation mark preceded by beginning of the string
-    wordRe = re.compile(r'$|\b\w|(?<=[\w\s])[^\w\s]|^[^\w\s]')
+    wordReString = r'$|\b\w|(?<=[\w\s])[^\w\s]|^[^\w\s]'
+    wordRe = re.compile(wordReString)
     def script_caretMoveByWord(self, selfself, gesture):
         if not getConfig('overrideMoveByWord'):
             return self.originalMoveByWord(selfself, gesture)
+        onError = lambda e: self.originalMoveByWord(selfself, gesture)
+        return self.caretMoveByWordImpl(gesture, self.wordRe, onError)
+    
+    # Regular expression for beginning of fine word. This word definition breaks 
+    # camelCaseIdentifiers  and underscore_separated_identifiers into separate sections for easier editing.
+    # Includes all conditions for wordRe plus additionally:
+    # 5. Word letter, that is not  underscore, preceded by underscore.
+    #6. Capital letter preceded by a lower-case letter.
+    wordReFineString = wordReString + "|(?<=_)(?!_)\w|(?<=[a-z])[A-Z]"
+    wordReFine = re.compile(wordReFineString)
+    
+    # Regular expression for bulky words. Treats any punctuation signs as part of word.
+    # Matches either:
+    # 1. End of string, or
+    # 2.     Non-space character preceded either by beginning of the string or a space character.
+    wordReBulkyString = r"$|(^|(?<=\s))\S"
+    wordReBulky = re.compile(wordReBulkyString)
+    def script_caretMoveByWordEx(self, selfself, gesture):
+        if not getConfig('overrideMoveByWord'):
+            return self.originalMoveByWord(selfself, gesture)
+        def onError(e):
+            raise e
+        modifierNames = gesture.modifierNames
+        mm = []
+        for modVk, modExt in gesture.generalizedModifiers:
+            mm.append(modVk)
+            mm.append(modExt)
+            mm.append(gesture.getVkName(modVk, None))
+        mylog(str(mm))
+        wordRe = None
+        for modVk, modExt in gesture.generalizedModifiers:
+            if modVk == winUser.VK_CONTROL:
+                if not modExt:
+                    # Left control
+                    wordRe = self.wordReFine
+                else:
+                    # Right control
+                    wordRe = self.wordReBulky
+        return self.caretMoveByWordImpl(gesture, wordRe, onError)
+        
+            
+    def caretMoveByWordImpl(self, gesture, wordRe, onError):
         try:
             if 'leftArrow' == gesture.mainKeyName:
                 direction = -1
             elif 'rightArrow' == gesture.mainKeyName:
                 direction = 1
             else:
-                return self.originalMoveByWord(selfself, gesture)
+                return onError(None)
             focus = api.getFocusObject()
             caretInfo = focus.makeTextInfo(textInfos.POSITION_CARET)
             caretInfo.collapse(end=(direction > 0))
@@ -1153,7 +1199,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             for lineAttempt in range(100):
                 lineText = lineInfo.text.rstrip('\r\n')
                 isEmptyLine = len(lineText.strip()) == 0
-                boundaries = [m.start() for m in self.wordRe.finditer(lineText)]
+                boundaries = [m.start() for m in wordRe.finditer(lineText)]
                 boundaries = sorted(list(set(boundaries)))
                 if direction > 0:
                     newWordIndex = bisect.bisect_right(boundaries, caret)
@@ -1196,5 +1242,5 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                         caret = len(lineInfo.text)
             #raise Exception('Failed to find next word')
             self.beeper.fancyBeep('HF', 100, left=25, right=25)
-        except NotImplementedError:
-            return self.originalMoveByWord(selfself, gesture)
+        except NotImplementedError as e:
+            return onError(e)
