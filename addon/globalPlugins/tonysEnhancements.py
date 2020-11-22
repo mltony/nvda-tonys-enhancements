@@ -49,7 +49,7 @@ import wx
 winmm = ctypes.windll.winmm
 
 
-debug = True
+debug = False
 if debug:
     import threading
     LOG_FILE_NAME = "C:\\Users\\tony\\Dropbox\\1.txt"
@@ -1161,13 +1161,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             return self.originalMoveByWord(selfself, gesture)
         def onError(e):
             raise e
-        modifierNames = gesture.modifierNames
-        mm = []
-        for modVk, modExt in gesture.generalizedModifiers:
-            mm.append(modVk)
-            mm.append(modExt)
-            mm.append(gesture.getVkName(modVk, None))
-        mylog(str(mm))
         wordRe = None
         for modVk, modExt in gesture.generalizedModifiers:
             if modVk == winUser.VK_CONTROL:
@@ -1177,6 +1170,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 else:
                     # Right control
                     wordRe = self.wordReBulky
+        if wordRe is None:
+            raise Exception("Control is not pressed - impossible condition!")
         return self.caretMoveByWordImpl(gesture, wordRe, onError)
         
             
