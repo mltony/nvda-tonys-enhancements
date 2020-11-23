@@ -111,7 +111,6 @@ def initConfiguration():
         "dynamicKeystrokesTable" : f"string( default='{defaultDynamicKeystrokes}')",
         "fixWindowNumber" : "boolean( default=False)",
         "detectInsertMode" : "boolean( default=False)",
-        "overrideMoveByWord" : "boolean( default=False)",
         "suppressUnselected" : "boolean( default=False)",
         "enableLangMap" : "boolean( default=False)",
         "langMap" : f"string( default='{defaultLangMap}')",
@@ -294,12 +293,6 @@ class SettingsDialog(gui.SettingsDialog):
         self.fixWindowNumberCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.fixWindowNumberCheckbox.Value = getConfig("fixWindowNumber")
 
-      # checkbox override move by word
-        # Translators: Checkbox for override move by word
-        label = _("Use enhanced move by word commands for control+LeftArrow/RightArrow in editables.")
-        self.overrideMoveByWordCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
-        self.overrideMoveByWordCheckbox.Value = getConfig("overrideMoveByWord")
-
       # checkbox suppress unselected
         # Translators: Checkbox for suppress unselected
         label = _("Suppress saying of 'unselected'.")
@@ -400,7 +393,6 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("consoleBeep", self.consoleBeepCheckbox.Value)
         setConfig("busyBeep", self.busyBeepCheckbox.Value)
         setConfig("fixWindowNumber", self.fixWindowNumberCheckbox.Value)
-        setConfig("overrideMoveByWord", self.overrideMoveByWordCheckbox.Value)
         setConfig("suppressUnselected", self.suppressUnselectedCheckbox.Value)
         setConfig("detectInsertMode", self.detectInsertModeCheckbox.Value)
         setConfig("nvdaVolume", self.nvdaVolumeSlider.Value)
@@ -869,11 +861,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.myWatchdog = MyWatchdog()
         self.myWatchdog.setDaemon(True)
         self.myWatchdog.start()
-        self.originalMoveByWord = editableText.EditableText.script_caret_moveByWord
-        editableText.EditableText.script_caret_moveByWord = lambda selfself, gesture, *args, **kwargs: self.script_caretMoveByWord(selfself, gesture, *args, **kwargs)
-        editableText.EditableText.script_caret_moveByWordEx = lambda selfself, gesture, *args, **kwargs: self.script_caretMoveByWordEx(selfself, gesture, *args, **kwargs)
-        editableText.EditableText._EditableText__gestures["kb:control+Windows+leftArrow"] = "caret_moveByWordEx",
-        editableText.EditableText._EditableText__gestures["kb:control+Windows+RightArrow"] = "caret_moveByWordEx",
         originalSpeakSelectionChange = speech.speakSelectionChange
         speech.speakSelectionChange = preSpeakSelectionChange
         originalCancelSpeech = speech.cancelSpeech
@@ -890,7 +877,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         watchdog.alive = originalWatchdogAlive
         watchdog.asleep = originalWatchdogAsleep
         self.myWatchdog.terminate()
-        editableText.EditableText.script_caret_moveByWord = self.originalMoveByWord
         speech.speakSelectionChange = originalSpeakSelectionChange
         speech.cancelSpeech = originalCancelSpeech
         speech.speak = originalSpeechSpeak
@@ -1129,113 +1115,3 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         message = _("NVDA volume %d") % volume
         ui.message(message)
 
-    # Regular expression for the beginning of a word. Matches:
-    #  1. End of string
-    # 2. Beginning of any word: \b\w
-    # 3. Punctuation mark preceded by non-punctuation mark: (?<=[\w\s])[^\w\s]
-    # 4. Punctuation mark preceded by beginning of the string
-    wordReString = r'$|\b\w|(?<=[\w\s])[^\w\s]|^[^\w\s]'
-    wordRe = re.compile(wordReString)
-    def script_caretMoveByWord(self, selfself, gesture):
-        if not getConfig('overrideMoveByWord'):
-            return self.originalMoveByWord(selfself, gesture)
-        onError = lambda e: self.originalMoveByWord(selfself, gesture)
-        return self.caretMoveByWordImpl(gesture, self.wordRe, onError)
-    
-    # Regular expression for beginning of fine word. This word definition breaks 
-    # camelCaseIdentifiers  and underscore_separated_identifiers into separate sections for easier editing.
-    # Includes all conditions for wordRe plus additionally:
-    # 5. Word letter, that is not  underscore, preceded by underscore.
-    #6. Capital letter preceded by a lower-case letter.
-    wordReFineString = wordReString + "|(?<=_)(?!_)\w|(?<=[a-z])[A-Z]"
-    wordReFine = re.compile(wordReFineString)
-    
-    # Regular expression for bulky words. Treats any punctuation signs as part of word.
-    # Matches either:
-    # 1. End of string, or
-    # 2.     Non-space character preceded either by beginning of the string or a space character.
-    wordReBulkyString = r"$|(^|(?<=\s))\S"
-    wordReBulky = re.compile(wordReBulkyString)
-    def script_caretMoveByWordEx(self, selfself, gesture):
-        if not getConfig('overrideMoveByWord'):
-            return self.originalMoveByWord(selfself, gesture)
-        def onError(e):
-            raise e
-        wordRe = None
-        for modVk, modExt in gesture.generalizedModifiers:
-            if modVk == winUser.VK_CONTROL:
-                if not modExt:
-                    # Left control
-                    wordRe = self.wordReFine
-                else:
-                    # Right control
-                    wordRe = self.wordReBulky
-        if wordRe is None:
-            raise Exception("Control is not pressed - impossible condition!")
-        return self.caretMoveByWordImpl(gesture, wordRe, onError)
-        
-            
-    def caretMoveByWordImpl(self, gesture, wordRe, onError):
-        try:
-            if 'leftArrow' == gesture.mainKeyName:
-                direction = -1
-            elif 'rightArrow' == gesture.mainKeyName:
-                direction = 1
-            else:
-                return onError(None)
-            focus = api.getFocusObject()
-            caretInfo = focus.makeTextInfo(textInfos.POSITION_CARET)
-            caretInfo.collapse(end=(direction > 0))
-            lineInfo = caretInfo.copy()
-            lineInfo.expand(textInfos.UNIT_PARAGRAPH)
-            offsetInfo = lineInfo.copy()
-            offsetInfo.setEndPoint(caretInfo, 'endToEnd')
-            caret = len(offsetInfo.text)
-            for lineAttempt in range(100):
-                lineText = lineInfo.text.rstrip('\r\n')
-                isEmptyLine = len(lineText.strip()) == 0
-                boundaries = [m.start() for m in wordRe.finditer(lineText)]
-                boundaries = sorted(list(set(boundaries)))
-                if direction > 0:
-                    newWordIndex = bisect.bisect_right(boundaries, caret)
-                else:
-                    newWordIndex = bisect.bisect_left(boundaries, caret) - 1
-                if not isEmptyLine and (0 <= newWordIndex < len(boundaries)):
-                    if lineAttempt == 0:
-                        adjustment = boundaries[newWordIndex] - caret
-                        newInfo = caretInfo
-                        newInfo.move(textInfos.UNIT_CHARACTER, adjustment)
-                    else:
-                        newInfo = lineInfo
-                        if direction > 0:
-                            adjustment =  boundaries[newWordIndex]
-                            newInfo.collapse(end=False)
-                        else:
-                            adjustment =  boundaries[newWordIndex] - len(lineInfo.text)
-                            newInfo.collapse(end=True)
-                        result = newInfo.move(textInfos.UNIT_CHARACTER, adjustment)
-                    if newWordIndex + 1 < len(boundaries):
-                        newInfo.move(
-                            textInfos.UNIT_CHARACTER,
-                            boundaries[newWordIndex + 1] - boundaries[newWordIndex],
-                            endPoint='end',
-                        )
-                    newInfo.updateCaret()
-                    speech.speakTextInfo(newInfo, unit=textInfos.UNIT_WORD, reason=controlTypes.REASON_CARET)
-                    return
-                else:
-                    lineInfo.collapse()
-                    result = lineInfo.move(textInfos.UNIT_PARAGRAPH, direction)
-                    if result == 0:
-                        self.beeper.fancyBeep('HF', 100, left=25, right=25)
-                        return
-                    lineInfo.expand(textInfos.UNIT_PARAGRAPH)
-                    # now try to find next word again on next/previous line
-                    if direction > 0:
-                        caret = -1
-                    else:
-                        caret = len(lineInfo.text)
-            #raise Exception('Failed to find next word')
-            self.beeper.fancyBeep('HF', 100, left=25, right=25)
-        except NotImplementedError as e:
-            return onError(e)
