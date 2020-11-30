@@ -49,7 +49,7 @@ import wx
 winmm = ctypes.windll.winmm
 
 
-debug = False
+debug = True
 if debug:
     import threading
     LOG_FILE_NAME = "C:\\Users\\tony\\Dropbox\\1.txt"
@@ -114,6 +114,7 @@ def initConfiguration():
         "suppressUnselected" : "boolean( default=False)",
         "enableLangMap" : "boolean( default=False)",
         "langMap" : f"string( default='{defaultLangMap}')",
+        "quickSearch" : f"string( default='')",
     }
     config.conf.spec[module] = confspec
 
@@ -323,7 +324,10 @@ class SettingsDialog(gui.SettingsDialog):
         label = _('Edit language map')
         self.langMapButton = sHelper.addItem (wx.Button (self, label = label))
         self.langMapButton.Bind(wx.EVT_BUTTON, self.onLangMapClick)
-        
+      # QuickSearch regexp text edit
+        self.quickSearchEdit = gui.guiHelper.LabeledControlHelper(self, _("QuickSearch regexp"), wx.TextCtrl).control
+        self.quickSearchEdit.Value = getConfig("quickSearch")
+
 
 
     def dynamicCallback(self, result, text, keystroke):
@@ -401,6 +405,7 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("enableLangMap", self.langMapCheckbox.Value)
         setConfig("langMap", self.langMap)
         reloadLangMap()
+        setConfig("quickSearch", self.quickSearchEdit.Value)
         super(SettingsDialog, self).onOk(evt)
 
 class Beeper:
@@ -867,6 +872,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         speech.cancelSpeech = newCancelSpeech
         originalSpeechSpeak = speech.speak
         speech.speak = newSpeechSpeak
+        editableText.EditableText.script_quickSearch = lambda selfself, gesture, *args, **kwargs: self.script_quickSearch(selfself, gesture, getConfig("quickSearch"), *args, **kwargs)
+        editableText.EditableText.script_quickSearch.category = "Tony's enhancements"
+        editableText.EditableText.script_quickSearch.__name__ = _("QuickSearch")
+        editableText.EditableText.script_quickSearch.__doc__ = _("Performs QuickSearch back or forward in editables")
+        editableText.EditableText._EditableText__gestures["kb:PrintScreen"] = "quickSearch"
+        editableText.EditableText._EditableText__gestures["kb:Shift+PrintScreen"] = "quickSearch"
+        
 
     def  removeHooks(self):
         global originalWaveOpen, originalReportNewText
@@ -880,6 +892,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         speech.speakSelectionChange = originalSpeakSelectionChange
         speech.cancelSpeech = originalCancelSpeech
         speech.speak = originalSpeechSpeak
+        del editableText.EditableText.script_quickSearch
+        del editableText.EditableText._EditableText__gestures["kb:PrintScreen"]
+        del editableText.EditableText._EditableText__gestures["kb:Shift+PrintScreen"]
 
     windowsSwitchingRe = re.compile(r':windows\+\d$')
     typingKeystrokeRe = re.compile(r':((shift\+)?[A-Za-z0-9]|space)$')
@@ -1114,4 +1129,54 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         setConfig("nvdaVolume", volume)
         message = _("NVDA volume %d") % volume
         ui.message(message)
-
+        
+    def script_quickSearch(self, selfself, gesture, regex):
+        if "shift" in gesture._get_modifierNames():
+            direction = -1
+        else:
+            direction = 1
+        caretInfo = selfself.makeTextInfo(textInfos.POSITION_SELECTION)
+        caretInfo.collapse(end=(direction > 0))
+        info = selfself.makeTextInfo(textInfos.POSITION_ALL)
+        info.setEndPoint(caretInfo, 'startToStart' if direction > 0 else 'endToEnd')
+        text = info.text
+        text = text.replace("\r\n", "\n") # Fix for Notepad++
+        text = text.replace("\r", "\n") # Fix for AkelPad
+        matches = list(re.finditer(regex, text, re.MULTILINE))
+        if len(matches) == 0:
+            self.beeper.fancyBeep('HF', 100, left=25, right=25)
+            return
+        if direction > 0:
+            match = matches[0]
+            #adjustment = match.start()
+            preLines = text[:match.start()].split("\n")
+            if len(preLines) > 1:
+                # Go to the beginning of the line to avoid some inconsistent behavior
+                caretInfo.expand(textInfos.UNIT_PARAGRAPH)
+                caretInfo.collapse(end=False)
+                caretInfo.move(textInfos.UNIT_PARAGRAPH, len(preLines) - 1)
+                caretInfo.expand(textInfos.UNIT_PARAGRAPH)
+                caretInfo.collapse(end=False)
+            caretInfo.move(textInfos.UNIT_CHARACTER, len(preLines[-1]))
+        else:
+            match = matches[-1]
+            #adjustment = match.start() - len(text)
+            preLines = text[:match.start()].split("\n")
+            postLines = text[match.start():].split("\n")
+            if len(postLines) > 1:
+                q = -len(postLines) + 1
+                # Go to the beginning of the line to avoid some inconsistent behavior
+                caretInfo.expand(textInfos.UNIT_PARAGRAPH)
+                caretInfo.collapse(end=False)
+                caretInfo.move(textInfos.UNIT_PARAGRAPH, -len(postLines) + 1)
+            caretInfo.expand(textInfos.UNIT_PARAGRAPH)
+            caretInfo.collapse(end=False)
+            caretInfo.move(textInfos.UNIT_CHARACTER, len(preLines[-1]))
+        #caretInfo.move(textInfos.UNIT_CHARACTER, adjustment)
+        caretInfo.move(textInfos.UNIT_CHARACTER, match.end() - match.start(), endPoint='end')
+        caretInfo.updateSelection()
+        lineInfo = caretInfo.copy()
+        lineInfo.expand(textInfos.UNIT_PARAGRAPH)
+        lineInfo.setEndPoint(caretInfo, 'startToStart')
+        mylog(lineInfo.text)
+        speech.speakTextInfo(lineInfo, unit=textInfos.UNIT_WORD, reason=controlTypes.REASON_CARET)

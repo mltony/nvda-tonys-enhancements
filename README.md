@@ -16,7 +16,7 @@ This add-on is only compatible with NVDA versions 2019.3 and above.
 
 ## Enhanced word navigation commands
 
-As of version 1.8 this functionality has been forked off into [WordNav add-on](https://github.com/mltony/nvda-word-nav/).
+As of version 1.8 this functionality has been moved to [WordNav add-on](https://github.com/mltony/nvda-word-nav/).
 
 ## Automatic language switching
 Allows to automatically switch the language of your synthesizer by character set. Refgular expression for every language can be configured in the preferences window for this add-on. Please make sure that your synthesizer supports all the languages you're interested in. Switching between two Latin-based languages or two languages whose character sets are similar is not supported at this time.
