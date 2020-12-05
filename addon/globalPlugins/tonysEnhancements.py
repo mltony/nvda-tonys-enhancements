@@ -49,7 +49,7 @@ import wx
 winmm = ctypes.windll.winmm
 
 
-debug = True
+debug = False
 if debug:
     import threading
     LOG_FILE_NAME = "C:\\Users\\tony\\Dropbox\\1.txt"
@@ -114,7 +114,9 @@ def initConfiguration():
         "suppressUnselected" : "boolean( default=False)",
         "enableLangMap" : "boolean( default=False)",
         "langMap" : f"string( default='{defaultLangMap}')",
-        "quickSearch" : f"string( default='')",
+        "quickSearch1" : f"string( default='')",
+        "quickSearch2" : f"string( default='')",
+        "quickSearch3" : f"string( default='')",
     }
     config.conf.spec[module] = confspec
 
@@ -325,10 +327,14 @@ class SettingsDialog(gui.SettingsDialog):
         self.langMapButton = sHelper.addItem (wx.Button (self, label = label))
         self.langMapButton.Bind(wx.EVT_BUTTON, self.onLangMapClick)
       # QuickSearch regexp text edit
-        self.quickSearchEdit = gui.guiHelper.LabeledControlHelper(self, _("QuickSearch regexp"), wx.TextCtrl).control
-        self.quickSearchEdit.Value = getConfig("quickSearch")
-
-
+        self.quickSearchEdit = gui.guiHelper.LabeledControlHelper(self, _("QuickSearch1 regexp (assigned to PrintScreen)"), wx.TextCtrl).control
+        self.quickSearchEdit.Value = getConfig("quickSearch1")
+      # QuickSearch2 regexp text edit
+        self.quickSearch2Edit = gui.guiHelper.LabeledControlHelper(self, _("QuickSearch2 regexp (assigned to ScrollLock))"), wx.TextCtrl).control
+        self.quickSearch2Edit.Value = getConfig("quickSearch2")
+      # QuickSearch3 regexp text edit
+        self.quickSearch3Edit = gui.guiHelper.LabeledControlHelper(self, _("QuickSearch3 regexp (assigned to Pause)"), wx.TextCtrl).control
+        self.quickSearch3Edit.Value = getConfig("quickSearch3")
 
     def dynamicCallback(self, result, text, keystroke):
         if result == wx.ID_OK:
@@ -405,7 +411,9 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("enableLangMap", self.langMapCheckbox.Value)
         setConfig("langMap", self.langMap)
         reloadLangMap()
-        setConfig("quickSearch", self.quickSearchEdit.Value)
+        setConfig("quickSearch1", self.quickSearchEdit.Value)
+        setConfig("quickSearch2", self.quickSearch2Edit.Value)
+        setConfig("quickSearch3", self.quickSearch3Edit.Value)
         super(SettingsDialog, self).onOk(evt)
 
 class Beeper:
@@ -847,7 +855,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         prefMenu = gui.mainFrame.sysTrayIcon.preferencesMenu
         prefMenu.Remove(self.prefsMenuItem)
 
-
+    quickSearchGestures = ",PrintScreen,ScrollLock,Pause".split(",")
     def injectHooks(self):
         global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep, originalReportNewText, originalSpeakSelectionChange, originalCaretMovementScriptHelper, originalCancelSpeech, originalSpeechSpeak
         self.originalExecuteGesture = inputCore.InputManager.executeGesture
@@ -872,13 +880,16 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         speech.cancelSpeech = newCancelSpeech
         originalSpeechSpeak = speech.speak
         speech.speak = newSpeechSpeak
-        editableText.EditableText.script_quickSearch = lambda selfself, gesture, *args, **kwargs: self.script_quickSearch(selfself, gesture, getConfig("quickSearch"), *args, **kwargs)
-        editableText.EditableText.script_quickSearch.category = "Tony's enhancements"
-        editableText.EditableText.script_quickSearch.__name__ = _("QuickSearch")
-        editableText.EditableText.script_quickSearch.__doc__ = _("Performs QuickSearch back or forward in editables")
-        editableText.EditableText._EditableText__gestures["kb:PrintScreen"] = "quickSearch"
-        editableText.EditableText._EditableText__gestures["kb:Shift+PrintScreen"] = "quickSearch"
         
+        for i in [1,2,3]:
+            configKey = f"quickSearch{i}"
+            script = lambda selfself, gesture, configKey=configKey: self.script_quickSearch(selfself, gesture, getConfig(configKey))
+            script.category = "Tony's enhancements"
+            script.__name__ = _("QuickSearch") + str(i)
+            script.__doc__ = _("Performs QuickSearch back or forward in editables according to quickSearch{i} regexp").format(**locals())
+            setattr(editableText.EditableText, f"script_quickSearch{i}", script)
+            editableText.EditableText._EditableText__gestures[f"kb:{self.quickSearchGestures[i]}"] = f"quickSearch{i}"
+            editableText.EditableText._EditableText__gestures[f"kb:Shift+{self.quickSearchGestures[i]}"] = f"quickSearch{i}"
 
     def  removeHooks(self):
         global originalWaveOpen, originalReportNewText
@@ -892,9 +903,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         speech.speakSelectionChange = originalSpeakSelectionChange
         speech.cancelSpeech = originalCancelSpeech
         speech.speak = originalSpeechSpeak
-        del editableText.EditableText.script_quickSearch
-        del editableText.EditableText._EditableText__gestures["kb:PrintScreen"]
-        del editableText.EditableText._EditableText__gestures["kb:Shift+PrintScreen"]
+        for i in [1,2,3]:
+            delattr(editableText.EditableText, f"script_quickSearch{i}")
+            del editableText.EditableText._EditableText__gestures[f"kb:{self.quickSearchGestures[i]}"]
+            del editableText.EditableText._EditableText__gestures[f"kb:Shift+{self.quickSearchGestures[i]}"]
 
     windowsSwitchingRe = re.compile(r':windows\+\d$')
     typingKeystrokeRe = re.compile(r':((shift\+)?[A-Za-z0-9]|space)$')
