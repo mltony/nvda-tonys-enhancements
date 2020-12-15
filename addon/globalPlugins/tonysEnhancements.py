@@ -104,6 +104,7 @@ def initConfiguration():
     confspec = {
         "blockDoubleInsert" : "boolean( default=False)",
         "blockDoubleCaps" : "boolean( default=False)",
+        "blockScrollLock" : "boolean( default=False)",
         "consoleRealtime" : "boolean( default=False)",
         "consoleBeep" : "boolean( default=False)",
         "nvdaVolume" : "integer( default=100, min=0, max=100)",
@@ -335,6 +336,11 @@ class SettingsDialog(gui.SettingsDialog):
       # QuickSearch3 regexp text edit
         self.quickSearch3Edit = gui.guiHelper.LabeledControlHelper(self, _("QuickSearch3 regexp (assigned to Pause)"), wx.TextCtrl).control
         self.quickSearch3Edit.Value = getConfig("quickSearch3")
+      # checkbox block scroll lock
+        # Translators: Checkbox for blocking scroll lock
+        label = _("Suppress scroll lock mode announcements")
+        self.blockScrollLockCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.blockScrollLockCheckbox.Value = getConfig("blockScrollLock")
 
     def dynamicCallback(self, result, text, keystroke):
         if result == wx.ID_OK:
@@ -344,14 +350,14 @@ class SettingsDialog(gui.SettingsDialog):
                 gui.messageBox(f"Error parsing dynamic keystrokes table: {e}",
                     _("Error"),wx.OK|wx.ICON_INFORMATION,self)
                 self.popupDynamic(text=text)
-                
+
                 return
-            
+
             self.dynamicKeystrokesTable = text
 
     def onDynamicClick(self, evt):
         self.popupDynamic(text=self.dynamicKeystrokesTable)
-        
+
     def popupDynamic(self, text):
         title = _('Edit dynamic keystrokes table')
         gui.mainFrame.prePopup()
@@ -371,12 +377,12 @@ class SettingsDialog(gui.SettingsDialog):
                     _("Error"),wx.OK|wx.ICON_INFORMATION,self)
                 self.popupLangMap(text=text)
                 return
-            
+
             self.langMap = text
 
     def onLangMapClick(self, evt):
         self.popupLangMap(text=self.langMap)
-        
+
     def popupLangMap(self, text):
         title = _('Edit language amp')
         gui.mainFrame.prePopup()
@@ -414,6 +420,8 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("quickSearch1", self.quickSearchEdit.Value)
         setConfig("quickSearch2", self.quickSearch2Edit.Value)
         setConfig("quickSearch3", self.quickSearch3Edit.Value)
+        setConfig("blockScrollLock", self.blockScrollLockCheckbox.Value)
+        updateScrollLockBlocking()
         super(SettingsDialog, self).onOk(evt)
 
 class Beeper:
@@ -832,6 +840,19 @@ def preSpeakSelectionChange(oldInfo, newInfo, *args, **kwargs):
         else:
             kwargs['speakUnselected'] = False
     return originalSpeakSelectionChange(oldInfo, newInfo, *args, **kwargs)
+
+def updateScrollLockBlocking():
+    doBlock = getConfig("blockScrollLock")
+    TOGGLE_KEYS = {
+        winUser.VK_CAPITAL, 
+        winUser.VK_NUMLOCK, 
+    }
+    if not doBlock:
+        TOGGLE_KEYS.add(winUser.VK_SCROLL)
+    keyboardHandler.KeyboardInputGesture.TOGGLE_KEYS = frozenset(TOGGLE_KEYS)
+    
+updateScrollLockBlocking()
+
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     scriptCategory = _("Tony's Enhancements")
 
@@ -880,7 +901,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         speech.cancelSpeech = newCancelSpeech
         originalSpeechSpeak = speech.speak
         speech.speak = newSpeechSpeak
-        
+
         for i in [1,2,3]:
             configKey = f"quickSearch{i}"
             script = lambda selfself, gesture, configKey=configKey: self.script_quickSearch(selfself, gesture, getConfig(configKey))
@@ -1141,7 +1162,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         setConfig("nvdaVolume", volume)
         message = _("NVDA volume %d") % volume
         ui.message(message)
-        
+
     def script_quickSearch(self, selfself, gesture, regex):
         if "shift" in gesture._get_modifierNames():
             direction = -1
