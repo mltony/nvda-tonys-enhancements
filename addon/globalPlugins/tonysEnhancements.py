@@ -26,6 +26,7 @@ import keyboardHandler
 from logHandler import log
 import NVDAHelper
 from NVDAObjects import behaviors
+from NVDAObjects.IAccessible import IAccessible
 from NVDAObjects.window import winword
 import nvwave
 import operator
@@ -118,6 +119,7 @@ def initConfiguration():
         "quickSearch1" : f"string( default='')",
         "quickSearch2" : f"string( default='')",
         "quickSearch3" : f"string( default='')",
+        "controlVInConsole" : "boolean( default=False)",
     }
     config.conf.spec[module] = confspec
 
@@ -286,6 +288,12 @@ class SettingsDialog(gui.SettingsDialog):
         label = _("Beep on update in consoles")
         self.consoleBeepCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.consoleBeepCheckbox.Value = getConfig("consoleBeep")
+      # checkbox enforce control+V in console
+        # Translators: Checkbox for control+V enforcement in console
+        label = _("Always enable Control+V in console (useful for SSH)")
+        self.controlVInConsoleCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.controlVInConsoleCheckbox.Value = getConfig("controlVInConsole")
+        
       # checkbox Busy beep
         # Translators: Checkbox for busy beep
         label = _("Beep when NVDA is busy")
@@ -407,6 +415,7 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("blockDoubleCaps", self.blockDoubleCapsCheckbox.Value)
         setConfig("consoleRealtime", self.consoleRealtimeCheckbox.Value)
         setConfig("consoleBeep", self.consoleBeepCheckbox.Value)
+        setConfig("controlVInConsole", self.controlVInConsoleCheckbox.Value)
         setConfig("busyBeep", self.busyBeepCheckbox.Value)
         setConfig("fixWindowNumber", self.fixWindowNumberCheckbox.Value)
         setConfig("suppressUnselected", self.suppressUnselectedCheckbox.Value)
@@ -863,6 +872,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.injectTableFunctions()
         self.lastConsoleUpdateTime = 0
         self.beeper = Beeper()
+        
+    def chooseNVDAObjectOverlayClasses(self, obj, clsList):
+        if getConfig("controlVInConsole") and obj.windowClassName == 'ConsoleWindowClass':
+            clsList.insert(0, ConsoleControlV)
 
     def createMenu(self):
         def _popupMenu(evt):
@@ -1213,3 +1226,12 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         lineInfo.setEndPoint(caretInfo, 'startToStart')
         mylog(lineInfo.text)
         speech.speakTextInfo(lineInfo, unit=textInfos.UNIT_WORD, reason=controlTypes.REASON_CARET)
+
+class ConsoleControlV(IAccessible):
+    @script(description='Paste from clipboard', gestures=['kb:Control+V'])
+    def script_paste(self, gesture):
+        # This sends WM_COMMAND message, with ID of Paste item of context menu of command prompt window.
+        # Don't ask me how I figured out its ID...
+        # https://stackoverflow.com/questions/34410697/how-to-capture-the-windows-message-that-is-sent-from-this-menu
+        WM_COMMAND = 0x0111
+        watchdog.cancellableSendMessage(self.parent.windowHandle, WM_COMMAND, 0xfff1, 0)
