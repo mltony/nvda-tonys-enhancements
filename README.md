@@ -21,6 +21,10 @@ As of version 1.8 this functionality has been moved to [WordNav add-on](https://
 ## Automatic language switching
 Allows to automatically switch the language of your synthesizer by character set. Refgular expression for every language can be configured in the preferences window for this add-on. Please make sure that your synthesizer supports all the languages you're interested in. Switching between two Latin-based languages or two languages whose character sets are similar is not supported at this time.
 
+## Quicksearch commands
+
+You can have up to three slots for configurable regular expressions that you frequencly search for in editables. By default they are assigned to `PrintScreen`, `ScrollLock` and `Pause` buttons. You can perform forward search, or backward search by pressing `Shift` combined with these buttons.
+
 ## Suppress unwanted 'unselected' speech from NVDA
 
 Suppose you have some text selected in text editors. Then you press a key, such as Home, or UpArrow, that is supposed to take you to another part of the document. NVDA would announce 'unselected' and then speak the former selection, which can be inconvenient at times. This feature prevents NVDA from speaking formerly selected text in situations like this.
@@ -42,6 +46,10 @@ This option is disabled by default and must be enabled in the settings.
 This option makes NVDA to speak new lines immediately as they appear in console output, instead of queueing new speech utterances.
 
 There is also an option to beep on command line updates - this would give you a better idea when new lines are printed in the console.
+
+## Enforce Control+V in consoles
+
+This option makes Control+V shortcut to work inside `ssh` sessions.
 
 ## Beep when NVDA is busy
 
