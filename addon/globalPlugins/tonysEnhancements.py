@@ -120,6 +120,7 @@ def initConfiguration():
         "quickSearch2" : f"string( default='')",
         "quickSearch3" : f"string( default='')",
         "controlVInConsole" : "boolean( default=False)",
+        "priority" : "integer( default=0, min=0, max=3)",
     }
     config.conf.spec[module] = confspec
 
@@ -172,13 +173,27 @@ def reloadLangMap():
     global langMap
     langMap = parseLangMap(getConfig("langMap"))
 
+priorityNames = _("Normal,Above normal,High,Realtime").split(",")
+priorityValues = [
+    # https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setpriorityclass?redirectedfrom=MSDN
+    0x00000020,
+    0x00008000,
+    0x00000080,
+    0x00000100
+]
 
+def updatePriority():
+    index = getConfig("priority")
+    priority = priorityValues[index]
+    result = ctypes.windll.kernel32.SetPriorityClass(ctypes.windll.kernel32.GetCurrentProcess(), priority)
+    if result == 0:
+        gui.messageBox(_("Failed to set process priority to %s.") % priorityNames[index], _("Tony's enhancement add-on encountered an error"), wx.OK|wx.ICON_WARNING, None)  
 
 addonHandler.initTranslation()
 initConfiguration()
 reloadDynamicKeystrokes()
 reloadLangMap()
-
+updatePriority()
 class MultilineEditTextDialog(wx.Dialog):
     def __init__(self, parent, text, title_string, onTextComplete):
         # Translators: Title of calibration dialog
@@ -349,6 +364,12 @@ class SettingsDialog(gui.SettingsDialog):
         label = _("Suppress scroll lock mode announcements")
         self.blockScrollLockCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.blockScrollLockCheckbox.Value = getConfig("blockScrollLock")
+      # System priority Combo box
+        # Translators: Label for system priority combo box
+        label = _("NVDA process system priority:")
+        self.priorityCombobox = sHelper.addLabeledControl(label, wx.Choice, choices=priorityNames)
+        index = getConfig("priority")
+        self.priorityCombobox.Selection = index
 
     def dynamicCallback(self, result, text, keystroke):
         if result == wx.ID_OK:
@@ -431,6 +452,8 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("quickSearch3", self.quickSearch3Edit.Value)
         setConfig("blockScrollLock", self.blockScrollLockCheckbox.Value)
         updateScrollLockBlocking()
+        setConfig("priority", self.priorityCombobox.Selection)
+        updatePriority()
         super(SettingsDialog, self).onOk(evt)
 
 class Beeper:
