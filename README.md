@@ -71,6 +71,10 @@ In NVDA pressing Insert key twice in a row toggles insert mode in applications. 
 
 This option is disabled by default and must be enabled in the settings.
 
+## System priority of NVDA process
+
+This allows to boost system priority of NVDA process, that might improve NVDA responsiveness, especially when CPU load is high.
+
 ## Fixing a bug when focus gets stuck in the taskbar when pressing Windows+Numbers
 
 There is a bug in Windows 10, and possibly in other versions. When switching between applications using Windows+number shortcut sometimes the focus gets stuck in the taskbar area instead of jumping to the window being switched to. Since trying to report this bug to Microsoft is hopeless, a workaround has been implemented in this add-on. The add-on detects this situation and plays a short low-pitch beep when this situation is detected, then the add-on fixes it automatically.
