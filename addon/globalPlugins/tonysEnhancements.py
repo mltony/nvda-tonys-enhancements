@@ -372,6 +372,12 @@ class SettingsDialog(gui.SettingsDialog):
         self.priorityCombobox = sHelper.addLabeledControl(label, wx.Choice, choices=priorityNames)
         index = getConfig("priority")
         self.priorityCombobox.Selection = index
+      # Delete method Combo box
+        # Translators: Label for delete line method for prompt editing combo box
+        label = _("Method of deleting lines for prompt editing:")
+        self.deleteMethodCombobox = sHelper.addLabeledControl(label, wx.Choice, choices=deleteMethodNames)
+        index = getConfig("deletePromptMethod")
+        self.deleteMethodCombobox.Selection = index
 
     def dynamicCallback(self, result, text, keystroke):
         if result == wx.ID_OK:
@@ -456,6 +462,7 @@ class SettingsDialog(gui.SettingsDialog):
         updateScrollLockBlocking()
         setConfig("priority", self.priorityCombobox.Selection)
         updatePriority()
+        setConfig("deletePromptMethod", self.deleteMethodCombobox.Selection)
         super(SettingsDialog, self).onOk(evt)
 
 class Beeper:
@@ -1207,6 +1214,12 @@ DELETE_METHOD_CONTROL_C = 0
 DELETE_METHOD_ESCAPE = 1
 DELETE_METHOD_CONTROL_K = 2
 DELETE_METHOD_BACKSPACE = 3
+deleteMethodNames = [
+    _("Control+C (recommended): works in both cmd.exe and bash, but leaves previous prompt visible on the screen; doesn't work in emacs"),
+    _("Escape: works only in cmd.exe"),
+    _("Control+A Control+K: works in bash and emacs; doesn't work in cmd.exe"),
+    _("Backspace: works in all environments; however slower and may cause corruption if the length of the line has changed"), 
+]
 
 def updatePrompt(result, text, keystroke, oldText, obj):
     obj.setFocus()
