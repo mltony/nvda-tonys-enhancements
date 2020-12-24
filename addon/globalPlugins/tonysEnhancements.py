@@ -35,6 +35,7 @@ import re
 import sayAllHandler
 from scriptHandler import script, willSayAllResume
 import speech
+import string
 import struct
 import textInfos
 import threading
@@ -50,7 +51,7 @@ import wx
 winmm = ctypes.windll.winmm
 
 
-debug = False
+debug = True
 if debug:
     import threading
     LOG_FILE_NAME = "C:\\Users\\tony\\Dropbox\\1.txt"
@@ -121,6 +122,7 @@ def initConfiguration():
         "quickSearch3" : f"string( default='')",
         "controlVInConsole" : "boolean( default=False)",
         "priority" : "integer( default=0, min=0, max=3)",
+        "deletePromptMethod" : "integer( default=0, min=0, max=3)",
     }
     config.conf.spec[module] = confspec
 
@@ -187,7 +189,7 @@ def updatePriority():
     priority = priorityValues[index]
     result = ctypes.windll.kernel32.SetPriorityClass(ctypes.windll.kernel32.GetCurrentProcess(), priority)
     if result == 0:
-        gui.messageBox(_("Failed to set process priority to %s.") % priorityNames[index], _("Tony's enhancement add-on encountered an error"), wx.OK|wx.ICON_WARNING, None)  
+        gui.messageBox(_("Failed to set process priority to %s.") % priorityNames[index], _("Tony's enhancement add-on encountered an error"), wx.OK|wx.ICON_WARNING, None)
 
 addonHandler.initTranslation()
 initConfiguration()
@@ -308,7 +310,7 @@ class SettingsDialog(gui.SettingsDialog):
         label = _("Always enable Control+V in console (useful for SSH)")
         self.controlVInConsoleCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.controlVInConsoleCheckbox.Value = getConfig("controlVInConsole")
-        
+
       # checkbox Busy beep
         # Translators: Checkbox for busy beep
         label = _("Beep when NVDA is busy")
@@ -876,14 +878,358 @@ def preSpeakSelectionChange(oldInfo, newInfo, *args, **kwargs):
 def updateScrollLockBlocking():
     doBlock = getConfig("blockScrollLock")
     TOGGLE_KEYS = {
-        winUser.VK_CAPITAL, 
-        winUser.VK_NUMLOCK, 
+        winUser.VK_CAPITAL,
+        winUser.VK_NUMLOCK,
     }
     if not doBlock:
         TOGGLE_KEYS.add(winUser.VK_SCROLL)
     keyboardHandler.KeyboardInputGesture.TOGGLE_KEYS = frozenset(TOGGLE_KEYS)
-    
+
 updateScrollLockBlocking()
+
+class EditTextDialog(wx.Dialog):
+    # This is a single line text edit window.
+    def __init__(self, parent, text, onTextComplete):
+        self.tabValue = "    "
+        title_string = _("Edit text")
+        super(EditTextDialog, self).__init__(parent, title=title_string)
+        self.text = text
+        self.onTextComplete = onTextComplete
+        mainSizer = wx.BoxSizer(wx.VERTICAL)
+        sHelper = gui.guiHelper.BoxSizerHelper(self, orientation=wx.VERTICAL)
+
+        self.textCtrl = wx.TextCtrl(self, style=wx.TE_DONTWRAP|wx.TE_PROCESS_ENTER)
+        self.textCtrl.Bind(wx.EVT_CHAR, self.onChar)
+        self.Bind(wx.EVT_CHAR_HOOK, self.OnKeyUP)
+        sHelper.addItem(self.textCtrl)
+        self.textCtrl.SetValue(text)
+        self.SetFocus()
+        self.Maximize(True)
+
+    def onChar(self, event):
+        control = event.ControlDown()
+        shift = event.ShiftDown()
+        alt = event.AltDown()
+        keyCode = event.GetKeyCode()
+        if event.GetKeyCode() in [10, 13]:
+            # 13 means Enter
+            # 10 means Control+Enter
+            modifiers = [
+                control, shift, alt
+            ]
+            if True:
+                modifierNames = [
+                    "control",
+                    "shift",
+                    "alt",
+                ]
+                modifierTokens = [
+                    modifierNames[i]
+                    for i in range(len(modifiers))
+                    if modifiers[i]
+                ]
+                keystrokeName = "+".join(modifierTokens + ["Enter"])
+                self.keystroke = fromNameEnglish(keystrokeName)
+                self.text = self.textCtrl.GetValue()
+                self.temporarilySuspendTerminalTitleAnnouncement()
+                self.EndModal(wx.ID_OK)
+                wx.CallAfter(lambda: self.onTextComplete(wx.ID_OK, self.text, self.keystroke))
+        elif event.GetKeyCode() == wx.WXK_TAB:
+            if alt or control:
+                event.Skip()
+            elif not shift:
+                # Just Tab
+                self.textCtrl.WriteText(self.tabValue)
+            else:
+                # Shift+Tab
+                curPos = self.textCtrl.GetInsertionPoint()
+                lineNum = len(self.textCtrl.GetRange( 0, self.textCtrl.GetInsertionPoint() ).split("\n")) - 1
+                priorText = self.textCtrl.GetRange( 0, self.textCtrl.GetInsertionPoint() )
+                text = self.textCtrl.GetValue()
+                postText = text[len(priorText):]
+                if priorText.endswith(self.tabValue):
+                    newText = priorText[:-len(self.tabValue)] + postText
+                    self.textCtrl.SetValue(newText)
+                    self.textCtrl.SetInsertionPoint(curPos - len(self.tabValue))
+        elif event.GetKeyCode() == 1:
+            # Control+A
+            self.textCtrl.SetSelection(-1,-1)
+        elif event.GetKeyCode() == wx.WXK_HOME:
+            if not any([control, shift, alt]):
+                curPos = self.textCtrl.GetInsertionPoint()
+                #lineNum = len(self.textCtrl.GetRange( 0, self.textCtrl.GetInsertionPoint() ).split("\n")) - 1
+                #colNum = len(self.textCtrl.GetRange( 0, self.textCtrl.GetInsertionPoint() ).split("\n")[-1])
+                _, colNum,lineNum = self.textCtrl.PositionToXY(self.textCtrl.GetInsertionPoint())
+                lineText = self.textCtrl.GetLineText(lineNum)
+                m = re.search("^\s*", lineText)
+                if not m:
+                    raise Exception("This regular expression must match always.")
+                indent = len(m.group(0))
+                if indent == colNum:
+                    newColNum = 0
+                else:
+                    newColNum = indent
+                newPos = self.textCtrl.XYToPosition(newColNum, lineNum)
+                self.textCtrl.SetInsertionPoint(newPos)
+            else:
+                event.Skip()
+        else:
+            event.Skip()
+
+
+    def OnKeyUP(self, event):
+        keyCode = event.GetKeyCode()
+        if keyCode == wx.WXK_ESCAPE:
+            self.text = self.textCtrl.GetValue()
+            self.temporarilySuspendTerminalTitleAnnouncement()
+            self.EndModal(wx.ID_CANCEL)
+            wx.CallAfter(lambda: self.onTextComplete(wx.ID_CANCEL, self.text, None))
+        event.Skip()
+
+    def temporarilySuspendTerminalTitleAnnouncement(self):
+        global suppressTerminalTitleAnnouncement
+        suppressTerminalTitleAnnouncement = True
+        def reset():
+            global suppressTerminalTitleAnnouncement
+            suppressTerminalTitleAnnouncement = False
+        core.callLater(1000, reset)
+
+
+def popupEditTextDialog(text, onTextComplete):
+    gui.mainFrame.prePopup()
+    d = EditTextDialog(gui.mainFrame, text, onTextComplete)
+    result = d.Show()
+    gui.mainFrame.postPopup()
+
+# This function is a fixed version of fromNameEnglish function.
+# As of v2020.3 it doesn't work correctly for gestures containing letters when the default locale on the computer is set to non-Latin, such as Russian.
+import vkCodes
+en_us_input_Hkl = 1033 + (1033 << 16)
+def fromNameEnglish(name):
+    """Create an instance given a key name.
+    @param name: The key name.
+    @type name: str
+    @return: A gesture for the specified key.
+    @rtype: L{KeyboardInputGesture}
+    """
+    keyNames = name.split("+")
+    keys = []
+    for keyName in keyNames:
+        if keyName == "plus":
+            # A key name can't include "+" except as a separator.
+            keyName = "+"
+        if keyName == keyboardHandler.VK_WIN:
+            vk = winUser.VK_LWIN
+            ext = False
+        elif keyName.lower() == keyboardHandler.VK_NVDA.lower():
+            vk, ext = keyboardHandler.getNVDAModifierKeys()[0]
+        elif len(keyName) == 1:
+            ext = False
+            requiredMods, vk = winUser.VkKeyScanEx(keyName, en_us_input_Hkl)
+            if requiredMods & 1:
+                keys.append((winUser.VK_SHIFT, False))
+            if requiredMods & 2:
+                keys.append((winUser.VK_CONTROL, False))
+            if requiredMods & 4:
+                keys.append((winUser.VK_MENU, False))
+            # Not sure whether we need to support the Hankaku modifier (& 8).
+        else:
+            vk, ext = vkCodes.byName[keyName.lower()]
+            if ext is None:
+                ext = False
+        keys.append((vk, ext))
+
+    if not keys:
+        raise ValueError
+
+    return keyboardHandler.KeyboardInputGesture(keys[:-1], vk, 0, ext)
+
+originalTerminalGainFocus = None
+suppressTerminalTitleAnnouncement = False
+def terminalGainFocus(self):
+    if suppressTerminalTitleAnnouncement:
+        # We only skip super() call here
+        self.startMonitoring()
+    else:
+        return originalTerminalGainFocus(self)
+
+def executeAsynchronously(gen):
+    """
+    This function executes a generator-function in such a manner, that allows updates from the operating system to be processed during execution.
+    For an example of such generator function, please see GlobalPlugin.script_editJupyter.
+    Specifically, every time the generator function yilds a positive number,, the rest of the generator function will be executed
+    from within wx.CallLater() call.
+    If generator function yields a value of 0, then the rest of the generator function
+    will be executed from within wx.CallAfter() call.
+    This allows clear and simple expression of the logic inside the generator function, while still allowing NVDA to process update events from the operating system.
+    Essentially the generator function will be paused every time it calls yield, then the updates will be processed by NVDA and then the remainder of generator function will continue executing.
+    """
+    if not isinstance(gen, types.GeneratorType):
+        raise Exception("Generator function required")
+    try:
+        value = gen.__next__()
+    except StopIteration:
+        return
+    core.callLater(value, executeAsynchronously, gen)
+
+
+# Just some random unicode character that is not likely to appear anywhere.
+# This character is used for prompt editing automation
+controlCharacter = "➉" # U+2789, Dingbat circled sans-serif digit ten
+
+def releaseModifiers():
+    mylog("ReleaseModifiers")
+    modifiers = [winUser.VK_LCONTROL, winUser.VK_RCONTROL,
+        winUser.VK_INSERT,
+        winUser.VK_LSHIFT, winUser.VK_RSHIFT, winUser.VK_LMENU,
+        winUser.VK_RMENU, winUser.VK_LWIN, winUser.VK_RWIN, ]
+    letters = "abcdefghijklmnopqrs" #uvwxyz"
+    #letters = "rst"
+    modifiers.extend([getVkLetter(c) for c in letters])
+    #string.ascii_lowercase
+    result = []
+    for k in modifiers:
+        mylog(f"{k}: {winUser.getKeyState(k)}")
+        #if winUser.getKeyState(k) & 32768:
+        if True:
+            mylog(f"Releasing {k}")
+            #winUser.keybd_event(k, 0, 2, 0)
+            input = winUser.Input(type=winUser.INPUT_KEYBOARD)
+            input.ii.ki.wVk = k
+            input.ii.ki.dwFlags = winUser.KEYEVENTF_KEYUP
+            result.append(input)
+    if True:
+            k  =winUser.VK_INSERT
+            mylog(f"Releasing {k}")
+            #winUser.keybd_event(k, 0, 2, 0)
+            input = winUser.Input(type=winUser.INPUT_KEYBOARD)
+            input.ii.ki.wVk = k
+            input.ii.ki.dwFlags = winUser.KEYEVENTF_KEYUP
+            result.append(input)
+            input = winUser.Input(type=winUser.INPUT_KEYBOARD)
+            input.ii.ki.wVk = k
+            KEYEVENTF_EXTENDEDKEY = 0x0001
+            input.ii.ki.dwFlags = winUser.KEYEVENTF_KEYUP | KEYEVENTF_EXTENDEDKEY
+            result.append(input)
+    return result
+
+def getVkLetter(keyName):
+    en_us_input_Hkl = 1033 + (1033 << 16)
+    requiredMods, vk = winUser.VkKeyScanEx(keyName, en_us_input_Hkl)
+    return vk
+def getVkCodes():
+    d = {}
+    d['home'] = winUser.VK_HOME
+    d['end'] = winUser.VK_END
+    d['delete'] = winUser.VK_DELETE
+    d['backspace'] = winUser.VK_BACK
+    return d
+
+def makeVkInput(vkCodes):
+    result = []
+    if not isinstance(vkCodes, list):
+        vkCodes = [vkCodes]
+    for vk in vkCodes:
+        input = winUser.Input(type=winUser.INPUT_KEYBOARD)
+        input.ii.ki.wVk = vk
+        result.append(input)
+    for vk in reversed(vkCodes):
+        input = winUser.Input(type=winUser.INPUT_KEYBOARD)
+        input.ii.ki.wVk = vk
+        input.ii.ki.dwFlags = winUser.KEYEVENTF_KEYUP
+        result.append(input)
+    return result
+
+def makeUnicodeInput(string):
+    result = []
+    for c in string:
+        input = winUser.Input(type=winUser.INPUT_KEYBOARD)
+        input.ii.ki.wScan = ord(c)
+        input.ii.ki.dwFlags = winUser.KEYEVENTF_UNICODE
+        result.append(input)
+        input2 = winUser.Input(type=winUser.INPUT_KEYBOARD)
+        input2.ii.ki.wScan = ord(c)
+        input2.ii.ki.dwFlags = winUser.KEYEVENTF_UNICODE | winUser.KEYEVENTF_KEYUP
+        result.append(input2)
+    return result
+
+def script_editPrompt(self, gesture):
+    executeAsynchronously(editPrompt(self, gesture))
+script_editPrompt.category = "Tony's enhancements"
+script_editPrompt.__name__ = _("Edit prompt")
+script.__doc__ = _("Opens accessible window that allows to edit current command line prompt.")
+def editPrompt(obj, gesture):
+    text = obj.makeTextInfo(textInfos.POSITION_ALL).text
+    if controlCharacter in text:
+        ui.message(_("Control character found on the screen; clear window and try again."))
+        return
+    d = getVkCodes()
+    try:
+        inputs = []
+        inputs.extend(makeVkInput(d['home']))
+        inputs.extend(makeUnicodeInput(controlCharacter))
+        inputs.extend(makeVkInput(d['end']))
+        inputs.extend(makeUnicodeInput(controlCharacter))
+        with keyboardHandler.ignoreInjection():
+            winUser.SendInput(inputs)
+        timeoutSeconds = 1
+        timeout = time.time() + timeoutSeconds
+        found = False
+        while time.time() < timeout:
+            text = obj.makeTextInfo(textInfos.POSITION_ALL).text
+            indices = [i for i,c in enumerate(text) if c == controlCharacter]
+            if len(indices) >= 2:
+                found = True
+                break
+            yield 10
+        if not found:
+            msg = _("Timed out while waiting for control characters to appear.")
+            ui.message(msg)
+            raise Exception(msg)
+        if len(indices) > 2:
+            raise Exception(f"Unexpected: encountered {len(indices)} control characters!")
+        # now we are sure that there are only two indices
+        text = text[indices[0] + 1 : indices[1]]
+    finally:
+        inputs = []
+        inputs.extend(makeVkInput(d['home']))
+        inputs.extend(makeVkInput(d['delete']))
+        inputs.extend(makeVkInput(d['end']))
+        inputs.extend(makeVkInput(d['backspace']))
+        with keyboardHandler.ignoreInjection():
+            winUser.SendInput(inputs)
+    #ui.message("Edit prompt! " + text)
+    oldText = text
+    onTextComplete = lambda result, newText, keystroke: updatePrompt(result, newText, keystroke, oldText)
+    popupEditTextDialog(text, onTextComplete)
+
+DELETE_METHOD_CONTROL_C = 0
+DELETE_METHOD_ESCAPE = 1
+DELETE_METHOD_CONTROL_K = 2
+DELETE_METHOD_BACKSPACE = 3
+
+def updatePrompt(result, text, keystroke, oldText):
+    method = getConfig("deletePromptMethod")
+    inputs = []
+    if method == DELETE_METHOD_CONTROL_C:
+        inputs.extend(makeVkInput([winUser.VK_LCONTROL, getVkLetter("C")]))
+    elif method == DELETE_METHOD_ESCAPE:
+        inputs.extend(makeVkInput(winUser.VK_ESCAPE))
+    elif method == DELETE_METHOD_CONTROL_K:
+        inputs.extend(makeVkInput([winUser.VK_LCONTROL, getVkLetter("A")]))
+        inputs.extend(makeVkInput([winUser.VK_LCONTROL, getVkLetter("K")]))
+    elif method == DELETE_METHOD_BACKSPACE:
+        inputs.extend(makeVkInput(winUser.VK_END))
+        for _ in range(len(oldText)):
+            inputs.extend(makeVkInput(winUser.VK_BACK))
+    else:
+        raise Exception(f"Unknown method {method}!")
+    inputs.extend(makeUnicodeInput(text))
+    with keyboardHandler.ignoreInjection():
+        winUser.SendInput(inputs)
+    if result == wx.ID_OK:
+        keystroke.send()
+
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     scriptCategory = _("Tony's Enhancements")
@@ -895,7 +1241,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.injectTableFunctions()
         self.lastConsoleUpdateTime = 0
         self.beeper = Beeper()
-        
+
     def chooseNVDAObjectOverlayClasses(self, obj, clsList):
         if getConfig("controlVInConsole") and obj.windowClassName == 'ConsoleWindowClass':
             clsList.insert(0, ConsoleControlV)
@@ -914,7 +1260,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
     quickSearchGestures = ",PrintScreen,ScrollLock,Pause".split(",")
     def injectHooks(self):
-        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep, originalReportNewText, originalSpeakSelectionChange, originalCaretMovementScriptHelper, originalCancelSpeech, originalSpeechSpeak
+        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep, originalReportNewText, originalSpeakSelectionChange, originalCaretMovementScriptHelper, originalCancelSpeech, originalSpeechSpeak, originalTerminalGainFocus
         self.originalExecuteGesture = inputCore.InputManager.executeGesture
         inputCore.InputManager.executeGesture = lambda selfself, gesture, *args, **kwargs: self.preExecuteGesture(selfself, gesture, *args, **kwargs)
         #self.originalCalculateNewText = behaviors.LiveText._calculateNewText
@@ -947,6 +1293,15 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             setattr(editableText.EditableText, f"script_quickSearch{i}", script)
             editableText.EditableText._EditableText__gestures[f"kb:{self.quickSearchGestures[i]}"] = f"quickSearch{i}"
             editableText.EditableText._EditableText__gestures[f"kb:Shift+{self.quickSearchGestures[i]}"] = f"quickSearch{i}"
+        if True:
+            originalTerminalGainFocus = behaviors.Terminal.event_gainFocus
+            behaviors.Terminal.event_gainFocus = terminalGainFocus
+            behaviors.Terminal.script_editPrompt = script_editPrompt
+            try:
+                behaviors.Terminal._Terminal__gestures
+            except AttributeError:
+                behaviors.Terminal._Terminal__gestures = {}
+            behaviors.Terminal._Terminal__gestures["kb:NVDA+E"] = "editPrompt"
 
     def  removeHooks(self):
         global originalWaveOpen, originalReportNewText
@@ -964,6 +1319,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             delattr(editableText.EditableText, f"script_quickSearch{i}")
             del editableText.EditableText._EditableText__gestures[f"kb:{self.quickSearchGestures[i]}"]
             del editableText.EditableText._EditableText__gestures[f"kb:Shift+{self.quickSearchGestures[i]}"]
+        behaviors.Terminal.event_gainFocus = originalTerminalGainFocus
+        del behaviors.Terminal.script_editPrompt
+        del behaviors.Terminal._Terminal__gestures["kb:NVDA+E"]
 
     windowsSwitchingRe = re.compile(r':windows\+\d$')
     typingKeystrokeRe = re.compile(r':((shift\+)?[A-Za-z0-9]|space)$')
@@ -1258,3 +1616,5 @@ class ConsoleControlV(IAccessible):
         # https://stackoverflow.com/questions/34410697/how-to-capture-the-windows-message-that-is-sent-from-this-menu
         WM_COMMAND = 0x0111
         watchdog.cancellableSendMessage(self.parent.windowHandle, WM_COMMAND, 0xfff1, 0)
+
+    #@script(description='Edit prompt', gestures=['kb:NVDA+E'])
