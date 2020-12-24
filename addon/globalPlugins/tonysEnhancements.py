@@ -1200,7 +1200,7 @@ def editPrompt(obj, gesture):
             winUser.SendInput(inputs)
     #ui.message("Edit prompt! " + text)
     oldText = text
-    onTextComplete = lambda result, newText, keystroke: updatePrompt(result, newText, keystroke, oldText)
+    onTextComplete = lambda result, newText, keystroke: updatePrompt(result, newText, keystroke, oldText, obj)
     popupEditTextDialog(text, onTextComplete)
 
 DELETE_METHOD_CONTROL_C = 0
@@ -1208,7 +1208,8 @@ DELETE_METHOD_ESCAPE = 1
 DELETE_METHOD_CONTROL_K = 2
 DELETE_METHOD_BACKSPACE = 3
 
-def updatePrompt(result, text, keystroke, oldText):
+def updatePrompt(result, text, keystroke, oldText, obj):
+    obj.setFocus()
     method = getConfig("deletePromptMethod")
     inputs = []
     if method == DELETE_METHOD_CONTROL_C:
