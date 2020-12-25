@@ -1206,7 +1206,7 @@ def editPrompt(obj, gesture):
         with keyboardHandler.ignoreInjection():
             winUser.SendInput(inputs)
     #ui.message("Edit prompt! " + text)
-    oldText = text
+    oldText = text.replace("\n", "").replace("\r", "")
     onTextComplete = lambda result, newText, keystroke: updatePrompt(result, newText, keystroke, oldText, obj)
     popupEditTextDialog(text, onTextComplete)
 
