@@ -51,7 +51,7 @@ import wx
 winmm = ctypes.windll.winmm
 
 
-debug = True
+debug = False
 if debug:
     import threading
     LOG_FILE_NAME = "C:\\Users\\tony\\Dropbox\\1.txt"
@@ -894,12 +894,12 @@ def updateScrollLockBlocking():
 
 updateScrollLockBlocking()
 
-class EditTextDialog(wx.Dialog):
+class SingleLineEditTextDialog(wx.Dialog):
     # This is a single line text edit window.
     def __init__(self, parent, text, onTextComplete):
         self.tabValue = "    "
         title_string = _("Edit text")
-        super(EditTextDialog, self).__init__(parent, title=title_string)
+        super(SingleLineEditTextDialog, self).__init__(parent, title=title_string)
         self.text = text
         self.onTextComplete = onTextComplete
         mainSizer = wx.BoxSizer(wx.VERTICAL)
@@ -1004,7 +1004,7 @@ class EditTextDialog(wx.Dialog):
 
 def popupEditTextDialog(text, onTextComplete):
     gui.mainFrame.prePopup()
-    d = EditTextDialog(gui.mainFrame, text, onTextComplete)
+    d = SingleLineEditTextDialog(gui.mainFrame, text, onTextComplete)
     result = d.Show()
     gui.mainFrame.postPopup()
 
@@ -1083,42 +1083,9 @@ def executeAsynchronously(gen):
 # Just some random unicode character that is not likely to appear anywhere.
 # This character is used for prompt editing automation
 controlCharacter = "➉" # U+2789, Dingbat circled sans-serif digit ten
+#controlCharacter2 = "➊" # U+278A, 'DINGBAT NEGATIVE CIRCLED SANS-SERIF DIGIT ONE' (U+278A)
 
-def releaseModifiers():
-    mylog("ReleaseModifiers")
-    modifiers = [winUser.VK_LCONTROL, winUser.VK_RCONTROL,
-        winUser.VK_INSERT,
-        winUser.VK_LSHIFT, winUser.VK_RSHIFT, winUser.VK_LMENU,
-        winUser.VK_RMENU, winUser.VK_LWIN, winUser.VK_RWIN, ]
-    letters = "abcdefghijklmnopqrs" #uvwxyz"
-    #letters = "rst"
-    modifiers.extend([getVkLetter(c) for c in letters])
-    #string.ascii_lowercase
-    result = []
-    for k in modifiers:
-        mylog(f"{k}: {winUser.getKeyState(k)}")
-        #if winUser.getKeyState(k) & 32768:
-        if True:
-            mylog(f"Releasing {k}")
-            #winUser.keybd_event(k, 0, 2, 0)
-            input = winUser.Input(type=winUser.INPUT_KEYBOARD)
-            input.ii.ki.wVk = k
-            input.ii.ki.dwFlags = winUser.KEYEVENTF_KEYUP
-            result.append(input)
-    if True:
-            k  =winUser.VK_INSERT
-            mylog(f"Releasing {k}")
-            #winUser.keybd_event(k, 0, 2, 0)
-            input = winUser.Input(type=winUser.INPUT_KEYBOARD)
-            input.ii.ki.wVk = k
-            input.ii.ki.dwFlags = winUser.KEYEVENTF_KEYUP
-            result.append(input)
-            input = winUser.Input(type=winUser.INPUT_KEYBOARD)
-            input.ii.ki.wVk = k
-            KEYEVENTF_EXTENDEDKEY = 0x0001
-            input.ii.ki.dwFlags = winUser.KEYEVENTF_KEYUP | KEYEVENTF_EXTENDEDKEY
-            result.append(input)
-    return result
+
 
 def getVkLetter(keyName):
     en_us_input_Hkl = 1033 + (1033 << 16)
@@ -1207,8 +1174,9 @@ def editPrompt(obj, gesture):
             winUser.SendInput(inputs)
     #ui.message("Edit prompt! " + text)
     oldText = text.replace("\n", "").replace("\r", "")
-    onTextComplete = lambda result, newText, keystroke: updatePrompt(result, newText, keystroke, oldText, obj)
+    onTextComplete = lambda result, newText, keystroke: executeAsynchronously(updatePrompt(result, newText, keystroke, oldText, obj))
     popupEditTextDialog(text, onTextComplete)
+
 
 DELETE_METHOD_CONTROL_C = 0
 DELETE_METHOD_ESCAPE = 1
@@ -1218,10 +1186,22 @@ deleteMethodNames = [
     _("Control+C (recommended): works in both cmd.exe and bash, but leaves previous prompt visible on the screen; doesn't work in emacs"),
     _("Escape: works only in cmd.exe"),
     _("Control+A Control+K: works in bash and emacs; doesn't work in cmd.exe"),
-    _("Backspace: works in all environments; however slower and may cause corruption if the length of the line has changed"), 
+    _("Backspace: works in all environments; however slower and may cause corruption if the length of the line has changed"),
 ]
 
 def updatePrompt(result, text, keystroke, oldText, obj):
+    for delay in waitUntilModifiersReleased():
+        yield delay
+    modifiers = keystroke.modifierNames
+    mainKeyName = keystroke.mainKeyName
+    if (
+        modifiers == ["control"]
+        and mainKeyName == "enter"
+    ):
+        text = updateCommandForCapturing(text)
+        doCapture = True
+    else:
+        doCapture = False
     obj.setFocus()
     method = getConfig("deletePromptMethod")
     inputs = []
@@ -1241,8 +1221,93 @@ def updatePrompt(result, text, keystroke, oldText, obj):
     inputs.extend(makeUnicodeInput(text))
     with keyboardHandler.ignoreInjection():
         winUser.SendInput(inputs)
-    if result == wx.ID_OK:
+    if doCapture:
+        fromNameEnglish("Enter").send()
+        #keyboardHandler.KeyboardInputGesture.fromName("Enter").send()
+        #with keyboardHandler.ignoreInjection():
+            #winUser.SendInput(makeVkInput(winUser.VK_RETURN))
+        executeAsynchronously(captureAsync(obj))
+    elif result == wx.ID_OK:
         keystroke.send()
+
+def updateCommandForCapturing(command):
+    #result = f"({command} && echo {controlCharacter2}) |& more -p"
+    result = f"{command} |& less -c"
+    return result
+
+allModifiers = [
+    winUser.VK_LCONTROL, winUser.VK_RCONTROL,
+    winUser.VK_LSHIFT, winUser.VK_RSHIFT, winUser.VK_LMENU,
+    winUser.VK_RMENU, winUser.VK_LWIN, winUser.VK_RWIN,
+]
+
+def waitUntilModifiersReleased():
+    timeoutSeconds = 5
+    timeout = time.time() + timeoutSeconds
+    while time.time() < timeout:
+        status = [
+            winUser.getKeyState(k) & 32768
+            for k in allModifiers
+        ]
+        if not any(status):
+            return
+        yield 10
+    message = _("Timed out while waiting for modifiers to be released!")
+    ui.message(message)
+    raise Exception(message)
+
+def injectKeystroke(hWnd, vkCode):
+    # Here we use PostMessage() and WM_KEYDOWN event to inject keystroke into the terminal.
+    # Alternative ways, such as WM_CHAR event, or using SendMessage can work in plain command prompt, but they don't appear to work in any falvours of ssh.
+    WM_KEYDOWN                      =0x0100
+    WM_KEYUP                        =0x0101
+    winUser.PostMessage(hWnd, WM_KEYDOWN, vkCode, 1)
+    winUser.PostMessage(hWnd, WM_KEYUP, vkCode, 1 | (1<<30) | (1<<31))
+def captureAsync(obj):
+    WM_CHAR = 0x0102 #WM_CHAR
+    timeoutSeconds = 60
+    timeout = time.time() + timeoutSeconds
+    result = []
+    previousLines = []
+    previousLinesCounter = 0
+    while time.time() < timeout:
+        #tones.beep(500, 20)
+        textInfo = obj.makeTextInfo(textInfos.POSITION_ALL)
+        lines = list(textInfo.getTextInChunks(textInfos.UNIT_LINE))
+        if lines == previousLines:
+            previousLinesCounter += 1
+            if previousLinesCounter < 10:
+                yield 10
+                continue
+        previousLines = lines
+        previousLinesCounter = 0
+        lastLine = lines[-1].rstrip()
+        pageComplete = lastLine == ":"
+        fileComplete= lastLine == "(END)"
+        if fileComplete:
+            index = len(lines) - 1
+            while index > 0 and lines[index - 1].rstrip() == "~":
+                index -= 1
+            lines = lines[:index]
+            result += lines
+            # Sending q letter to quit less command
+            #watchdog.cancellableSendMessage(obj.windowHandle, WM_CHAR, 0x71, 0)
+            injectKeystroke(obj.windowHandle, 0x51)
+            api.copyToClip("\n".join(result))
+            ui.message(_("Command output copied to clipboard"))
+            return
+        elif pageComplete:
+            result += lines[:-1]
+            # Sending space key:
+            #watchdog.cancellableSendMessage(obj.windowHandle, WM_CHAR, 0x20, 0)
+            injectKeystroke(obj.windowHandle, 0x20)
+        else:
+            yield 1
+    message = _("Timed out while waiting for command output!")
+    ui.message(message)
+    raise Exception(message)
+
+
 
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
