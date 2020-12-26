@@ -109,8 +109,6 @@ def initConfiguration():
         "blockDoubleInsert" : "boolean( default=False)",
         "blockDoubleCaps" : "boolean( default=False)",
         "blockScrollLock" : "boolean( default=False)",
-        "consoleRealtime" : "boolean( default=False)",
-        "consoleBeep" : "boolean( default=False)",
         "nvdaVolume" : "integer( default=100, min=0, max=100)",
         "busyBeep" : "boolean( default=False)",
         "dynamicKeystrokesTable" : f"string( default='{defaultDynamicKeystrokes}')",
@@ -122,9 +120,7 @@ def initConfiguration():
         "quickSearch1" : f"string( default='')",
         "quickSearch2" : f"string( default='')",
         "quickSearch3" : f"string( default='')",
-        "controlVInConsole" : "boolean( default=False)",
         "priority" : "integer( default=0, min=0, max=3)",
-        "deletePromptMethod" : "integer( default=0, min=0, max=3)",
     }
     config.conf.spec[module] = confspec
 
@@ -297,21 +293,6 @@ class SettingsDialog(gui.SettingsDialog):
         label = _("Block double Caps Lock")
         self.blockDoubleCapsCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.blockDoubleCapsCheckbox.Value = getConfig("blockDoubleCaps")
-      # checkbox console realtime
-        # Translators: Checkbox for realtime console
-        label = _("Speak console output in realtime")
-        self.consoleRealtimeCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
-        self.consoleRealtimeCheckbox.Value = getConfig("consoleRealtime")
-      # checkbox console beep
-        # Translators: Checkbox for console beep on update
-        label = _("Beep on update in consoles")
-        self.consoleBeepCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
-        self.consoleBeepCheckbox.Value = getConfig("consoleBeep")
-      # checkbox enforce control+V in console
-        # Translators: Checkbox for control+V enforcement in console
-        label = _("Always enable Control+V in console (useful for SSH)")
-        self.controlVInConsoleCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
-        self.controlVInConsoleCheckbox.Value = getConfig("controlVInConsole")
 
       # checkbox Busy beep
         # Translators: Checkbox for busy beep
@@ -374,12 +355,6 @@ class SettingsDialog(gui.SettingsDialog):
         self.priorityCombobox = sHelper.addLabeledControl(label, wx.Choice, choices=priorityNames)
         index = getConfig("priority")
         self.priorityCombobox.Selection = index
-      # Delete method Combo box
-        # Translators: Label for delete line method for prompt editing combo box
-        label = _("Method of deleting lines for prompt editing:")
-        self.deleteMethodCombobox = sHelper.addLabeledControl(label, wx.Choice, choices=deleteMethodNames)
-        index = getConfig("deletePromptMethod")
-        self.deleteMethodCombobox.Selection = index
 
     def dynamicCallback(self, result, text, keystroke):
         if result == wx.ID_OK:
@@ -444,9 +419,6 @@ class SettingsDialog(gui.SettingsDialog):
 
         setConfig("blockDoubleInsert", self.blockDoubleInsertCheckbox.Value)
         setConfig("blockDoubleCaps", self.blockDoubleCapsCheckbox.Value)
-        setConfig("consoleRealtime", self.consoleRealtimeCheckbox.Value)
-        setConfig("consoleBeep", self.consoleBeepCheckbox.Value)
-        setConfig("controlVInConsole", self.controlVInConsoleCheckbox.Value)
         setConfig("busyBeep", self.busyBeepCheckbox.Value)
         setConfig("fixWindowNumber", self.fixWindowNumberCheckbox.Value)
         setConfig("suppressUnselected", self.suppressUnselectedCheckbox.Value)
@@ -464,7 +436,6 @@ class SettingsDialog(gui.SettingsDialog):
         updateScrollLockBlocking()
         setConfig("priority", self.priorityCombobox.Selection)
         updatePriority()
-        setConfig("deletePromptMethod", self.deleteMethodCombobox.Selection)
         super(SettingsDialog, self).onOk(evt)
 
 class Memoize:
@@ -915,8 +886,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             delattr(editableText.EditableText, f"script_quickSearch{i}")
             del editableText.EditableText._EditableText__gestures[f"kb:{self.quickSearchGestures[i]}"]
             del editableText.EditableText._EditableText__gestures[f"kb:Shift+{self.quickSearchGestures[i]}"]
-        del behaviors.Terminal.script_editPrompt
-        del behaviors.Terminal._Terminal__gestures["kb:NVDA+E"]
 
     windowsSwitchingRe = re.compile(r':windows\+\d$')
     typingKeystrokeRe = re.compile(r':((shift\+)?[A-Za-z0-9]|space)$')
