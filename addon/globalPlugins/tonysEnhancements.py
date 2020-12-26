@@ -1244,7 +1244,7 @@ def editPrompt(obj, gesture):
     if UIAMode:
         text1 = text1.replace("\n", "").replace("\r", "")
         text2 = text2.replace("\n", "").replace("\r", "")
-        # text1 and text2 should be mostly identical, with the only difference being spaces possibly injected in at certain positions.
+        # text1 and text2 should be mostly identical, with the only difference being spaces possibly injected in at certain positions. near the end of lines.
         # Combine text1 and text2 into oldText while preserving those spaces.
         result = []
         n = len(text1)
