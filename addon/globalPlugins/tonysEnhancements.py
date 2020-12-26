@@ -24,9 +24,11 @@ import itertools
 import json
 import keyboardHandler
 from logHandler import log
+import math
 import NVDAHelper
-from NVDAObjects import behaviors
+from NVDAObjects import behaviors, NVDAObject
 from NVDAObjects.IAccessible import IAccessible
+from NVDAObjects.UIA import UIA
 from NVDAObjects.window import winword
 import nvwave
 import operator
@@ -51,7 +53,7 @@ import wx
 winmm = ctypes.windll.winmm
 
 
-debug = False
+debug = True
 if debug:
     import threading
     LOG_FILE_NAME = "C:\\Users\\tony\\Dropbox\\1.txt"
@@ -465,6 +467,16 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("deletePromptMethod", self.deleteMethodCombobox.Selection)
         super(SettingsDialog, self).onOk(evt)
 
+class Memoize:
+    def __init__(self, f):
+        self.f = f
+        self.memo = {}
+    def __call__(self, *args):
+        if not args in self.memo:
+            self.memo[args] = self.f(*args)
+        #Warning: You may wish to do a deepcopy here if returning objects
+        return self.memo[args]
+
 class Beeper:
     BASE_FREQ = speech.IDT_BASE_FREQUENCY
     def getPitch(self, indent):
@@ -483,6 +495,7 @@ class Beeper:
             outputDevice=config.conf["speech"]["outputDevice"],
             wantDucking=False
         )
+        self.stopSignal = False
 
 
 
@@ -523,7 +536,8 @@ class Beeper:
             prev = i
         return result
 
-    def fancyBeep(self, chord, length, left=10, right=10):
+    @Memoize
+    def prepareFancyBeep(self, chord, length, left=10, right=10):
         beepLen = length
         freqs = self.getChordFrequencies(chord)
         intSize = 8 # bytes
@@ -531,7 +545,6 @@ class Beeper:
         if bufSize % intSize != 0:
             bufSize += intSize
             bufSize -= (bufSize % intSize)
-        self.player.stop()
         bbs = []
         result = [0] * (bufSize//intSize)
         for freq in freqs:
@@ -542,8 +555,25 @@ class Beeper:
             result = map(operator.add, result, unpacked)
         maxInt = 1 << (8 * intSize)
         result = map(lambda x : x %maxInt, result)
-        packed = struct.pack("<%dQ" % (bufSize // intSize), *result)
-        self.player.feed(packed)
+        packed = struct.pack("<%dQ" % (bufSize // intSize), *result)    
+        return packed
+    
+    def fancyBeep(self, chord, length, left=10, right=10, repetitions=1 ):
+        self.player.stop()
+        buffer = self.prepareFancyBeep(self, chord, length, left, right)
+        self.player.feed(buffer)
+        repetitions -= 1
+        if repetitions > 0:
+            self.stopSignal = False
+            # This is a crappy implementation of multithreading. It'll deadlock if you poke it.
+            # Don't use for anything serious.
+            def threadFunc(repetitions):
+                for i in range(repetitions):
+                    if self.stopSignal:
+                        return
+                    self.player.feed(buffer)
+            t = threading.Thread(target=threadFunc, args=(repetitions,))
+            t.start()
 
     def uniformSample(self, a, m):
         n = len(a)
@@ -555,6 +585,7 @@ class Beeper:
             result.append(a[i  // m])
         return result
     def stop(self):
+        self.stopSignal = True
         self.player.stop()
 
 
@@ -1052,6 +1083,7 @@ def fromNameEnglish(name):
     return keyboardHandler.KeyboardInputGesture(keys[:-1], vk, 0, ext)
 
 originalTerminalGainFocus = None
+originalNVDAObjectFfocusEntered = None
 suppressTerminalTitleAnnouncement = False
 def terminalGainFocus(self):
     if suppressTerminalTitleAnnouncement:
@@ -1059,7 +1091,10 @@ def terminalGainFocus(self):
         self.startMonitoring()
     else:
         return originalTerminalGainFocus(self)
-
+def nvdaObjectFfocusEntered(self):
+    if suppressTerminalTitleAnnouncement:
+        return
+    return originalNVDAObjectFfocusEntered(self)
 def executeAsynchronously(gen):
     """
     This function executes a generator-function in such a manner, that allows updates from the operating system to be processed during execution.
@@ -1192,17 +1227,19 @@ deleteMethodNames = [
 def updatePrompt(result, text, keystroke, oldText, obj):
     for delay in waitUntilModifiersReleased():
         yield delay
-    modifiers = keystroke.modifierNames
-    mainKeyName = keystroke.mainKeyName
-    if (
-        modifiers == ["control"]
-        and mainKeyName == "enter"
-    ):
-        text = updateCommandForCapturing(text)
-        doCapture = True
-    else:
-        doCapture = False
+    doCapture = False
+    if result == wx.ID_OK:
+        modifiers = keystroke.modifierNames
+        mainKeyName = keystroke.mainKeyName
+        if (
+            modifiers == ["control"]
+            and mainKeyName == "enter"
+        ):
+            text = updateCommandForCapturing(text)
+            doCapture = True
+
     obj.setFocus()
+    yield 10 # if we don't capture output, we need NVDA to see current screen, so that the updates will be spoken correctly
     method = getConfig("deletePromptMethod")
     inputs = []
     if method == DELETE_METHOD_CONTROL_C:
@@ -1259,55 +1296,112 @@ def waitUntilModifiersReleased():
 def injectKeystroke(hWnd, vkCode):
     # Here we use PostMessage() and WM_KEYDOWN event to inject keystroke into the terminal.
     # Alternative ways, such as WM_CHAR event, or using SendMessage can work in plain command prompt, but they don't appear to work in any falvours of ssh.
+    mylog(f"injectKeystroke({vkCode}, {hWnd})")
     WM_KEYDOWN                      =0x0100
     WM_KEYUP                        =0x0101
     winUser.PostMessage(hWnd, WM_KEYDOWN, vkCode, 1)
     winUser.PostMessage(hWnd, WM_KEYUP, vkCode, 1 | (1<<30) | (1<<31))
+
+captureBeeper = Beeper()
 def captureAsync(obj):
-    WM_CHAR = 0x0102 #WM_CHAR
     timeoutSeconds = 60
     timeout = time.time() + timeoutSeconds
+    start = time.time()
     result = []
     previousLines = []
     previousLinesCounter = 0
-    while time.time() < timeout:
-        #tones.beep(500, 20)
-        textInfo = obj.makeTextInfo(textInfos.POSITION_ALL)
-        lines = list(textInfo.getTextInChunks(textInfos.UNIT_LINE))
-        if lines == previousLines:
-            previousLinesCounter += 1
-            if previousLinesCounter < 10:
-                yield 10
-                continue
-        previousLines = lines
-        previousLinesCounter = 0
-        lastLine = lines[-1].rstrip()
-        pageComplete = lastLine == ":"
-        fileComplete= lastLine == "(END)"
-        if fileComplete:
-            index = len(lines) - 1
-            while index > 0 and lines[index - 1].rstrip() == "~":
-                index -= 1
-            lines = lines[:index]
-            result += lines
-            # Sending q letter to quit less command
-            #watchdog.cancellableSendMessage(obj.windowHandle, WM_CHAR, 0x71, 0)
-            injectKeystroke(obj.windowHandle, 0x51)
-            api.copyToClip("\n".join(result))
-            ui.message(_("Command output copied to clipboard"))
-            return
-        elif pageComplete:
-            result += lines[:-1]
-            # Sending space key:
-            #watchdog.cancellableSendMessage(obj.windowHandle, WM_CHAR, 0x20, 0)
-            injectKeystroke(obj.windowHandle, 0x20)
-        else:
-            yield 1
+    captureBeeper.fancyBeep("CDGA", length=5000, left=5, right=5, repetitions =int(math.ceil(timeoutSeconds / 5)) )
+    try:
+        while time.time() < timeout:
+            t = time.time() - start
+            mylog(f"{t:0.3}")
+            textInfo = obj.makeTextInfo(textInfos.POSITION_ALL)
+            if isinstance(obj, UIA):
+                lines = textInfo.text.split("\r\n")
+            else:
+                # Legacy winConsole support
+                lines = list(textInfo.getTextInChunks(textInfos.UNIT_LINE))
+            if lines == previousLines:
+                mylog(f"Screen hasn't changed! counter={previousLinesCounter}")
+                previousLinesCounter += 1
+                if previousLinesCounter < 10:
+                    yield 10
+                    continue
+                mylog("Current lines:")
+                for line in lines:
+                    line = line.rstrip("\r\n")
+                    mylog(f"    {line}")
+            previousLines = lines
+            previousLinesCounter = 0
+            lastLine = lines[-1].rstrip()
+            pageComplete = lastLine == ":"
+            fileComplete= lastLine == "(END)"
+            mylog(f"pageComplete={pageComplete} fileComplete={fileComplete}")
+            if fileComplete:
+                index = len(lines) - 1
+                while index > 0 and lines[index - 1].rstrip() == "~":
+                    index -= 1
+                lines = lines[:index]
+                result += lines
+                # Sending q letter to quit less command
+                #watchdog.cancellableSendMessage(obj.windowHandle, WM_CHAR, 0x71, 0)
+                injectKeystroke(obj.windowHandle, 0x51)
+                api.copyToClip("\n".join(result))
+                ui.message(_("Command output copied to clipboard"))
+                return
+            elif pageComplete:
+                result += lines[:-1]
+                # Sending space key:
+                #watchdog.cancellableSendMessage(obj.windowHandle, WM_CHAR, 0x20, 0)
+                injectKeystroke(obj.windowHandle, 0x20)
+            else:
+                yield 1
+    finally:
+        captureBeeper.stop()
     message = _("Timed out while waiting for command output!")
     ui.message(message)
     raise Exception(message)
 
 
+
+
+
+logSpeech = False
+if True:
+    from speech.priorities import Spri
+    import traceback
+    originalSpeak = speech.speak
+    def speak(
+        speechSequence,
+        symbolLevel = None,
+        priority: Spri = Spri.NORMAL
+    ):
+        if logSpeech:
+            mylog(" ".join([s for s in speechSequence if isinstance(s, str)]))
+            for line in traceback.format_stack():
+                mylog("    " + line.strip())
+        return originalSpeak(speechSequence, symbolLevel, priority)
+    speech.speak = speak
+    tones.beep(500, 500)
+if False:
+    from NVDAObjects.UIA.winConsoleUIA import consoleUIAWindow
+    from NVDAObjects import NVDAObject
+    def _get_isPresentableFocusAncestor(self):
+        if isinstance(self, consoleUIAWindow):
+            import tones
+            tones.beep(500, 50)
+            return False
+        orig(self)
+
+
+
+    #consoleUIAWindow._get_isPresentableFocusAncestor = _get_isPresentableFocusAncestor
+    #orig = NVDAObject._get_isPresentableFocusAncestor
+    #NVDAObject._get_isPresentableFocusAncestor = _get_isPresentableFocusAncestor
+    orig2 = NVDAObject.event_focusEntered
+    NVDAObject.event_focusEntered = lambda self: False
+
+    tones.beep(500, 500)
 
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
@@ -1324,6 +1418,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def chooseNVDAObjectOverlayClasses(self, obj, clsList):
         if getConfig("controlVInConsole") and obj.windowClassName == 'ConsoleWindowClass':
             clsList.insert(0, ConsoleControlV)
+            pass
 
     def createMenu(self):
         def _popupMenu(evt):
@@ -1339,7 +1434,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
     quickSearchGestures = ",PrintScreen,ScrollLock,Pause".split(",")
     def injectHooks(self):
-        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep, originalReportNewText, originalSpeakSelectionChange, originalCaretMovementScriptHelper, originalCancelSpeech, originalSpeechSpeak, originalTerminalGainFocus
+        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep, originalReportNewText, originalSpeakSelectionChange, originalCaretMovementScriptHelper, originalCancelSpeech, originalSpeechSpeak, originalTerminalGainFocus, originalNVDAObjectFfocusEntered
         self.originalExecuteGesture = inputCore.InputManager.executeGesture
         inputCore.InputManager.executeGesture = lambda selfself, gesture, *args, **kwargs: self.preExecuteGesture(selfself, gesture, *args, **kwargs)
         #self.originalCalculateNewText = behaviors.LiveText._calculateNewText
@@ -1373,8 +1468,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             editableText.EditableText._EditableText__gestures[f"kb:{self.quickSearchGestures[i]}"] = f"quickSearch{i}"
             editableText.EditableText._EditableText__gestures[f"kb:Shift+{self.quickSearchGestures[i]}"] = f"quickSearch{i}"
         if True:
+            # Apparently we need to monkey patch in two places to avoid terminal title being spoken when we switch to it from edit prompt window.
+            # behaviors.Terminal.event_gainFocus is needed for both legacy and UIA implementation,
+            # but in legacy it speaks window title, while in UIA mode it speaks current line in the terminal
+            # NVDAObject.event_focusEntered speaks window title in UIA mode.
             originalTerminalGainFocus = behaviors.Terminal.event_gainFocus
             behaviors.Terminal.event_gainFocus = terminalGainFocus
+            originalNVDAObjectFfocusEntered = NVDAObject.event_focusEntered
+            NVDAObject.event_focusEntered = nvdaObjectFfocusEntered
             behaviors.Terminal.script_editPrompt = script_editPrompt
             try:
                 behaviors.Terminal._Terminal__gestures
@@ -1399,6 +1500,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             del editableText.EditableText._EditableText__gestures[f"kb:{self.quickSearchGestures[i]}"]
             del editableText.EditableText._EditableText__gestures[f"kb:Shift+{self.quickSearchGestures[i]}"]
         behaviors.Terminal.event_gainFocus = originalTerminalGainFocus
+        NVDAObject.event_focusEntered = originalNVDAObjectFfocusEntered
         del behaviors.Terminal.script_editPrompt
         del behaviors.Terminal._Terminal__gestures["kb:NVDA+E"]
 
@@ -1687,7 +1789,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         mylog(lineInfo.text)
         speech.speakTextInfo(lineInfo, unit=textInfos.UNIT_WORD, reason=controlTypes.REASON_CARET)
 
-class ConsoleControlV(IAccessible):
+    @script(description='Log speech stacktrace.', gestures=['kb:NVDA+Delete'])
+    def script_log(self, gesture):
+        global logSpeech
+        logSpeech = not logSpeech
+        ui.message(f"logSpeech={logSpeech}")
+
+
+class ConsoleControlV(NVDAObject):
     @script(description='Paste from clipboard', gestures=['kb:Control+V'])
     def script_paste(self, gesture):
         # This sends WM_COMMAND message, with ID of Paste item of context menu of command prompt window.
