@@ -39,17 +39,13 @@ appName keystroke
 ```
 where `appName` is the name of the application where this keystroke is marked dynamic (or `*` to b marked dynamic in all applications), and`keystroke` is a keystroke in NVDA format, for example, `control+alt+shift+pagedown`.
 
-## Real-time console output
+## Console enhancements
 
-This option is disabled by default and must be enabled in the settings.
+Previously this add-on included a number of console-related features. As of version 1.8, all console-related features have been moved to [Console Toolkit add-on](https://github.com/mltony/nvda-console-toolkit/). Specifically:
 
-This option makes NVDA to speak new lines immediately as they appear in console output, instead of queueing new speech utterances.
-
-There is also an option to beep on command line updates - this would give you a better idea when new lines are printed in the console.
-
-## Enforce Control+V in consoles
-
-This option makes Control+V shortcut to work inside `ssh` sessions.
+- Real-time console output
+- Beep on console updates
+- Enforce Control+V in consoles
 
 ## Beep when NVDA is busy
 
