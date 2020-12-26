@@ -555,9 +555,9 @@ class Beeper:
             result = map(operator.add, result, unpacked)
         maxInt = 1 << (8 * intSize)
         result = map(lambda x : x %maxInt, result)
-        packed = struct.pack("<%dQ" % (bufSize // intSize), *result)    
+        packed = struct.pack("<%dQ" % (bufSize // intSize), *result)
         return packed
-    
+
     def fancyBeep(self, chord, length, left=10, right=10, repetitions=1 ):
         self.player.stop()
         buffer = self.prepareFancyBeep(self, chord, length, left, right)
@@ -775,76 +775,8 @@ def executeAsynchronously(gen):
     l = lambda gen=gen: executeAsynchronously(gen)
     core.callLater(value, executeAsynchronously, gen)
 
-class SpeechChunk:
-    def __init__(self, text, now):
-        self.text = text
-        self.timestamp = now
-        self.spoken = False
-        self.nextChunk = None
 
-    def speak(self):
-        def callback():
-            global currentSpeechChunk, latestSpeechChunk
-            #mylog(f'callback, pre acquire "{self.text}"')
-            with speechChunksLock:
-                #mylog(f'callback lock acquired!')
-                if self != currentSpeechChunk:
-                    # This can happen when this callback has already been scheduled, but new speech has arrived
-                    # and this chunk was cancelled due to timeout.
-                    return
-                myAssert(
-                    (
-                        currentSpeechChunk == latestSpeechChunk
-                        and self.nextChunk is None
-                    )
-                    or (
-                        currentSpeechChunk != latestSpeechChunk
-                        and self.nextChunk is not  None
-                    )
-                )
-
-                currentSpeechChunk = self.nextChunk
-                if self.nextChunk is not None:
-                    self.nextChunk.speak()
-                else:
-                    latestSpeechChunk = None
-        speech.speak([
-            self.text,
-            speech.commands.CallbackCommand(callback),
-        ])
-
-currentSpeechChunk = None
-latestSpeechChunk = None
-speechChunksLock = threading.Lock()
-originalReportNewText = None
 originalSpeechSpeak = None
-originalCancelSpeech = None
-def newReportConsoleText(selfself, line, *args, **kwargs):
-    global currentSpeechChunk, latestSpeechChunk
-    if getConfig("consoleBeep"):
-        tones.beep(100, 5)
-    if not getConfig("consoleRealtime"):
-        return originalReportNewText(selfself, line, *args, **kwargs)
-    now = time.time()
-    threshold = now - 1
-    newChunk = SpeechChunk(line, now)
-    #mylog(f'newReportConsoleText pre acquire line="{line}"')
-    with speechChunksLock:
-        #mylog(f'newReportConsoleText lock acquired!')
-        myAssert((currentSpeechChunk is not None) == (latestSpeechChunk is not None))
-        if latestSpeechChunk is not None:
-            latestSpeechChunk.nextChunk = newChunk
-            latestSpeechChunk = newChunk
-            if currentSpeechChunk.timestamp < threshold:
-                originalCancelSpeech()
-                while currentSpeechChunk.timestamp < threshold:
-                    currentSpeechChunk = currentSpeechChunk.nextChunk
-                currentSpeechChunk.speak()
-        else:
-            currentSpeechChunk = latestSpeechChunk = newChunk
-            newChunk.speak()
-    #mylog(f'newReportConsoleText lock released!')
-
 def processLanguages(command):
     if isinstance(command, speech.commands.LangChangeCommand):
         return
@@ -892,14 +824,6 @@ def newSpeechSpeak(speechSequence, *args, **kwargs):
         #mylog(str(sequence))
     return originalSpeechSpeak(sequence, *args, **kwargs)
 
-def newCancelSpeech(*args, **kwargs):
-    global currentSpeechChunk, latestSpeechChunk
-    #mylog(f'newCancelSpeech pre acquire')
-    with speechChunksLock:
-        #mylog(f'newCancelSpeech lock acquired!')
-        currentSpeechChunk = latestSpeechChunk = None
-    #mylog(f'newCancelSpeech lock released!')
-    return originalCancelSpeech(*args, **kwargs)
 
 originalSpeakSelectionChange = None
 originalCaretMovementScriptHelper = None
@@ -925,575 +849,6 @@ def updateScrollLockBlocking():
 
 updateScrollLockBlocking()
 
-class SingleLineEditTextDialog(wx.Dialog):
-    # This is a single line text edit window.
-    def __init__(self, parent, text, onTextComplete):
-        self.tabValue = "    "
-        title_string = _("Edit text")
-        super(SingleLineEditTextDialog, self).__init__(parent, title=title_string)
-        self.text = text
-        self.onTextComplete = onTextComplete
-        mainSizer = wx.BoxSizer(wx.VERTICAL)
-        sHelper = gui.guiHelper.BoxSizerHelper(self, orientation=wx.VERTICAL)
-
-        self.textCtrl = wx.TextCtrl(self, style=wx.TE_DONTWRAP|wx.TE_PROCESS_ENTER)
-        self.textCtrl.Bind(wx.EVT_CHAR, self.onChar)
-        self.Bind(wx.EVT_CHAR_HOOK, self.OnKeyUP)
-        sHelper.addItem(self.textCtrl)
-        self.textCtrl.SetValue(text)
-        self.SetFocus()
-        self.Maximize(True)
-
-    def onChar(self, event):
-        control = event.ControlDown()
-        shift = event.ShiftDown()
-        alt = event.AltDown()
-        keyCode = event.GetKeyCode()
-        if event.GetKeyCode() in [10, 13]:
-            # 13 means Enter
-            # 10 means Control+Enter
-            modifiers = [
-                control, shift, alt
-            ]
-            if True:
-                modifierNames = [
-                    "control",
-                    "shift",
-                    "alt",
-                ]
-                modifierTokens = [
-                    modifierNames[i]
-                    for i in range(len(modifiers))
-                    if modifiers[i]
-                ]
-                keystrokeName = "+".join(modifierTokens + ["Enter"])
-                self.keystroke = fromNameEnglish(keystrokeName)
-                self.text = self.textCtrl.GetValue()
-                self.temporarilySuspendTerminalTitleAnnouncement()
-                self.EndModal(wx.ID_OK)
-                wx.CallAfter(lambda: self.onTextComplete(wx.ID_OK, self.text, self.keystroke))
-        elif event.GetKeyCode() == wx.WXK_TAB:
-            if alt or control:
-                event.Skip()
-            elif not shift:
-                # Just Tab
-                self.textCtrl.WriteText(self.tabValue)
-            else:
-                # Shift+Tab
-                curPos = self.textCtrl.GetInsertionPoint()
-                lineNum = len(self.textCtrl.GetRange( 0, self.textCtrl.GetInsertionPoint() ).split("\n")) - 1
-                priorText = self.textCtrl.GetRange( 0, self.textCtrl.GetInsertionPoint() )
-                text = self.textCtrl.GetValue()
-                postText = text[len(priorText):]
-                if priorText.endswith(self.tabValue):
-                    newText = priorText[:-len(self.tabValue)] + postText
-                    self.textCtrl.SetValue(newText)
-                    self.textCtrl.SetInsertionPoint(curPos - len(self.tabValue))
-        elif event.GetKeyCode() == 1:
-            # Control+A
-            self.textCtrl.SetSelection(-1,-1)
-        elif event.GetKeyCode() == wx.WXK_HOME:
-            if not any([control, shift, alt]):
-                curPos = self.textCtrl.GetInsertionPoint()
-                #lineNum = len(self.textCtrl.GetRange( 0, self.textCtrl.GetInsertionPoint() ).split("\n")) - 1
-                #colNum = len(self.textCtrl.GetRange( 0, self.textCtrl.GetInsertionPoint() ).split("\n")[-1])
-                _, colNum,lineNum = self.textCtrl.PositionToXY(self.textCtrl.GetInsertionPoint())
-                lineText = self.textCtrl.GetLineText(lineNum)
-                m = re.search("^\s*", lineText)
-                if not m:
-                    raise Exception("This regular expression must match always.")
-                indent = len(m.group(0))
-                if indent == colNum:
-                    newColNum = 0
-                else:
-                    newColNum = indent
-                newPos = self.textCtrl.XYToPosition(newColNum, lineNum)
-                self.textCtrl.SetInsertionPoint(newPos)
-            else:
-                event.Skip()
-        else:
-            event.Skip()
-
-
-    def OnKeyUP(self, event):
-        keyCode = event.GetKeyCode()
-        if keyCode == wx.WXK_ESCAPE:
-            self.text = self.textCtrl.GetValue()
-            self.temporarilySuspendTerminalTitleAnnouncement()
-            self.EndModal(wx.ID_CANCEL)
-            wx.CallAfter(lambda: self.onTextComplete(wx.ID_CANCEL, self.text, None))
-        event.Skip()
-
-    def temporarilySuspendTerminalTitleAnnouncement(self):
-        global suppressTerminalTitleAnnouncement
-        suppressTerminalTitleAnnouncement = True
-        def reset():
-            global suppressTerminalTitleAnnouncement
-            suppressTerminalTitleAnnouncement = False
-        core.callLater(1000, reset)
-
-
-def popupEditTextDialog(text, onTextComplete):
-    gui.mainFrame.prePopup()
-    d = SingleLineEditTextDialog(gui.mainFrame, text, onTextComplete)
-    result = d.Show()
-    gui.mainFrame.postPopup()
-
-# This function is a fixed version of fromNameEnglish function.
-# As of v2020.3 it doesn't work correctly for gestures containing letters when the default locale on the computer is set to non-Latin, such as Russian.
-import vkCodes
-en_us_input_Hkl = 1033 + (1033 << 16)
-def fromNameEnglish(name):
-    """Create an instance given a key name.
-    @param name: The key name.
-    @type name: str
-    @return: A gesture for the specified key.
-    @rtype: L{KeyboardInputGesture}
-    """
-    keyNames = name.split("+")
-    keys = []
-    for keyName in keyNames:
-        if keyName == "plus":
-            # A key name can't include "+" except as a separator.
-            keyName = "+"
-        if keyName == keyboardHandler.VK_WIN:
-            vk = winUser.VK_LWIN
-            ext = False
-        elif keyName.lower() == keyboardHandler.VK_NVDA.lower():
-            vk, ext = keyboardHandler.getNVDAModifierKeys()[0]
-        elif len(keyName) == 1:
-            ext = False
-            requiredMods, vk = winUser.VkKeyScanEx(keyName, en_us_input_Hkl)
-            if requiredMods & 1:
-                keys.append((winUser.VK_SHIFT, False))
-            if requiredMods & 2:
-                keys.append((winUser.VK_CONTROL, False))
-            if requiredMods & 4:
-                keys.append((winUser.VK_MENU, False))
-            # Not sure whether we need to support the Hankaku modifier (& 8).
-        else:
-            vk, ext = vkCodes.byName[keyName.lower()]
-            if ext is None:
-                ext = False
-        keys.append((vk, ext))
-
-    if not keys:
-        raise ValueError
-
-    return keyboardHandler.KeyboardInputGesture(keys[:-1], vk, 0, ext)
-
-originalTerminalGainFocus = None
-originalNVDAObjectFfocusEntered = None
-suppressTerminalTitleAnnouncement = False
-def terminalGainFocus(self):
-    if suppressTerminalTitleAnnouncement:
-        # We only skip super() call here
-        self.startMonitoring()
-    else:
-        return originalTerminalGainFocus(self)
-def nvdaObjectFfocusEntered(self):
-    if suppressTerminalTitleAnnouncement:
-        return
-    return originalNVDAObjectFfocusEntered(self)
-def executeAsynchronously(gen):
-    """
-    This function executes a generator-function in such a manner, that allows updates from the operating system to be processed during execution.
-    For an example of such generator function, please see GlobalPlugin.script_editJupyter.
-    Specifically, every time the generator function yilds a positive number,, the rest of the generator function will be executed
-    from within wx.CallLater() call.
-    If generator function yields a value of 0, then the rest of the generator function
-    will be executed from within wx.CallAfter() call.
-    This allows clear and simple expression of the logic inside the generator function, while still allowing NVDA to process update events from the operating system.
-    Essentially the generator function will be paused every time it calls yield, then the updates will be processed by NVDA and then the remainder of generator function will continue executing.
-    """
-    if not isinstance(gen, types.GeneratorType):
-        raise Exception("Generator function required")
-    try:
-        value = gen.__next__()
-    except StopIteration:
-        return
-    core.callLater(value, executeAsynchronously, gen)
-
-
-# Just some random unicode character that is not likely to appear anywhere.
-# This character is used for prompt editing automation
-controlCharacter = "➉" # U+2789, Dingbat circled sans-serif digit ten
-#controlCharacter2 = "➊" # U+278A, 'DINGBAT NEGATIVE CIRCLED SANS-SERIF DIGIT ONE' (U+278A)
-
-
-
-def getVkLetter(keyName):
-    en_us_input_Hkl = 1033 + (1033 << 16)
-    requiredMods, vk = winUser.VkKeyScanEx(keyName, en_us_input_Hkl)
-    return vk
-def getVkCodes():
-    d = {}
-    d['home'] = winUser.VK_HOME
-    d['end'] = winUser.VK_END
-    d['delete'] = winUser.VK_DELETE
-    d['backspace'] = winUser.VK_BACK
-    return d
-
-def makeVkInput(vkCodes):
-    result = []
-    if not isinstance(vkCodes, list):
-        vkCodes = [vkCodes]
-    for vk in vkCodes:
-        input = winUser.Input(type=winUser.INPUT_KEYBOARD)
-        input.ii.ki.wVk = vk
-        result.append(input)
-    for vk in reversed(vkCodes):
-        input = winUser.Input(type=winUser.INPUT_KEYBOARD)
-        input.ii.ki.wVk = vk
-        input.ii.ki.dwFlags = winUser.KEYEVENTF_KEYUP
-        result.append(input)
-    return result
-
-def makeUnicodeInput(string):
-    result = []
-    for c in string:
-        input = winUser.Input(type=winUser.INPUT_KEYBOARD)
-        input.ii.ki.wScan = ord(c)
-        input.ii.ki.dwFlags = winUser.KEYEVENTF_UNICODE
-        result.append(input)
-        input2 = winUser.Input(type=winUser.INPUT_KEYBOARD)
-        input2.ii.ki.wScan = ord(c)
-        input2.ii.ki.dwFlags = winUser.KEYEVENTF_UNICODE | winUser.KEYEVENTF_KEYUP
-        result.append(input2)
-    return result
-
-def script_editPrompt(self, gesture):
-    executeAsynchronously(editPrompt(self, gesture))
-script_editPrompt.category = "Tony's enhancements"
-script_editPrompt.__name__ = _("Edit prompt")
-script.__doc__ = _("Opens accessible window that allows to edit current command line prompt.")
-def editPrompt(obj, gesture):
-    UIAMode = isinstance(obj, UIA)
-    text = obj.makeTextInfo(textInfos.POSITION_ALL).text
-    if controlCharacter in text:
-        ui.message(_("Control character found on the screen; clear window and try again."))
-        return
-    d = getVkCodes()
-    
-    inputs = []
-    inputs.extend(makeVkInput(d['end']))
-    inputs.extend(makeUnicodeInput(controlCharacter))
-    inputs.extend(makeVkInput(d['home']))
-    inputs.extend(makeUnicodeInput(controlCharacter))
-    controlCharactersAtStart = 1
-    with keyboardHandler.ignoreInjection():
-        winUser.SendInput(inputs)
-    
-    try:
-        timeoutSeconds = 1
-        timeout = time.time() + timeoutSeconds
-        found = False
-        while time.time() < timeout:
-            text = obj.makeTextInfo(textInfos.POSITION_ALL).text
-            indices = [i for i,c in enumerate(text) if c == controlCharacter]
-            if len(indices) >= 2:
-                found = True
-                break
-            yield 10
-        if not found:
-            msg = _("Timed out while waiting for control characters to appear.")
-            ui.message(msg)
-            raise Exception(msg)
-        if len(indices) > 2:
-            raise Exception(f"Unexpected: encountered {len(indices)} control characters!")
-        # now we are sure that there are only two indices
-        text1 = text[indices[0] + 1 : indices[1]]
-        if UIAMode:
-            # In UIA mode, UIA conveniently enough removes all the trailing spaces.
-            # On multiline prompts therefore we cannot tell whether the end of the first line should be glued to the second line with or without spaces.
-            # So we print another control character in the beginning to shift everything again by one more character to be able to tell,
-            # whetehr there is a space between first and second lines, or every pair of lines, or no space.
-            # Note however, that it is impossible to figure out the number of spaces, therefore when multiple spaces are present, their count is not guaranteed to be preserved.
-            inputs = []
-            inputs.extend(makeVkInput(d['home']))
-            inputs.extend(makeUnicodeInput(controlCharacter))
-            with keyboardHandler.ignoreInjection():
-                winUser.SendInput(inputs)
-            controlCharactersAtStart += 1
-            timeoutSeconds = 1
-            timeout = time.time() + timeoutSeconds
-            found = False
-            while time.time() < timeout:
-                text = obj.makeTextInfo(textInfos.POSITION_ALL).text
-                indices = [i for i,c in enumerate(text) if c == controlCharacter]
-                if len(indices) >= 3:
-                    found = True
-                    break
-                yield 10
-            if not found:
-                msg = _("Timed out while waiting for control characters to appear.")
-                ui.message(msg)
-                raise Exception(msg)            
-            if len(indices) > 3:
-                raise Exception(f"Unexpected: encountered {len(indices)} control characters on second iteration in UIA mode!")
-            text2 = text[indices[1] + 1 : indices[2]]
-    finally:
-        inputs = []
-        inputs.extend(makeVkInput(d['home']))
-        for _ in range(controlCharactersAtStart):
-            inputs.extend(makeVkInput(d['delete']))
-        inputs.extend(makeVkInput(d['end']))
-        inputs.extend(makeVkInput(d['backspace']))
-        with keyboardHandler.ignoreInjection():
-            winUser.SendInput(inputs)
-    if UIAMode:
-        text1 = text1.replace("\n", "").replace("\r", "")
-        text2 = text2.replace("\n", "").replace("\r", "")
-        # text1 and text2 should be mostly identical, with the only difference being spaces possibly injected in at certain positions. near the end of lines.
-        # Combine text1 and text2 into oldText while preserving those spaces.
-        result = []
-        n = len(text1)
-        m = len(text2)
-        i = j = 0
-        def reportMatchingProblem():
-            message = f"In UIA mode, error while matching text1 and text2. i={i}, j={j}, n={n}, m={m};\n{text1}\n{text2}"
-            raise Exception(message)
-        while True:
-            if i >= n and j >= m:
-                break
-            if i >= n:
-                if text2[j] == " ":
-                    result.append(" ")
-                    j += 1
-                    continue
-                else:
-                    reportMatchingProblem()
-            if j >= m:
-                if text1[i] == " ":
-                    result.append(" ")
-                    i += 1
-                    continue
-                else:
-                    reportMatchingProblem()
-            # now both i and j are within bounds
-            if text1[i] == text2[j]:
-                result.append(text1[i])
-                i += 1
-                j += 1
-            elif text1[i] == " ":
-                result.append(" ")
-                i += 1
-            elif text2[j] == " ":
-                result.append(" ")
-                j += 1
-            else:
-                reportMatchingProblem()
-        result = "".join(result)
-        oldText = result
-        mylog(f"text1 in UIA mode!:")
-        mylog(f"{text1}")
-        mylog(f"text2:")
-        mylog(f"{text2}")
-        mylog(f"oldText:")
-        mylog(f"{oldText}")
-    else:
-        oldText = text1.replace("\n", "").replace("\r", "")
-        mylog(f"text1:")
-        mylog(f"{text1}")
-        mylog(f"oldText:")
-        mylog(f"{oldText}")
-    onTextComplete = lambda result, newText, keystroke: executeAsynchronously(updatePrompt(result, newText, keystroke, oldText, obj))
-    popupEditTextDialog(oldText, onTextComplete)
-
-
-DELETE_METHOD_CONTROL_C = 0
-DELETE_METHOD_ESCAPE = 1
-DELETE_METHOD_CONTROL_K = 2
-DELETE_METHOD_BACKSPACE = 3
-deleteMethodNames = [
-    _("Control+C (recommended): works in both cmd.exe and bash, but leaves previous prompt visible on the screen; doesn't work in emacs"),
-    _("Escape: works only in cmd.exe"),
-    _("Control+A Control+K: works in bash and emacs; doesn't work in cmd.exe"),
-    _("Backspace: works in all environments; however slower and may cause corruption if the length of the line has changed"),
-]
-
-def updatePrompt(result, text, keystroke, oldText, obj):
-    for delay in waitUntilModifiersReleased():
-        yield delay
-    doCapture = False
-    if result == wx.ID_OK:
-        modifiers = keystroke.modifierNames
-        mainKeyName = keystroke.mainKeyName
-        if (
-            modifiers == ["control"]
-            and mainKeyName == "enter"
-        ):
-            text = updateCommandForCapturing(text)
-            doCapture = True
-
-    obj.setFocus()
-    yield 10 # if we don't capture output, we need NVDA to see current screen, so that the updates will be spoken correctly
-    method = getConfig("deletePromptMethod")
-    inputs = []
-    if method == DELETE_METHOD_CONTROL_C:
-        inputs.extend(makeVkInput([winUser.VK_LCONTROL, getVkLetter("C")]))
-    elif method == DELETE_METHOD_ESCAPE:
-        inputs.extend(makeVkInput(winUser.VK_ESCAPE))
-    elif method == DELETE_METHOD_CONTROL_K:
-        inputs.extend(makeVkInput([winUser.VK_LCONTROL, getVkLetter("A")]))
-        inputs.extend(makeVkInput([winUser.VK_LCONTROL, getVkLetter("K")]))
-    elif method == DELETE_METHOD_BACKSPACE:
-        inputs.extend(makeVkInput(winUser.VK_END))
-        for _ in range(len(oldText)):
-            inputs.extend(makeVkInput(winUser.VK_BACK))
-    else:
-        raise Exception(f"Unknown method {method}!")
-    inputs.extend(makeUnicodeInput(text))
-    with keyboardHandler.ignoreInjection():
-        winUser.SendInput(inputs)
-    if doCapture:
-        fromNameEnglish("Enter").send()
-        #keyboardHandler.KeyboardInputGesture.fromName("Enter").send()
-        #with keyboardHandler.ignoreInjection():
-            #winUser.SendInput(makeVkInput(winUser.VK_RETURN))
-        executeAsynchronously(captureAsync(obj))
-    elif result == wx.ID_OK:
-        keystroke.send()
-
-def updateCommandForCapturing(command):
-    #result = f"({command} && echo {controlCharacter2}) |& more -p"
-    result = f"{command} |& less -c"
-    return result
-
-allModifiers = [
-    winUser.VK_LCONTROL, winUser.VK_RCONTROL,
-    winUser.VK_LSHIFT, winUser.VK_RSHIFT, winUser.VK_LMENU,
-    winUser.VK_RMENU, winUser.VK_LWIN, winUser.VK_RWIN,
-]
-
-def waitUntilModifiersReleased():
-    timeoutSeconds = 5
-    timeout = time.time() + timeoutSeconds
-    while time.time() < timeout:
-        status = [
-            winUser.getKeyState(k) & 32768
-            for k in allModifiers
-        ]
-        if not any(status):
-            return
-        yield 10
-    message = _("Timed out while waiting for modifiers to be released!")
-    ui.message(message)
-    raise Exception(message)
-
-def injectKeystroke(hWnd, vkCode):
-    # Here we use PostMessage() and WM_KEYDOWN event to inject keystroke into the terminal.
-    # Alternative ways, such as WM_CHAR event, or using SendMessage can work in plain command prompt, but they don't appear to work in any falvours of ssh.
-    # We don't use SendInput() function, since it can only send keystrokes to the active focused window,
-    # and here we would like to be able to send keystrokes to console window regardless whether it is focused or not.
-    mylog(f"injectKeystroke({vkCode}, {hWnd})")
-    WM_KEYDOWN                      =0x0100
-    WM_KEYUP                        =0x0101
-    winUser.PostMessage(hWnd, WM_KEYDOWN, vkCode, 1)
-    winUser.PostMessage(hWnd, WM_KEYUP, vkCode, 1 | (1<<30) | (1<<31))
-
-captureBeeper = Beeper()
-def captureAsync(obj):
-    timeoutSeconds = 60
-    timeout = time.time() + timeoutSeconds
-    start = time.time()
-    result = []
-    previousLines = []
-    previousLinesCounter = 0
-    captureBeeper.fancyBeep("CDGA", length=5000, left=5, right=5, repetitions =int(math.ceil(timeoutSeconds / 5)) )
-    try:
-        while time.time() < timeout:
-            t = time.time() - start
-            mylog(f"{t:0.3}")
-            textInfo = obj.makeTextInfo(textInfos.POSITION_ALL)
-            if isinstance(obj, UIA):
-                lines = textInfo.text.split("\r\n")
-            else:
-                # Legacy winConsole support
-                lines = list(textInfo.getTextInChunks(textInfos.UNIT_LINE))
-            if lines == previousLines:
-                mylog(f"Screen hasn't changed! counter={previousLinesCounter}")
-                previousLinesCounter += 1
-                if previousLinesCounter < 10:
-                    yield 10
-                    continue
-                mylog("Current lines:")
-                for line in lines:
-                    line = line.rstrip("\r\n")
-                    mylog(f"    {line}")
-            previousLines = lines
-            previousLinesCounter = 0
-            lastLine = lines[-1].rstrip()
-            pageComplete = lastLine == ":"
-            fileComplete= lastLine == "(END)"
-            mylog(f"pageComplete={pageComplete} fileComplete={fileComplete}")
-            if fileComplete:
-                index = len(lines) - 1
-                while index > 0 and lines[index - 1].rstrip() == "~":
-                    index -= 1
-                lines = lines[:index]
-                result += lines
-                # Sending q letter to quit less command
-                #watchdog.cancellableSendMessage(obj.windowHandle, WM_CHAR, 0x71, 0)
-                injectKeystroke(obj.windowHandle, 0x51)
-                api.copyToClip("\n".join(result))
-                ui.message(_("Command output copied to clipboard"))
-                return
-            elif pageComplete:
-                result += lines[:-1]
-                # Sending space key:
-                #watchdog.cancellableSendMessage(obj.windowHandle, WM_CHAR, 0x20, 0)
-                injectKeystroke(obj.windowHandle, 0x20)
-            else:
-                yield 1
-    finally:
-        captureBeeper.stop()
-    message = _("Timed out while waiting for command output!")
-    ui.message(message)
-    raise Exception(message)
-
-
-
-
-
-logSpeech = False
-if True:
-    from speech.priorities import Spri
-    import traceback
-    originalSpeak = speech.speak
-    def speak(
-        speechSequence,
-        symbolLevel = None,
-        priority: Spri = Spri.NORMAL
-    ):
-        if logSpeech:
-            mylog(" ".join([s for s in speechSequence if isinstance(s, str)]))
-            for line in traceback.format_stack():
-                mylog("    " + line.strip())
-        return originalSpeak(speechSequence, symbolLevel, priority)
-    speech.speak = speak
-    tones.beep(500, 500)
-if False:
-    from NVDAObjects.UIA.winConsoleUIA import consoleUIAWindow
-    from NVDAObjects import NVDAObject
-    def _get_isPresentableFocusAncestor(self):
-        if isinstance(self, consoleUIAWindow):
-            import tones
-            tones.beep(500, 50)
-            return False
-        orig(self)
-
-
-
-    #consoleUIAWindow._get_isPresentableFocusAncestor = _get_isPresentableFocusAncestor
-    #orig = NVDAObject._get_isPresentableFocusAncestor
-    #NVDAObject._get_isPresentableFocusAncestor = _get_isPresentableFocusAncestor
-    orig2 = NVDAObject.event_focusEntered
-    NVDAObject.event_focusEntered = lambda self: False
-
-    tones.beep(500, 500)
-
-
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     scriptCategory = _("Tony's Enhancements")
 
@@ -1505,10 +860,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.lastConsoleUpdateTime = 0
         self.beeper = Beeper()
 
-    def chooseNVDAObjectOverlayClasses(self, obj, clsList):
-        if getConfig("controlVInConsole") and obj.windowClassName == 'ConsoleWindowClass':
-            clsList.insert(0, ConsoleControlV)
-            pass
 
     def createMenu(self):
         def _popupMenu(evt):
@@ -1524,14 +875,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
     quickSearchGestures = ",PrintScreen,ScrollLock,Pause".split(",")
     def injectHooks(self):
-        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep, originalReportNewText, originalSpeakSelectionChange, originalCaretMovementScriptHelper, originalCancelSpeech, originalSpeechSpeak, originalTerminalGainFocus, originalNVDAObjectFfocusEntered
+        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep,  originalSpeakSelectionChange, originalCaretMovementScriptHelper,  originalSpeechSpeak
         self.originalExecuteGesture = inputCore.InputManager.executeGesture
         inputCore.InputManager.executeGesture = lambda selfself, gesture, *args, **kwargs: self.preExecuteGesture(selfself, gesture, *args, **kwargs)
-        #self.originalCalculateNewText = behaviors.LiveText._calculateNewText
-        #behaviors.LiveText._calculateNewText = lambda selfself, *args, **kwargs: self.preCalculateNewText(selfself, *args, **kwargs)
-        originalReportNewText = behaviors.LiveText._reportNewText
-        behaviors.LiveText._reportNewText = newReportConsoleText
-
         originalWaveOpen = nvwave.WavePlayer.open
         nvwave.WavePlayer.open = preWaveOpen
         originalWatchdogAlive = watchdog.alive
@@ -1543,8 +889,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.myWatchdog.start()
         originalSpeakSelectionChange = speech.speakSelectionChange
         speech.speakSelectionChange = preSpeakSelectionChange
-        originalCancelSpeech = speech.cancelSpeech
-        speech.cancelSpeech = newCancelSpeech
         originalSpeechSpeak = speech.speak
         speech.speak = newSpeechSpeak
 
@@ -1557,40 +901,20 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             setattr(editableText.EditableText, f"script_quickSearch{i}", script)
             editableText.EditableText._EditableText__gestures[f"kb:{self.quickSearchGestures[i]}"] = f"quickSearch{i}"
             editableText.EditableText._EditableText__gestures[f"kb:Shift+{self.quickSearchGestures[i]}"] = f"quickSearch{i}"
-        if True:
-            # Apparently we need to monkey patch in two places to avoid terminal title being spoken when we switch to it from edit prompt window.
-            # behaviors.Terminal.event_gainFocus is needed for both legacy and UIA implementation,
-            # but in legacy it speaks window title, while in UIA mode it speaks current line in the terminal
-            # NVDAObject.event_focusEntered speaks window title in UIA mode.
-            originalTerminalGainFocus = behaviors.Terminal.event_gainFocus
-            behaviors.Terminal.event_gainFocus = terminalGainFocus
-            originalNVDAObjectFfocusEntered = NVDAObject.event_focusEntered
-            NVDAObject.event_focusEntered = nvdaObjectFfocusEntered
-            behaviors.Terminal.script_editPrompt = script_editPrompt
-            try:
-                behaviors.Terminal._Terminal__gestures
-            except AttributeError:
-                behaviors.Terminal._Terminal__gestures = {}
-            behaviors.Terminal._Terminal__gestures["kb:NVDA+E"] = "editPrompt"
 
     def  removeHooks(self):
-        global originalWaveOpen, originalReportNewText
+        global originalWaveOpen
         inputCore.InputManager.executeGesture = self.originalExecuteGesture
-        #behaviors.LiveText._calculateNewText = self.originalCalculateNewText
-        behaviors.LiveText._reportNewText = originalReportNewText
         nvwave.WavePlayer.open = originalWaveOpen
         watchdog.alive = originalWatchdogAlive
         watchdog.asleep = originalWatchdogAsleep
         self.myWatchdog.terminate()
         speech.speakSelectionChange = originalSpeakSelectionChange
-        speech.cancelSpeech = originalCancelSpeech
         speech.speak = originalSpeechSpeak
         for i in [1,2,3]:
             delattr(editableText.EditableText, f"script_quickSearch{i}")
             del editableText.EditableText._EditableText__gestures[f"kb:{self.quickSearchGestures[i]}"]
             del editableText.EditableText._EditableText__gestures[f"kb:Shift+{self.quickSearchGestures[i]}"]
-        behaviors.Terminal.event_gainFocus = originalTerminalGainFocus
-        NVDAObject.event_focusEntered = originalNVDAObjectFfocusEntered
         del behaviors.Terminal.script_editPrompt
         del behaviors.Terminal._Terminal__gestures["kb:NVDA+E"]
 
@@ -1879,20 +1203,3 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         mylog(lineInfo.text)
         speech.speakTextInfo(lineInfo, unit=textInfos.UNIT_WORD, reason=controlTypes.REASON_CARET)
 
-    @script(description='Log speech stacktrace.', gestures=['kb:NVDA+Delete'])
-    def script_log(self, gesture):
-        global logSpeech
-        logSpeech = not logSpeech
-        ui.message(f"logSpeech={logSpeech}")
-
-
-class ConsoleControlV(NVDAObject):
-    @script(description='Paste from clipboard', gestures=['kb:Control+V'])
-    def script_paste(self, gesture):
-        # This sends WM_COMMAND message, with ID of Paste item of context menu of command prompt window.
-        # Don't ask me how I figured out its ID...
-        # https://stackoverflow.com/questions/34410697/how-to-capture-the-windows-message-that-is-sent-from-this-menu
-        WM_COMMAND = 0x0111
-        watchdog.cancellableSendMessage(self.parent.windowHandle, WM_COMMAND, 0xfff1, 0)
-
-    #@script(description='Edit prompt', gestures=['kb:NVDA+E'])
