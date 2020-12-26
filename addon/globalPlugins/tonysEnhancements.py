@@ -1168,19 +1168,23 @@ script_editPrompt.category = "Tony's enhancements"
 script_editPrompt.__name__ = _("Edit prompt")
 script.__doc__ = _("Opens accessible window that allows to edit current command line prompt.")
 def editPrompt(obj, gesture):
+    UIAMode = isinstance(obj, UIA)
     text = obj.makeTextInfo(textInfos.POSITION_ALL).text
     if controlCharacter in text:
         ui.message(_("Control character found on the screen; clear window and try again."))
         return
     d = getVkCodes()
+    
+    inputs = []
+    inputs.extend(makeVkInput(d['end']))
+    inputs.extend(makeUnicodeInput(controlCharacter))
+    inputs.extend(makeVkInput(d['home']))
+    inputs.extend(makeUnicodeInput(controlCharacter))
+    controlCharactersAtStart = 1
+    with keyboardHandler.ignoreInjection():
+        winUser.SendInput(inputs)
+    
     try:
-        inputs = []
-        inputs.extend(makeVkInput(d['home']))
-        inputs.extend(makeUnicodeInput(controlCharacter))
-        inputs.extend(makeVkInput(d['end']))
-        inputs.extend(makeUnicodeInput(controlCharacter))
-        with keyboardHandler.ignoreInjection():
-            winUser.SendInput(inputs)
         timeoutSeconds = 1
         timeout = time.time() + timeoutSeconds
         found = False
@@ -1198,19 +1202,103 @@ def editPrompt(obj, gesture):
         if len(indices) > 2:
             raise Exception(f"Unexpected: encountered {len(indices)} control characters!")
         # now we are sure that there are only two indices
-        text = text[indices[0] + 1 : indices[1]]
+        text1 = text[indices[0] + 1 : indices[1]]
+        if UIAMode:
+            # In UIA mode, UIA conveniently enough removes all the trailing spaces.
+            # On multiline prompts therefore we cannot tell whether the end of the first line should be glued to the second line with or without spaces.
+            # So we print another control character in the beginning to shift everything again by one more character to be able to tell,
+            # whetehr there is a space between first and second lines, or every pair of lines, or no space.
+            # Note however, that it is impossible to figure out the number of spaces, therefore when multiple spaces are present, their count is not guaranteed to be preserved.
+            inputs = []
+            inputs.extend(makeVkInput(d['home']))
+            inputs.extend(makeUnicodeInput(controlCharacter))
+            with keyboardHandler.ignoreInjection():
+                winUser.SendInput(inputs)
+            controlCharactersAtStart += 1
+            timeoutSeconds = 1
+            timeout = time.time() + timeoutSeconds
+            found = False
+            while time.time() < timeout:
+                text = obj.makeTextInfo(textInfos.POSITION_ALL).text
+                indices = [i for i,c in enumerate(text) if c == controlCharacter]
+                if len(indices) >= 3:
+                    found = True
+                    break
+                yield 10
+            if not found:
+                msg = _("Timed out while waiting for control characters to appear.")
+                ui.message(msg)
+                raise Exception(msg)            
+            if len(indices) > 3:
+                raise Exception(f"Unexpected: encountered {len(indices)} control characters on second iteration in UIA mode!")
+            text2 = text[indices[1] + 1 : indices[2]]
     finally:
         inputs = []
         inputs.extend(makeVkInput(d['home']))
-        inputs.extend(makeVkInput(d['delete']))
+        for _ in range(controlCharactersAtStart):
+            inputs.extend(makeVkInput(d['delete']))
         inputs.extend(makeVkInput(d['end']))
         inputs.extend(makeVkInput(d['backspace']))
         with keyboardHandler.ignoreInjection():
             winUser.SendInput(inputs)
-    #ui.message("Edit prompt! " + text)
-    oldText = text.replace("\n", "").replace("\r", "")
+    if UIAMode:
+        text1 = text1.replace("\n", "").replace("\r", "")
+        text2 = text2.replace("\n", "").replace("\r", "")
+        # text1 and text2 should be mostly identical, with the only difference being spaces possibly injected in at certain positions.
+        # Combine text1 and text2 into oldText while preserving those spaces.
+        result = []
+        n = len(text1)
+        m = len(text2)
+        i = j = 0
+        def reportMatchingProblem():
+            message = f"In UIA mode, error while matching text1 and text2. i={i}, j={j}, n={n}, m={m};\n{text1}\n{text2}"
+            raise Exception(message)
+        while True:
+            if i >= n and j >= m:
+                break
+            if i >= n:
+                if text2[j] == " ":
+                    result.append(" ")
+                    j += 1
+                    continue
+                else:
+                    reportMatchingProblem()
+            if j >= m:
+                if text1[i] == " ":
+                    result.append(" ")
+                    i += 1
+                    continue
+                else:
+                    reportMatchingProblem()
+            # now both i and j are within bounds
+            if text1[i] == text2[j]:
+                result.append(text1[i])
+                i += 1
+                j += 1
+            elif text1[i] == " ":
+                result.append(" ")
+                i += 1
+            elif text2[j] == " ":
+                result.append(" ")
+                j += 1
+            else:
+                reportMatchingProblem()
+        result = "".join(result)
+        oldText = result
+        mylog(f"text1 in UIA mode!:")
+        mylog(f"{text1}")
+        mylog(f"text2:")
+        mylog(f"{text2}")
+        mylog(f"oldText:")
+        mylog(f"{oldText}")
+    else:
+        oldText = text1.replace("\n", "").replace("\r", "")
+        mylog(f"text1:")
+        mylog(f"{text1}")
+        mylog(f"oldText:")
+        mylog(f"{oldText}")
     onTextComplete = lambda result, newText, keystroke: executeAsynchronously(updatePrompt(result, newText, keystroke, oldText, obj))
-    popupEditTextDialog(text, onTextComplete)
+    popupEditTextDialog(oldText, onTextComplete)
 
 
 DELETE_METHOD_CONTROL_C = 0
@@ -1296,6 +1384,8 @@ def waitUntilModifiersReleased():
 def injectKeystroke(hWnd, vkCode):
     # Here we use PostMessage() and WM_KEYDOWN event to inject keystroke into the terminal.
     # Alternative ways, such as WM_CHAR event, or using SendMessage can work in plain command prompt, but they don't appear to work in any falvours of ssh.
+    # We don't use SendInput() function, since it can only send keystrokes to the active focused window,
+    # and here we would like to be able to send keystrokes to console window regardless whether it is focused or not.
     mylog(f"injectKeystroke({vkCode}, {hWnd})")
     WM_KEYDOWN                      =0x0100
     WM_KEYUP                        =0x0101
