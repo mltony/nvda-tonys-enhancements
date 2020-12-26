@@ -53,7 +53,7 @@ import wx
 winmm = ctypes.windll.winmm
 
 
-debug = True
+debug = False
 if debug:
     import threading
     LOG_FILE_NAME = "C:\\Users\\tony\\Dropbox\\1.txt"
