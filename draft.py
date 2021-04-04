@@ -9,7 +9,7 @@ if True:
         priority: Spri = Spri.NORMAL
     ):
         if logSpeech:
-            mylog(speechSequence)
+            mylog([s for s in speechSequence if isinstance(s, str)])
             for line in traceback.format_stack():
                 mylog("    " + line.strip())
         return originalSpeak(speechSequence, symbolLevel, priority)
