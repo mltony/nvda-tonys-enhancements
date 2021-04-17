@@ -75,6 +75,11 @@ def myAssert(condition):
     if not condition:
         raise RuntimeError("Assertion failed")
 
+try:
+    REASON_CARET = controlTypes.REASON_CARET
+except AttributeError:
+    REASON_CARET = controlTypes.OutputReason.CARET
+
 defaultDynamicKeystrokes = """
 *:F1
 *:F2
@@ -615,7 +620,7 @@ def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
                 ui.message(_("Cannot find {axis} with index {index} in this table").format(**locals()))
                 return
 
-    speech.speakTextInfo(info,formatConfig=formatConfig,reason=controlTypes.REASON_CARET)
+    speech.speakTextInfo(info,formatConfig=formatConfig,reason=REASON_CARET)
     info.collapse()
     selfself.selection = info
 
@@ -639,7 +644,7 @@ def speakColumn(selfself, gesture):
 
     MAX_TABLE_DIMENSION = 500
     for attempt in range(MAX_TABLE_DIMENSION):
-        speech.speakTextInfo(info, formatConfig=formatConfig, reason=controlTypes.REASON_CARET)
+        speech.speakTextInfo(info, formatConfig=formatConfig, reason=REASON_CARET)
         tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(info)
         try:
             info = selfself._getNearestTableCell(tableID, info, origRow, origCol, origRowSpan, origColSpan, movement, axis)
@@ -1163,12 +1168,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             caretInfo.expand(textInfos.UNIT_PARAGRAPH)
             caretInfo.collapse(end=False)
             caretInfo.move(textInfos.UNIT_CHARACTER, len(preLines[-1]))
-        #caretInfo.move(textInfos.UNIT_CHARACTER, adjustment)
         caretInfo.move(textInfos.UNIT_CHARACTER, match.end() - match.start(), endPoint='end')
         caretInfo.updateSelection()
+        mylog(f"1. {caretInfo.text}")
         lineInfo = caretInfo.copy()
         lineInfo.expand(textInfos.UNIT_PARAGRAPH)
+        mylog(f"2. {lineInfo.text}")
         lineInfo.setEndPoint(caretInfo, 'startToStart')
         mylog(lineInfo.text)
-        speech.speakTextInfo(lineInfo, unit=textInfos.UNIT_WORD, reason=controlTypes.REASON_CARET)
+        speech.speakTextInfo(lineInfo, unit=textInfos.UNIT_PARAGRAPH, reason=REASON_CARET)
 
