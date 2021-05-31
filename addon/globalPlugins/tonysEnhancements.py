@@ -34,7 +34,6 @@ import nvwave
 import operator
 import os
 import re
-import sayAllHandler
 from scriptHandler import script, willSayAllResume
 import speech
 import string
@@ -624,6 +623,72 @@ def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
     info.collapse()
     selfself.selection = info
 
+def speakRowOrColumn(selfself, gesture, axis=None, initialMovement=None, updateCursor=False):
+    movement = "next"
+    from scriptHandler import isScriptWaiting
+    if isScriptWaiting():
+        return
+    formatConfig=config.conf["documentFormatting"].copy()
+    formatConfig["reportTables"]=True
+    try:
+        tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(selfself.selection)
+        info = selfself._getTableCellAt(tableID, selfself.selection,origRow, origCol)
+    except LookupError:
+        # Translators: The message reported when a user attempts to use a table movement command
+        # when the cursor is not within a table.
+        ui.message(_("Not in a table cell"))
+        return
+
+    if initialMovement is not None:
+        MAX_TABLE_DIMENSION = 500
+
+        edgeFound = False
+        for attempt in range(MAX_TABLE_DIMENSION):
+            tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(info)
+            try:
+                info = selfself._getNearestTableCell(tableID, info, origRow, origCol, origRowSpan, origColSpan, initialMovement, axis)
+            except LookupError:
+                edgeFound = True
+                break
+        if not edgeFound:
+            ui.message(_("Cannot find edge of table in this direction"))
+            return
+    def makeCallback(info):
+        def callbackImpl():
+            nonlocal info
+            tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(info)
+            try:
+                info = selfself._getNearestTableCell(tableID, info, origRow, origCol, origRowSpan, origColSpan, movement, axis)
+            except LookupError:
+                return
+            seq = [
+                command  for subseq in
+                    speech.getTextInfoSpeech(
+                        info,
+                        formatConfig=formatConfig,
+                        reason=REASON_CARET,
+                    )
+                for command in subseq
+            ]
+            seq.append(makeCallback(info))
+            speech.speak(seq)
+            if updateCursor:
+                info.updateCaret()
+
+
+        return speech.commands.CallbackCommand(callbackImpl)
+    seq = [
+        command for subseq in
+            speech.getTextInfoSpeech(
+                info,
+                formatConfig=formatConfig,
+                reason=REASON_CARET,
+            )
+        for command in subseq
+    ] + [makeCallback(info)]
+    speech.speak(seq)
+
+
 
 def speakColumn(selfself, gesture):
     movement = "next"
@@ -1095,7 +1160,37 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             scriptName="readColumn",
             kb="NVDA+Shift+DownArrow",
             doc="Read column starting from current cell",
-            function=speakColumn,
+            function=speakRowOrColumn,
+            axis='row',
+            initialMovement=None,
+            updateCursor=True,
+        )
+        self.injectTableFunction(
+            scriptName="readRow",
+            kb="NVDA+Shift+RightArrow",
+            doc="Read row starting from current cell",
+            function=speakRowOrColumn,
+            axis='column',
+            initialMovement=None,
+            updateCursor=True,
+        )
+        self.injectTableFunction(
+            scriptName="readColumnFromTop",
+            kb="NVDA+Control+Shift+DownArrow",
+            doc="Read column starting from the top",
+            function=speakRowOrColumn,
+            axis='row',
+            initialMovement='previous',
+            updateCursor=False,
+        )
+        self.injectTableFunction(
+            scriptName="readRowFromBeginning",
+            kb="NVDA+Control+Shift+RightArrow",
+            doc="Read row starting from the beginning",
+            function=speakRowOrColumn,
+            axis='column',
+            initialMovement='previous',
+            updateCursor=False,
         )
 
     def injectTableFunction(self, scriptName, kb, doc, function=findTableCell, *args, **kwargs):
