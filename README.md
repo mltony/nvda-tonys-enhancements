@@ -13,6 +13,9 @@ This add-on is only compatible with NVDA versions 2019.3 and above.
 * NVDA+Control+digit - jump to 1st/2nd/3rd/... 10th column in the table.
 * NVDA+Alt+digit - jump to 1st/2nd/3rd/... 10th row in the table.
 * NVDA+Shift+DownArrow - read current column in the table starting from current cell down.
+* NVDA+Shift+RightArrow - read current row in the table starting from current cell.
+* NVDA+Control+Shift+DownArrow - read current column in the table starting from the top.
+* NVDA+Control+Shift+RightArrow - read current row in the table starting from the beginning of the row.
 
 ## Enhanced word navigation commands
 
