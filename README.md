@@ -42,6 +42,13 @@ appName keystroke
 ```
 where `appName` is the name of the application where this keystroke is marked dynamic (or `*` to b marked dynamic in all applications), and`keystroke` is a keystroke in NVDA format, for example, `control+alt+shift+pagedown`.
 
+## Showing and hiding windows
+You can hide current window, and you can show all currently hidden windows. This might be useful if you use multiple windows in the same app (say Chrome) and you would like to rearrange them.
+- NVDA+Shift+-: hide current window.
+- NVDA+Shift+=: Show all currently closed windows.
+
+Please note, that if you quit NVDA while a window is hidden, there is currently no way to show it after NVDA is restarted.
+
 ## Console enhancements
 
 Previously this add-on included a number of console-related features. As of version 1.8, all console-related features have been moved to [Console Toolkit add-on](https://github.com/mltony/nvda-console-toolkit/). Specifically:

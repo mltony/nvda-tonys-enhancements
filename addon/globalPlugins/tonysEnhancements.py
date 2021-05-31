@@ -1273,3 +1273,27 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         mylog(lineInfo.text)
         speech.speakTextInfo(lineInfo, unit=textInfos.UNIT_PARAGRAPH, reason=REASON_CARET)
 
+    hiddenWindows = []
+    @script(description='Hide current window.', gestures=['kb:NVDA+Shift+-'])
+    def script_HideWindow(self, gesture):
+        fg = api.getForegroundObject()
+        handle = fg.windowHandle
+        self.hiddenWindows.append(handle)
+        winUser.user32.ShowWindow(handle, winUser.SW_HIDE)
+        keyboardHandler.KeyboardInputGesture.fromName("Alt+Tab").send()
+        #winUser.setForegroundWindow(api.getDesktopObject().windowHandle)
+        core.callLater(100, ui.message, _("Hid current window. Now there are %d windows hidden.") % len(self.hiddenWindows))
+
+    @script(description='Show hidden windows.', gestures=['kb:NVDA+Shift+='])
+    def script_showWindows(self, gesture):
+        if len(self.hiddenWindows) == 0:
+            ui.message(_("No windows hidden or all hidden windows have been already shown."))
+            return
+        n = len(self.hiddenWindows)
+        for handle in self.hiddenWindows:
+            time.sleep(0.1)
+            SW_SHOW = 5
+            winUser.user32.ShowWindow(handle, SW_SHOW)
+        winUser.setForegroundWindow(self.hiddenWindows[-1])
+        core.callLater(100, ui.message, _("%d windows shown") % n)
+        self.hiddenWindows = []
