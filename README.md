@@ -61,11 +61,14 @@ Previously this add-on included a number of console-related features. As of vers
 
 Check this option for NVDA to provide audio feedback when NVDA is busy. NVDA being busy does not necessarily indicate a problem with NVDA, but rather this is a signal to the user that any NVDA commands will not be processed immediately.
 
-## NVDA volume
+## Volume adjustment
 
 * NVDA+Control+PageUp/PageDown - adjust NVDA volume.
+* NVDA+Alt+PageUp/PageDown - adjust volume of all applications except for NVDA.
 
-This option controls the volume of NVDA speech as well as all the other sounds and beeps produced by NVDA. The advantage of this option compared to adjusting volume of a speech synthesizer, is that it affects the volume of all the beeps proportionally.
+## Sound split
+
+* NVDA+Alt+S toggles sound split mode. In Sound split mode NVDA will direct all sound output to the right channel, while applications will play their sounds in the left channel.
 
 ## Detecting insert mode in text editors
 
