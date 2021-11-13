@@ -19,6 +19,7 @@ import editableText
 import globalPluginHandler
 import gui
 from gui import guiHelper, nvdaControls
+from gui.settingsDialogs import SettingsPanel
 import inputCore
 import itertools
 import json
@@ -271,16 +272,13 @@ class MultilineEditTextDialog(wx.Dialog):
 
 
 
-class SettingsDialog(gui.SettingsDialog):
+class SettingsDialog(SettingsPanel):
     # Translators: Title for the settings dialog
     title = _("Tony's enhancements  settings")
 
-    def __init__(self, *args, **kwargs):
-        super(SettingsDialog, self).__init__(*args, **kwargs)
+    def makeSettings(self, settingsSizer):
         self.dynamicKeystrokesTable = getConfig("dynamicKeystrokesTable")
         self.langMap = getConfig("langMap")
-
-    def makeSettings(self, settingsSizer):
         sHelper = gui.guiHelper.BoxSizerHelper(self, sizer=settingsSizer)
 
       # checkbox Detect insert mode
@@ -437,7 +435,7 @@ class SettingsDialog(gui.SettingsDialog):
         gui.mainFrame.postPopup()
 
 
-    def onOk(self, evt):
+    def onSave(self):
         try:
             parseDynamicKeystrokes(self.dynamicKeystrokesTable)
         except Exception as e:
@@ -467,7 +465,6 @@ class SettingsDialog(gui.SettingsDialog):
         updateScrollLockBlocking()
         setConfig("priority", self.priorityCombobox.Selection)
         updatePriority()
-        super(SettingsDialog, self).onOk(evt)
 
 class Memoize:
     def __init__(self, f):
@@ -972,17 +969,12 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.lastConsoleUpdateTime = 0
         self.beeper = Beeper()
 
-
     def createMenu(self):
-        def _popupMenu(evt):
-            gui.mainFrame._popupSettingsDialog(SettingsDialog)
-        self.prefsMenuItem = gui.mainFrame.sysTrayIcon.preferencesMenu.Append(wx.ID_ANY, _("Tony's enhancements..."))
-        gui.mainFrame.sysTrayIcon.Bind(wx.EVT_MENU, _popupMenu, self.prefsMenuItem)
-
+        gui.settingsDialogs.NVDASettingsDialog.categoryClasses.append(SettingsDialog)
 
     def terminate(self):
         self.removeHooks()
-        prefMenu = gui.mainFrame.sysTrayIcon.preferencesMenu
+        gui.settingsDialogs.NVDASettingsDialog.categoryClasses.remove(SettingsDialog)
         prefMenu.Remove(self.prefsMenuItem)
 
     quickSearchGestures = ",PrintScreen,ScrollLock,Pause".split(",")
