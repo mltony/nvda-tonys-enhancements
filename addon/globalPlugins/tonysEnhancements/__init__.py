@@ -1374,7 +1374,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         winUser.user32.ShowWindow(handle, winUser.SW_HIDE)
         keyboardHandler.KeyboardInputGesture.fromName("Alt+Tab").send()
         #winUser.setForegroundWindow(api.getDesktopObject().windowHandle)
-        core.callLater(100, ui.message, _("Hid current window. Now there are %d windows hidden.") % len(self.hiddenWindows))
+        def delayedSpeak():
+            speech.cancelSpeech()
+            ui.message(_("Hid current window. Now there are %d windows hidden.") % len(self.hiddenWindows))
+        core.callLater(100, delayedSpeak)
 
     @script(description='Show hidden windows.', gestures=['kb:NVDA+Shift+='])
     def script_showWindows(self, gesture):
@@ -1387,7 +1390,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             SW_SHOW = 5
             winUser.user32.ShowWindow(handle, SW_SHOW)
         winUser.setForegroundWindow(self.hiddenWindows[-1])
-        core.callLater(100, ui.message, _("%d windows shown") % n)
+        def delayedSpeak():
+            speech.cancelSpeech()
+            ui.message(_("%d windows shown") % n)
+        core.callLater(100, delayedSpeak)
         self.hiddenWindows = []
 
     @script(description='Toggle sound split.', gestures=['kb:NVDA+Alt+S'])
