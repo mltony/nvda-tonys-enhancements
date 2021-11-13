@@ -114,6 +114,9 @@ def initConfiguration():
         "blockDoubleCaps" : "boolean( default=False)",
         "blockScrollLock" : "boolean( default=False)",
         "nvdaVolume" : "integer( default=100, min=0, max=100)",
+        "appsVolume" : "integer( default=100, min=0, max=100)",
+        "soundSplitLeft" : "boolean( default=True)",
+        "soundSplit" : "boolean( default=False)",
         "busyBeep" : "boolean( default=False)",
         "dynamicKeystrokesTable" : f"string( default='{defaultDynamicKeystrokes}')",
         "fixWindowNumber" : "boolean( default=False)",
@@ -325,6 +328,27 @@ class SettingsDialog(gui.SettingsDialog):
         sizer.Add(slider)
         settingsSizer.Add(sizer)
         self.nvdaVolumeSlider = slider
+      # Apps  volume slider
+        sizer=wx.BoxSizer(wx.HORIZONTAL)
+        # Translators: slider to select Apps   volume
+        label=wx.StaticText(self,wx.ID_ANY,label=_("Applications volume"))
+        slider=wx.Slider(self, wx.NewId(), minValue=0,maxValue=100)
+        slider.SetValue(getConfig("appsVolume"))
+        sizer.Add(label)
+        sizer.Add(slider)
+        settingsSizer.Add(sizer)
+        self.appsVolumeSlider = slider
+      # checkbox Enable sound split
+        # Translators: Checkbox for sound split
+        label = _("Split NVDA sound and applications' sounds into left and right channels.")
+        self.soundSplitCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.soundSplitCheckbox.Value = getConfig("soundSplit")
+      # checkbox switch left and rright during sound split
+        # Translators: Checkbox for switching left and right sound split
+        label = _("Switch left and right during sound split.")
+        self.soundSplitLeftCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.soundSplitLeftCheckbox.Value = getConfig("soundSplitLeft")
+
       # Dynamic keystrokes table
         # Translators: Label for dynamic keystrokes table edit box
         label = _("Edit dynamic keystrokes table - see add-on documentation for more information")
@@ -428,6 +452,9 @@ class SettingsDialog(gui.SettingsDialog):
         setConfig("suppressUnselected", self.suppressUnselectedCheckbox.Value)
         setConfig("detectInsertMode", self.detectInsertModeCheckbox.Value)
         setConfig("nvdaVolume", self.nvdaVolumeSlider.Value)
+        setConfig("appsVolume", self.appsVolumeSlider.Value)
+        setConfig("soundSplit", self.SoundSplitCheckbox.Value)
+        setConfig("soundSplitLeft", self.SoundSplitLeftCheckbox.Value)
         setConfig("dynamicKeystrokesTable", self.dynamicKeystrokesTable)
         reloadDynamicKeystrokes()
         setConfig("enableLangMap", self.langMapCheckbox.Value)
@@ -573,9 +600,45 @@ def preWaveOpen(selfself, *args, **kwargs):
     result = originalWaveOpen(selfself, *args, **kwargs)
     volume = getConfig("nvdaVolume")
     volume2 = int(0xFFFF * (volume / 100))
-    volume2 = volume2 | (volume2 << 16)
+    if not getConfig("soundSplit"):
+        volume2 = volume2 | (volume2 << 16)
+    else:
+        if getConfig("soundSplitLeft"):
+            pass
+        else:
+            volume2 = (volume2 << 16)
     winmm.waveOutSetVolume(selfself._waveout, volume2)
     return result
+
+def setAppsVolume(leftVolume, rightVolume):
+    from . pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, IChannelAudioVolume
+    leftVolume / 100.0
+    rightVolume /= 100.0
+
+    audioSessions = AudioUtilities.GetAllSessions()
+    for s in audioSessions:
+        if s.Process is not None and 'nvda' in s.Process.name().lower():
+            continue
+        channelVolume = s._ctl.QueryInterface(IChannelAudioVolume)
+        if channelVolume.GetChannelCount() == 2:
+            channelVolume.SetChannelVolume(0, leftVolume, None)
+            channelVolume.SetChannelVolume(1, rightVolume, None)
+
+soundSplitterMonitorCounter = 0
+def soundSplitterMonitorThread(localSoundSplitterMonitorCounter):
+    global soundSplitterMonitorCounter
+    while localSoundSplitterMonitorCounter == soundSplitterMonitorCounter:
+        if not getConfig("soundSplit"):
+            return
+        volume = getConfig("appsVolume")
+        if getConfig("soundSplitLeft"):
+            leftVolume = 0
+            rightVolume = volume
+        else:
+            leftVolume = volume
+            rightVolume = 0
+        setAppsVolume(leftVolume, rightVolume)
+        time.sleep(1)
 
 def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
     from scriptHandler import isScriptWaiting
@@ -936,7 +999,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         for i in [1,2,3]:
             configKey = f"quickSearch{i}"
             script = lambda selfself, gesture, configKey=configKey: self.script_quickSearch(selfself, gesture, getConfig(configKey))
-            script.category = "Tony's enhancements"
+            script.category = "Tony's Enhancements"
             script.__name__ = _("QuickSearch") + str(i)
             script.__doc__ = _("Performs QuickSearch back or forward in editables according to quickSearch{i} regexp").format(**locals())
             setattr(editableText.EditableText, f"script_quickSearch{i}", script)
@@ -1297,3 +1360,30 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         winUser.setForegroundWindow(self.hiddenWindows[-1])
         core.callLater(100, ui.message, _("%d windows shown") % n)
         self.hiddenWindows = []
+
+    @script(description='Toggle sound split.', gestures=['kb:NVDA+Alt+S'])
+    def script_toggleSoundSplit(self, gesture):
+        ss = getConfig("soundSplit")
+        ss = not ss
+        msg = _("Sound split enabled") if ss else _("Sound split disabled")
+        setConfig("soundSplit", False)
+        ui.message(msg)
+        def updateSoundSplit():
+            setConfig("soundSplit", ss)
+            self.updateSoundSplitterMonitorThread()
+        core.callLater(100, updateSoundSplit)
+
+    def updateSoundSplitterMonitorThread(self):
+        global soundSplitterMonitorCounter
+        ss = getConfig("soundSplit")
+        soundSplitterMonitorCounter += 1
+        if ss:
+            t = threading.Thread(
+                target=soundSplitterMonitorThread,
+                name=f"soundSplitterMonitorThread_{soundSplitterMonitorCounter}",
+                args=[soundSplitterMonitorCounter]
+            )
+            t.start()
+        else:
+            volume = getConfig("appsVolume")
+            setAppsVolume(volume, volume)
