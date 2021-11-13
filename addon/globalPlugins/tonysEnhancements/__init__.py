@@ -1292,6 +1292,27 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         message = _("NVDA volume %d") % volume
         ui.message(message)
 
+    @script(description='Increase applications volume.', gestures=['kb:NVDA+Alt+PageUp'])
+    def script_increaseAppVolume(self, gesture):
+        self.adjustAppVolume(5)
+
+    @script(description='Decrease applications volume.', gestures=['kb:NVDA+Alt+PageDown'])
+    def script_decreaseAppVolume(self, gesture):
+        self.adjustAppVolume(-5)
+
+    def adjustAppVolume(self, increment):
+        volume = getConfig("appsVolume")
+        volume += increment
+        if volume > 100:
+            volume = 100
+        if volume < 0:
+            volume = 0
+        setConfig("appsVolume", volume)
+        message = _("Applications volume %d") % volume
+        ui.message(message)
+        setAppsVolume()
+
+
     def script_quickSearch(self, selfself, gesture, regex):
         if "shift" in gesture._get_modifierNames():
             direction = -1
