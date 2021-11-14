@@ -975,7 +975,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def terminate(self):
         self.removeHooks()
         gui.settingsDialogs.NVDASettingsDialog.categoryClasses.remove(SettingsDialog)
-        prefMenu.Remove(self.prefsMenuItem)
 
     quickSearchGestures = ",PrintScreen,ScrollLock,Pause".split(",")
     def injectHooks(self):
