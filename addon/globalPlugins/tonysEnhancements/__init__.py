@@ -362,13 +362,16 @@ class SettingsDialog(SettingsPanel):
         self.langMapButton = sHelper.addItem (wx.Button (self, label = label))
         self.langMapButton.Bind(wx.EVT_BUTTON, self.onLangMapClick)
       # QuickSearch regexp text edit
-        self.quickSearchEdit = gui.guiHelper.LabeledControlHelper(self, _("QuickSearch1 regexp (assigned to PrintScreen)"), wx.TextCtrl).control
+        label = _("QuickSearch1 regexp (assigned to PrintScreen)")
+        self.quickSearchEdit = sHelper.addLabeledControl(label, wx.TextCtrl)
         self.quickSearchEdit.Value = getConfig("quickSearch1")
       # QuickSearch2 regexp text edit
-        self.quickSearch2Edit = gui.guiHelper.LabeledControlHelper(self, _("QuickSearch2 regexp (assigned to ScrollLock))"), wx.TextCtrl).control
+        label = _("QuickSearch2 regexp (assigned to ScrollLock))")
+        self.quickSearch2Edit = sHelper.addLabeledControl(label, wx.TextCtrl)
         self.quickSearch2Edit.Value = getConfig("quickSearch2")
       # QuickSearch3 regexp text edit
-        self.quickSearch3Edit = gui.guiHelper.LabeledControlHelper(self, _("QuickSearch3 regexp (assigned to Pause)"), wx.TextCtrl).control
+        label = _("QuickSearch3 regexp (assigned to Pause)")
+        self.quickSearch3Edit = sHelper.addLabeledControl(label, wx.TextCtrl)
         self.quickSearch3Edit.Value = getConfig("quickSearch3")
       # checkbox block scroll lock
         # Translators: Checkbox for blocking scroll lock
