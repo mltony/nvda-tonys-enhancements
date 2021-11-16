@@ -204,24 +204,29 @@ reloadLangMap()
 updatePriority()
 class MultilineEditTextDialog(wx.Dialog):
     def __init__(self, parent, text, title_string, onTextComplete):
-        # Translators: Title of calibration dialog
         super(MultilineEditTextDialog, self).__init__(parent, title=title_string)
         self.text = text
         self.onTextComplete = onTextComplete
         mainSizer = wx.BoxSizer(wx.VERTICAL)
         sHelper = gui.guiHelper.BoxSizerHelper(self, orientation=wx.VERTICAL)
 
-        self.textCtrl = wx.TextCtrl(self, style=wx.TE_MULTILINE)
+        self.textCtrl = wx.TextCtrl(self, size=(-1, 150), style=wx.TE_MULTILINE|wx.TE_DONTWRAP)
         self.textCtrl.Bind(wx.EVT_CHAR, self.onChar)
         self.Bind(wx.EVT_CHAR_HOOK, self.OnKeyUP)
-        sHelper.addItem(self.textCtrl)
+        sHelper.addItem(self.textCtrl, flag=wx.EXPAND)
         self.textCtrl.SetValue(text)
-        self.SetFocus()
-        #self.Maximize(True)
-        self.OkButton = sHelper.addItem (wx.Button (self, label = _('OK')))
+        
+        buttonGroup = gui.guiHelper.ButtonHelper(wx.HORIZONTAL)
+        self.OkButton = buttonGroup.addButton(self, label=_('OK'))
         self.OkButton.Bind(wx.EVT_BUTTON, self.onOk)
-        self.cancelButton = sHelper.addItem (wx.Button (self, label = _('Cancel')))
+        self.cancelButton = buttonGroup.addButton(self, label=_('Cancel'))
         self.cancelButton.Bind(wx.EVT_BUTTON, self.onCancel)
+        sHelper.addItem(buttonGroup)
+        
+        mainSizer.Add(sHelper.sizer, border=10, flag=wx.ALL|wx.EXPAND, proportion=1)
+        self.SetSizer(mainSizer)
+        
+        self.SetFocus()
 
     def onChar(self, event):
         control = event.ControlDown()
@@ -427,7 +432,7 @@ class SettingsDialog(SettingsPanel):
         self.popupLangMap(text=self.langMap)
 
     def popupLangMap(self, text):
-        title = _('Edit language amp')
+        title = _('Edit language map')
         gui.mainFrame.prePopup()
         dialog = MultilineEditTextDialog(self,
             text=text,
