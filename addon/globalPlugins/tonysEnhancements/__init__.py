@@ -204,24 +204,29 @@ reloadLangMap()
 updatePriority()
 class MultilineEditTextDialog(wx.Dialog):
     def __init__(self, parent, text, title_string, onTextComplete):
-        # Translators: Title of calibration dialog
         super(MultilineEditTextDialog, self).__init__(parent, title=title_string)
         self.text = text
         self.onTextComplete = onTextComplete
         mainSizer = wx.BoxSizer(wx.VERTICAL)
         sHelper = gui.guiHelper.BoxSizerHelper(self, orientation=wx.VERTICAL)
 
-        self.textCtrl = wx.TextCtrl(self, style=wx.TE_MULTILINE)
+        self.textCtrl = wx.TextCtrl(self, size=(-1, 150), style=wx.TE_MULTILINE|wx.TE_DONTWRAP)
         self.textCtrl.Bind(wx.EVT_CHAR, self.onChar)
         self.Bind(wx.EVT_CHAR_HOOK, self.OnKeyUP)
-        sHelper.addItem(self.textCtrl)
+        sHelper.addItem(self.textCtrl, flag=wx.EXPAND)
         self.textCtrl.SetValue(text)
-        self.SetFocus()
-        #self.Maximize(True)
-        self.OkButton = sHelper.addItem (wx.Button (self, label = _('OK')))
+        
+        buttonGroup = gui.guiHelper.ButtonHelper(wx.HORIZONTAL)
+        self.OkButton = buttonGroup.addButton(self, label=_('OK'))
         self.OkButton.Bind(wx.EVT_BUTTON, self.onOk)
-        self.cancelButton = sHelper.addItem (wx.Button (self, label = _('Cancel')))
+        self.cancelButton = buttonGroup.addButton(self, label=_('Cancel'))
         self.cancelButton.Bind(wx.EVT_BUTTON, self.onCancel)
+        sHelper.addItem(buttonGroup)
+        
+        mainSizer.Add(sHelper.sizer, border=10, flag=wx.ALL|wx.EXPAND, proportion=1)
+        self.SetSizer(mainSizer)
+        
+        self.SetFocus()
 
     def onChar(self, event):
         control = event.ControlDown()
@@ -362,13 +367,16 @@ class SettingsDialog(SettingsPanel):
         self.langMapButton = sHelper.addItem (wx.Button (self, label = label))
         self.langMapButton.Bind(wx.EVT_BUTTON, self.onLangMapClick)
       # QuickSearch regexp text edit
-        self.quickSearchEdit = gui.guiHelper.LabeledControlHelper(self, _("QuickSearch1 regexp (assigned to PrintScreen)"), wx.TextCtrl).control
+        label = _("QuickSearch1 regexp (assigned to PrintScreen)")
+        self.quickSearchEdit = sHelper.addLabeledControl(label, wx.TextCtrl)
         self.quickSearchEdit.Value = getConfig("quickSearch1")
       # QuickSearch2 regexp text edit
-        self.quickSearch2Edit = gui.guiHelper.LabeledControlHelper(self, _("QuickSearch2 regexp (assigned to ScrollLock))"), wx.TextCtrl).control
+        label = _("QuickSearch2 regexp (assigned to ScrollLock))")
+        self.quickSearch2Edit = sHelper.addLabeledControl(label, wx.TextCtrl)
         self.quickSearch2Edit.Value = getConfig("quickSearch2")
       # QuickSearch3 regexp text edit
-        self.quickSearch3Edit = gui.guiHelper.LabeledControlHelper(self, _("QuickSearch3 regexp (assigned to Pause)"), wx.TextCtrl).control
+        label = _("QuickSearch3 regexp (assigned to Pause)")
+        self.quickSearch3Edit = sHelper.addLabeledControl(label, wx.TextCtrl)
         self.quickSearch3Edit.Value = getConfig("quickSearch3")
       # checkbox block scroll lock
         # Translators: Checkbox for blocking scroll lock
@@ -424,7 +432,7 @@ class SettingsDialog(SettingsPanel):
         self.popupLangMap(text=self.langMap)
 
     def popupLangMap(self, text):
-        title = _('Edit language amp')
+        title = _('Edit language map')
         gui.mainFrame.prePopup()
         dialog = MultilineEditTextDialog(self,
             text=text,
