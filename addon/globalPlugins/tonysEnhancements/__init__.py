@@ -783,6 +783,60 @@ def speakColumn(selfself, gesture):
             info = selfself._getNearestTableCell(tableID, info, origRow, origCol, origRowSpan, origColSpan, movement, axis)
         except LookupError:
             break
+            
+def parseTable(selfself, textInfo):
+    info = textInfo.copy()
+    info.expand(textInfos.UNIT_CHARACTER)
+    container=selfself.getEnclosingContainerRange(info)
+    if not container:
+        ui.message(_("Not in a container"))
+        return
+    startInfo = container.copy()
+    startInfo.collapse()
+    endInfo = container.copy()
+    endInfo.collapse(end=True)
+    # Maybe we don't need this in the end
+    
+def copyTableToClipboard(table):
+    html = "".join([
+        "<tr>" + "
+        "".join([
+            f"<td>{html.escape(cell)}</td>"
+            for cell in row
+        ]) 
+        + "</tr>\n"
+        for row in table
+    ])
+    html = f"<table<\n{html}\n</table>"
+    htmlData = wx.HTMLDataObject()
+    htmlData.SetHTML(html)
+    def processPlainText(s):
+        return (
+            s.replace("\r\n", " ")
+                .replace("\r", " ")
+                .replace("\n", " ")
+                .replace("\t", " ")
+        )
+    wx.TheClipboard.Open()
+    wx.TheClipboard.SetData(clipdata)
+    wx.TheClipboard.Close()
+    
+def copyRowImpl(selfself, tableID, startPos, row, col=None):
+    result = []
+    colRange = range(col, col+1) if col is not None else range(1, 200)
+    for col in colRange:
+        try:
+            info = selfself._getTableCellAt(tableID,startPos,row,col)
+        except LookupError:
+            return result
+        result.append(info.text)
+    return result
+    
+
+def copyRow(selfself, gesture):
+    tableID, row, col, origRowSpan, origColSpan = selfself._getTableCellCoords(selfself.selection)
+    cells = copyRowImpl(selfself, tableID, selfself.selection, row)
+    ui.message("\n".join(cells))
 
 wdTime = 0
 wdAsleep = False
@@ -1253,6 +1307,12 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             axis='column',
             initialMovement='previous',
             updateCursor=False,
+        )
+        self.injectTableFunction(
+            scriptName="copyRowToClipboard",
+            kb="NVDA+Alt+T",
+            doc="Copy current row to clipboard",
+            function=copyRow,
         )
 
     def injectTableFunction(self, scriptName, kb, doc, function=findTableCell, *args, **kwargs):
