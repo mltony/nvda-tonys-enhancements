@@ -20,6 +20,7 @@ import globalPluginHandler
 import gui
 from gui import guiHelper, nvdaControls
 from gui.settingsDialogs import SettingsPanel
+import html
 import inputCore
 import itertools
 import json
@@ -37,6 +38,7 @@ import os
 import re
 from scriptHandler import script, willSayAllResume
 import speech
+from speech.priorities import SpeechPriority
 import string
 import struct
 import textInfos
@@ -215,17 +217,17 @@ class MultilineEditTextDialog(wx.Dialog):
         self.Bind(wx.EVT_CHAR_HOOK, self.OnKeyUP)
         sHelper.addItem(self.textCtrl, flag=wx.EXPAND)
         self.textCtrl.SetValue(text)
-        
+
         buttonGroup = gui.guiHelper.ButtonHelper(wx.HORIZONTAL)
         self.OkButton = buttonGroup.addButton(self, label=_('OK'))
         self.OkButton.Bind(wx.EVT_BUTTON, self.onOk)
         self.cancelButton = buttonGroup.addButton(self, label=_('Cancel'))
         self.cancelButton.Bind(wx.EVT_BUTTON, self.onCancel)
         sHelper.addItem(buttonGroup)
-        
+
         mainSizer.Add(sHelper.sizer, border=10, flag=wx.ALL|wx.EXPAND, proportion=1)
         self.SetSizer(mainSizer)
-        
+
         self.SetFocus()
 
     def onChar(self, event):
@@ -791,33 +793,28 @@ def speakColumn(selfself, gesture):
             info = selfself._getNearestTableCell(tableID, info, origRow, origCol, origRowSpan, origColSpan, movement, axis)
         except LookupError:
             break
-            
-def parseTable(selfself, textInfo):
-    info = textInfo.copy()
-    info.expand(textInfos.UNIT_CHARACTER)
-    container=selfself.getEnclosingContainerRange(info)
-    if not container:
-        ui.message(_("Not in a container"))
-        return
-    startInfo = container.copy()
-    startInfo.collapse()
-    endInfo = container.copy()
-    endInfo.collapse(end=True)
-    # Maybe we don't need this in the end
-    
+
+
+def deferredMessage(s):
+    def func():
+        speech.cancelSpeech()
+        ui.message(s, speechPriority=SpeechPriority.NOW)
+    core.callLater(100, func)
+
 def copyTableToClipboard(table):
-    html = "".join([
-        "<tr>" + "
+    htmlText = "\n".join([
+        "<tr>" +
         "".join([
             f"<td>{html.escape(cell)}</td>"
             for cell in row
-        ]) 
-        + "</tr>\n"
+        ])
+        + "</tr>"
         for row in table
     ])
-    html = f"<table<\n{html}\n</table>"
-    htmlData = wx.HTMLDataObject()
-    htmlData.SetHTML(html)
+    htmlText = f"<table>\n{htmlText}\n</table>"
+    htmlDataObject = wx.HTMLDataObject()
+    htmlDataObject.SetHTML(htmlText)
+
     def processPlainText(s):
         return (
             s.replace("\r\n", " ")
@@ -825,10 +822,24 @@ def copyTableToClipboard(table):
                 .replace("\n", " ")
                 .replace("\t", " ")
         )
+    plainText = "\n".join([
+        "\t".join([
+            processPlainText(cell)
+            for cell in row
+        ])
+        for row in table
+    ])
+    plainTextObject = wx.TextDataObject()
+    plainTextObject.SetText(plainText)
+
+    composite = wx.DataObjectComposite()
+    composite.Add(htmlDataObject)
+    composite.Add(plainTextObject)
     wx.TheClipboard.Open()
-    wx.TheClipboard.SetData(clipdata)
+    wx.TheClipboard.SetData(composite)
     wx.TheClipboard.Close()
-    
+
+
 def copyRowImpl(selfself, tableID, startPos, row, col=None):
     result = []
     colRange = range(col, col+1) if col is not None else range(1, 200)
@@ -839,12 +850,82 @@ def copyRowImpl(selfself, tableID, startPos, row, col=None):
             return result
         result.append(info.text)
     return result
-    
+
+def copyTableImpl(selfself, currentRow=False, currentColumn=False):
+    try:
+        tableID, row, col, origRowSpan, origColSpan = selfself._getTableCellCoords(selfself.selection)
+    except LookupError:
+        deferredMessage(_("Not in a table!"))
+        return
+    startPos = selfself.selection
+    result = []
+    rowRange = range(row, row+1) if currentRow else range(1, 200)
+    for row in rowRange:
+        row = copyRowImpl(selfself, tableID, startPos, row, col if currentColumn else None)
+        if len(row) > 0:
+            result.append(row)
+        else:
+            return result
+    return result
+
+def copyCell(selfself, gesture):
+    cells = copyTableImpl(selfself, currentRow=True, currentColumn=True)
+    if cells is not None:
+        api.copyToClip(cells[0][0])
+        deferredMessage(_("Cell copied"))
+
 
 def copyRow(selfself, gesture):
-    tableID, row, col, origRowSpan, origColSpan = selfself._getTableCellCoords(selfself.selection)
-    cells = copyRowImpl(selfself, tableID, selfself.selection, row)
-    ui.message("\n".join(cells))
+    cells = copyTableImpl(selfself, currentRow=True)
+    if cells is not None:
+        copyTableToClipboard(cells)
+        deferredMessage(_("Row copied"))
+
+def copyColumn(selfself, gesture):
+    cells = copyTableImpl(selfself, currentColumn=True)
+    if cells is not None:
+        copyTableToClipboard(cells)
+        deferredMessage(_("Column copied"))
+
+def copyTable(selfself, gesture):
+    cells = copyTableImpl(selfself)
+    if cells is not None:
+        copyTableToClipboard(cells)
+        deferredMessage(_("Table copied"))
+
+def copyTablePopup(selfself,gesture):
+    try:
+        tableID, row, col, origRowSpan, origColSpan = selfself._getTableCellCoords(selfself.selection)
+    except LookupError:
+        deferredMessage(_("Not in a table!"))
+        return
+
+    gui.mainFrame.prePopup()
+    try:
+        frame = wx.Frame(None, -1,"Fake popup frame")
+        menu = wx.Menu()
+        for func, menuStr  in [
+            (copyCell, _("Copy ce&ll")),
+            (copyColumn, _("Copy &column")),
+            (copyRow, _("Copy &row")),
+            (copyTable, _("Copy &table")),
+        ]:
+            item = menu.Append(wx.ID_ANY, menuStr)
+            frame.Bind(
+                wx.EVT_MENU,
+                lambda evt, func=func: func(selfself, gesture),
+                item,
+            )
+
+        frame.Bind(
+            wx.EVT_MENU_CLOSE,
+            lambda evt: frame.Close()
+        )
+        frame.Show()
+
+        wx.CallAfter(lambda: frame.PopupMenu(menu))
+    finally:
+        gui.mainFrame.postPopup()
 
 wdTime = 0
 wdAsleep = False
@@ -1320,7 +1401,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             scriptName="copyRowToClipboard",
             kb="NVDA+Alt+T",
             doc="Copy current row to clipboard",
-            function=copyRow,
+            function=copyTablePopup,
         )
 
     def injectTableFunction(self, scriptName, kb, doc, function=findTableCell, *args, **kwargs):
