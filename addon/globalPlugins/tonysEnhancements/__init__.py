@@ -1398,11 +1398,36 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             updateCursor=False,
         )
         self.injectTableFunction(
-            scriptName="copyRowToClipboard",
+            scriptName="copyTableToClipboardPopup",
             kb="NVDA+Alt+T",
-            doc="Copy current row to clipboard",
+            doc="Show popup menu with copy table to clipboard commands.",
             function=copyTablePopup,
         )
+        self.injectTableFunction(
+            scriptName="copyCellToClipboard",
+            kb=None,
+            doc="Copy table cell to clipboard.",
+            function=copyCell,
+        )
+        self.injectTableFunction(
+            scriptName="copyColumnToClipboard",
+            kb=None,
+            doc="Copy table column to clipboard.",
+            function=copyColumn,
+        )
+        self.injectTableFunction(
+            scriptName="copyRowToClipboard",
+            kb=None,
+            doc="Copy table row to clipboard.",
+            function=copyRow,
+        )
+        self.injectTableFunction(
+            scriptName="copyTableToClipboard",
+            kb=None,
+            doc="Copy the whole table to clipboard.",
+            function=copyTable,
+        )
+        
 
     def injectTableFunction(self, scriptName, kb, doc, function=findTableCell, *args, **kwargs):
         cls = documentBase.DocumentWithTableNavigation
@@ -1411,7 +1436,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         script.__doc__ = doc
         script.category = self.scriptCategory
         setattr(cls, funcName, script)
-        cls._DocumentWithTableNavigation__gestures["kb:%s" % kb] = scriptName
+        if kb is not None:
+            cls._DocumentWithTableNavigation__gestures["kb:%s" % kb] = scriptName
 
     @script(description='Increase NVDA volume.', gestures=['kb:NVDA+control+PageUp'])
     def script_increaseVolume(self, gesture):
