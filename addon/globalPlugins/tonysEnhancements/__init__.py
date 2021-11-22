@@ -201,9 +201,7 @@ def updatePriority():
 
 addonHandler.initTranslation()
 initConfiguration()
-reloadDynamicKeystrokes()
-reloadLangMap()
-updatePriority()
+
 class MultilineEditTextDialog(wx.Dialog):
     def __init__(self, parent, text, title_string, onTextComplete):
         super(MultilineEditTextDialog, self).__init__(parent, title=title_string)
@@ -475,6 +473,7 @@ class SettingsDialog(SettingsPanel):
         updateScrollLockBlocking()
         setConfig("priority", self.priorityCombobox.Selection)
         updatePriority()
+        updateSoundSplitterMonitorThread()
 
 class Memoize:
     def __init__(self, f):
@@ -654,6 +653,18 @@ def soundSplitterMonitorThread(localSoundSplitterMonitorCounter):
         setAppsVolume()
         #time.sleep(1)
         yield 1000
+        
+def updateSoundSplitterMonitorThread(exit=False):
+    global soundSplitterMonitorCounter
+    soundSplitterMonitorCounter += 1
+    if exit:
+        setAppsVolume((100,100))
+        return
+    ss = getConfig("soundSplit")
+    if ss:
+        executeAsynchronously(soundSplitterMonitorThread(soundSplitterMonitorCounter))
+    else:
+        setAppsVolume()
 
 def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
     from scriptHandler import isScriptWaiting
@@ -1099,6 +1110,10 @@ def updateScrollLockBlocking():
         TOGGLE_KEYS.add(winUser.VK_SCROLL)
     keyboardHandler.KeyboardInputGesture.TOGGLE_KEYS = frozenset(TOGGLE_KEYS)
 
+reloadDynamicKeystrokes()
+reloadLangMap()
+updatePriority()
+updateSoundSplitterMonitorThread()
 updateScrollLockBlocking()
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
@@ -1116,6 +1131,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         gui.settingsDialogs.NVDASettingsDialog.categoryClasses.append(SettingsDialog)
 
     def terminate(self):
+        updateSoundSplitterMonitorThread(exit=True)
         self.removeHooks()
         gui.settingsDialogs.NVDASettingsDialog.categoryClasses.remove(SettingsDialog)
 
@@ -1568,25 +1584,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         ss = not ss
         msg = _("Sound split enabled") if ss else _("Sound split disabled")
         setConfig("soundSplit", False)
-        ui.message(msg)
         def updateSoundSplit():
             setConfig("soundSplit", ss)
-            self.updateSoundSplitterMonitorThread()
-        core.callLater(100, updateSoundSplit)
-
-    def updateSoundSplitterMonitorThread(self):
-        global soundSplitterMonitorCounter
-        ss = getConfig("soundSplit")
-        soundSplitterMonitorCounter += 1
-        if ss:
-            if False:
-                t = threading.Thread(
-                    target=soundSplitterMonitorThread,
-                    name=f"soundSplitterMonitorThread_{soundSplitterMonitorCounter}",
-                    args=[soundSplitterMonitorCounter]
-                )
-                t.start()
-            else:
-                executeAsynchronously(soundSplitterMonitorThread(soundSplitterMonitorCounter))
-        else:
-            setAppsVolume()
+            updateSoundSplitterMonitorThread()
+        #core.callLater(100, updateSoundSplit)
+        updateSoundSplit()
+        ui.message(msg)
