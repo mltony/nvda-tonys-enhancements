@@ -25,8 +25,10 @@ import inputCore
 import itertools
 import json
 import keyboardHandler
+import locationHelper
 from logHandler import log
 import math
+import mouseHandler
 import NVDAHelper
 from NVDAObjects import behaviors, NVDAObject
 from NVDAObjects.IAccessible import IAccessible
@@ -653,7 +655,7 @@ def soundSplitterMonitorThread(localSoundSplitterMonitorCounter):
         setAppsVolume()
         #time.sleep(1)
         yield 1000
-        
+
 def updateSoundSplitterMonitorThread(exit=False):
     global soundSplitterMonitorCounter
     soundSplitterMonitorCounter += 1
@@ -1110,6 +1112,139 @@ def updateScrollLockBlocking():
         TOGGLE_KEYS.add(winUser.VK_SCROLL)
     keyboardHandler.KeyboardInputGesture.TOGGLE_KEYS = frozenset(TOGGLE_KEYS)
 
+class NoLocationException(Exception):
+    pass
+
+class ReleaseControlModifier:
+    AttachThreadInput = winUser.user32.AttachThreadInput
+    GetKeyboardState = winUser.user32.GetKeyboardState
+    SetKeyboardState = winUser.user32.SetKeyboardState
+    
+    def __init__(self, obj=None):
+        if obj is None:
+            obj = api.getFocusObject()
+        self.obj = obj
+    def __enter__(self):
+        hwnd =  self.obj.windowHandle
+        processID,ThreadId = winUser.getWindowThreadProcessID(hwnd)
+        self.ThreadId = ThreadId
+        self.AttachThreadInput(ctypes.windll.kernel32.GetCurrentThreadId(), ThreadId, True)
+        PBYTE256 = ctypes.c_ubyte * 256
+        pKeyBuffers = PBYTE256()
+        
+        pKeyBuffers_old = PBYTE256()
+        self.GetKeyboardState( ctypes.byref(pKeyBuffers_old ))
+        self.pKeyBuffers_old = pKeyBuffers_old
+        
+        self.SetKeyboardState( ctypes.byref(pKeyBuffers) )
+        return self
+    def __exit__(self, *args, **kwargs):
+        self.SetKeyboardState( ctypes.byref(self.pKeyBuffers_old) )
+        self.AttachThreadInput(ctypes.windll.kernel32.GetCurrentThreadId(), self.ThreadId, False)
+
+WS_EX_TOPMOST = 0x0008
+HWND_BOTTOM = ctypes.wintypes.HWND(1)
+HWND_NOTOPMOST = ctypes.wintypes.HWND(-2)
+HWND_TOP = ctypes.wintypes.HWND(0)
+HWND_TOPMOST = ctypes.wintypes.HWND(-1)
+
+def isWindowTopmost(hwnd):
+    exStyle = winUser.getExtendedWindowStyle(hwnd)
+    return exStyle & WS_EX_TOPMOST != 0
+    
+def setWindowTopmost(hwnd, level):
+    winUser.user32.SetWindowPos(
+        hwnd,
+        level,
+        0, 0, 0, 0,
+        winUser.SWP_NOACTIVATE | winUser.SWP_NOMOVE | winUser.SWP_NOSIZE
+    )
+
+
+_getParent = ctypes.windll.user32.GetParent
+def getWindowParent(hwnd):
+    return _getParent(hwnd)
+
+def getTopLevelWindow(hwnd):
+    result = []
+    while hwnd != 0:
+        result.append(hwnd)
+        hwnd = getWindowParent(hwnd)
+    return result[-1]
+
+def getTopLevelWindowNVDA(obj):
+    result = []
+    desktop = api.getDesktopObject()
+    while obj is not None and obj != desktop:
+        result.append(obj.windowHandle)
+        obj = obj.simpleParent
+    return result[-1]
+
+_windowFromPoint = ctypes.windll.user32.WindowFromPoint
+lastPoint = None
+class MousePointerHover:
+    def getBestLocation(self):
+        reviewInfo = api.getReviewPosition()
+        startObj = reviewInfo.NVDAObjectAtStart
+        if startObj is not None and startObj.isFocusable:
+            p= startObj.location
+            self.kind = _("focusable object")
+        else:
+            try:
+                p = reviewInfo._getBoundingRectFromOffset(t._startOffset)
+                self.kind = _("current review character")
+            except:
+                try:
+                    left,top = reviewInfo.pointAtStart
+                    width = height = 0
+                    p = locationHelper.RectLTWH(left, top, width, height)
+                    self.kind = _("current review character")
+                except:
+                    try:
+                        p = api.getNavigatorObject().location
+                        self.kind = _("navigator object")
+                    except:
+                        raise NoLocationException()
+        self.x = p.left + p.width // 2
+        self.y = p.top + p.height //2
+        return (self.x, self.y)
+    
+    def __enter__(self):
+        global lastPoint
+        focus = api.getFocusObject()
+        currentNVDAWindowHandle = getTopLevelWindowNVDA(focus)
+        x,y = self.getBestLocation()
+        api.x, api.y = x,y
+        p = winUser.getCursorPos()
+        self.oldPos = p
+        winUser.setCursorPos(x,y)
+        for counter in range(100):
+            hwnd = _windowFromPoint(ctypes.wintypes.POINT(x,y))
+            if counter == 0 and hwnd == 0:
+                tones.beep(500, 50)
+                (x,y) = lastPoint
+                mouseHandler.executeMouseMoveEvent(x,y)
+                self.kind = _("repeat")
+                return
+            api.w = hwnd
+            topHwnd = getTopLevelWindow(hwnd)
+            api.q = topHwnd
+            if topHwnd == currentNVDAWindowHandle:
+                mouseHandler.executeMouseMoveEvent(x,y)
+                lastPoint = (x,y)
+                return self
+            tones.beep(500, 50)
+            setWindowTopmost(topHwnd, HWND_BOTTOM)
+        raise Exception("Infinite loop!")
+
+    def __exit__(self, *argc, **argv):
+        x,y = tuple(self.oldPos)
+        winUser.setCursorPos(x, y)
+        mouseHandler.executeMouseMoveEvent(x,y)
+        
+        pass
+
+
 reloadDynamicKeystrokes()
 reloadLangMap()
 updatePriority()
@@ -1443,7 +1578,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             doc="Copy the whole table to clipboard.",
             function=copyTable,
         )
-        
+
 
     def injectTableFunction(self, scriptName, kb, doc, function=findTableCell, *args, **kwargs):
         cls = documentBase.DocumentWithTableNavigation
@@ -1590,3 +1725,40 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         #core.callLater(100, updateSoundSplit)
         updateSoundSplit()
         ui.message(msg)
+
+    @script(description='Left click on current object.', gestures=['kb:Alt+NumPadDivide'])
+    def script_leftClick(self, gesture):
+        with ReleaseControlModifier():
+            with MousePointerHover() as m:
+                kind = m.kind
+                ui.message(_("Left click on {kind}").format(kind=kind))
+                mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_LEFTDOWN,0,0)
+                mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_LEFTUP,0,0)
+
+    @script(description='Right click on current object.', gestures=['kb:Alt+NumPadMultiply'])
+    def script_rightClick(self, gesture):
+        with ReleaseControlModifier():
+            with MousePointerHover() as m:
+                kind = m.kind
+                ui.message(_("Left click on {kind}").format(kind=kind))
+                mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_RIGHTDOWN,0,0)
+                mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_RIGHTUP,0,0)
+
+    @script(description='Mouse wheel scroll down on current object.', gestures=['kb:Alt+NumPadPlus'])
+    def script_scrollDown(self, gesture):
+        with ReleaseControlModifier():
+            with MousePointerHover() as m:
+                ui.message(_("Scroll down"))
+                mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_WHEEL,0,0, -1000)
+
+    @script(description='Mouse wheel scroll up on current object.', gestures=['kb:Alt+NumPadMinus'])
+    def script_scrollUp(self, gesture):
+        with ReleaseControlModifier():
+            with MousePointerHover() as m:
+                ui.message(_("Scroll up"))
+                mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_WHEEL,0,0, 1000)
+
+    @script(description='Move mouse pointer to top left corner.', gestures=['kb:Alt+NumPadDelete'])
+    def script_mouseMoveToTopLeft(self, gesture):
+        ui.message(_("Mouse pointer moved to top left corner. "))
+        mouseHandler.executeMouseMoveEvent(0, 0)
