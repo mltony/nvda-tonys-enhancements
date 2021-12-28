@@ -80,6 +80,14 @@ In Sound split mode NVDA will direct all sound output to the right channel, whil
 
 Please note, that in certain situations sound output from an application might be limited to one channel even when NVDA is not running. For example, this could happen if NVDA has crashed while sound split was on, or when NVDA exited cleanly while the app in question was not running. In those situations, please restart NVDA,  and turn off sound split while the app in question is running.
 
+## Enhanced mouse functions
+
+* Alt+NumPadDivide: Point mouse cursor at current object and click it.
+* Alt+NumPadMultiply: Point mouse cursor at current object and right mouse button click on it.
+* Alt+NumPadPlus/NumPadMinus: Point mouse cursor at current object and scroll down/up. THis is useful for infinite scroll webpages and webpages that load more content on scroll.
+* Alt+NumPadDelete: Move mouse cursor out of the way to top left corner of the screen. This can be useful to prevent unwanted hover over windows in certain applications.
+
+
 ## Detecting insert mode in text editors
 
 If this option is enabled, NVDA will beep when it detects insert mode in text editors.
