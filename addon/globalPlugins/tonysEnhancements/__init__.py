@@ -1214,21 +1214,17 @@ class MousePointerHover:
         focus = api.getFocusObject()
         currentNVDAWindowHandle = getTopLevelWindowNVDA(focus)
         x,y = self.getBestLocation()
-        api.x, api.y = x,y
         p = winUser.getCursorPos()
         self.oldPos = p
         winUser.setCursorPos(x,y)
         for counter in range(100):
             hwnd = _windowFromPoint(ctypes.wintypes.POINT(x,y))
             if counter == 0 and hwnd == 0:
-                tones.beep(500, 50)
                 (x,y) = lastPoint
                 mouseHandler.executeMouseMoveEvent(x,y)
                 self.kind = _("repeat")
                 return
-            api.w = hwnd
             topHwnd = getTopLevelWindow(hwnd)
-            api.q = topHwnd
             if topHwnd == currentNVDAWindowHandle:
                 mouseHandler.executeMouseMoveEvent(x,y)
                 lastPoint = (x,y)
