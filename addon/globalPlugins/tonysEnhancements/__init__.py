@@ -1737,7 +1737,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         mm = not mm
         microphone.SetMute(mm, None)
         msg = _("Muted microphone") if mm else _("Unmuted microphone")
-        ui.message(msg)
+        def announce():
+            speech.cancelSpeech()
+            ui.message(msg)
+        core.callLater(100, announce)
 
     @script(description='Left click on current object.', gestures=['kb:Alt+NumPadDivide'])
     def script_leftClick(self, gesture):
