@@ -668,6 +668,7 @@ def updateSoundSplitterMonitorThread(exit=False):
     else:
         setAppsVolume()
 
+
 def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
     from scriptHandler import isScriptWaiting
     if isScriptWaiting():
@@ -1119,7 +1120,7 @@ class ReleaseControlModifier:
     AttachThreadInput = winUser.user32.AttachThreadInput
     GetKeyboardState = winUser.user32.GetKeyboardState
     SetKeyboardState = winUser.user32.SetKeyboardState
-    
+
     def __init__(self, obj=None):
         if obj is None:
             obj = api.getFocusObject()
@@ -1131,11 +1132,11 @@ class ReleaseControlModifier:
         self.AttachThreadInput(ctypes.windll.kernel32.GetCurrentThreadId(), ThreadId, True)
         PBYTE256 = ctypes.c_ubyte * 256
         pKeyBuffers = PBYTE256()
-        
+
         pKeyBuffers_old = PBYTE256()
         self.GetKeyboardState( ctypes.byref(pKeyBuffers_old ))
         self.pKeyBuffers_old = pKeyBuffers_old
-        
+
         self.SetKeyboardState( ctypes.byref(pKeyBuffers) )
         return self
     def __exit__(self, *args, **kwargs):
@@ -1151,7 +1152,7 @@ HWND_TOPMOST = ctypes.wintypes.HWND(-1)
 def isWindowTopmost(hwnd):
     exStyle = winUser.getExtendedWindowStyle(hwnd)
     return exStyle & WS_EX_TOPMOST != 0
-    
+
 def setWindowTopmost(hwnd, level):
     winUser.user32.SetWindowPos(
         hwnd,
@@ -1208,7 +1209,7 @@ class MousePointerHover:
         self.x = p.left + p.width // 2
         self.y = p.top + p.height //2
         return (self.x, self.y)
-    
+
     def __enter__(self):
         global lastPoint
         focus = api.getFocusObject()
@@ -1237,7 +1238,7 @@ class MousePointerHover:
         x,y = tuple(self.oldPos)
         winUser.setCursorPos(x, y)
         mouseHandler.executeMouseMoveEvent(x,y)
-        
+
         pass
 
 
@@ -1263,6 +1264,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
     def terminate(self):
         updateSoundSplitterMonitorThread(exit=True)
+        microphone = AudioUtilities.GetDefaultMicrophone()
+        if microphone is not None:
+            microphone.SetMute(False, None)
         self.removeHooks()
         gui.settingsDialogs.NVDASettingsDialog.categoryClasses.remove(SettingsDialog)
 
@@ -1720,6 +1724,19 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             updateSoundSplitterMonitorThread()
         #core.callLater(100, updateSoundSplit)
         updateSoundSplit()
+        ui.message(msg)
+
+    @script(description='Toggle microphone mute.', gestures=['kb:NVDA+Delete'])
+    def script_toggleMicrophoneMute(self, gesture):
+        from . pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+        microphone = AudioUtilities.GetDefaultMicrophone()
+        if microphone is None:
+            ui.message(_("Default microphone not found."))
+            return
+        mm = bool(microphone.GetMute())
+        mm = not mm
+        microphone.SetMute(mm, None)
+        msg = _("Muted microphone") if mm else _("Unmuted microphone")
         ui.message(msg)
 
     @script(description='Left click on current object.', gestures=['kb:Alt+NumPadDivide'])

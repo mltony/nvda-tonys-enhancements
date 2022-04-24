@@ -652,98 +652,113 @@ class AudioSession(object):
 
 
 class AudioUtilities(object):
-		"""
-		http://stackoverflow.com/a/20982715/185510
-		"""
-		@staticmethod
-		def GetSpeakers():
-				"""
-				get the speakers (1st render + multimedia) device
-				"""
-				deviceEnumerator = comtypes.CoCreateInstance(
-						CLSID_MMDeviceEnumerator,
-						IMMDeviceEnumerator,
-						comtypes.CLSCTX_INPROC_SERVER)
-				speakers = deviceEnumerator.GetDefaultAudioEndpoint(
-										EDataFlow.eRender.value, ERole.eMultimedia.value)
-				return speakers
+    """
+    http://stackoverflow.com/a/20982715/185510
+    """
+    @staticmethod
+    def GetSpeakers():
+        """
+        get the speakers (1st render + multimedia) device
+        """
+        deviceEnumerator = comtypes.CoCreateInstance(
+                CLSID_MMDeviceEnumerator,
+                IMMDeviceEnumerator,
+                comtypes.CLSCTX_INPROC_SERVER)
+        speakers = deviceEnumerator.GetDefaultAudioEndpoint(
+                                EDataFlow.eRender.value, ERole.eMultimedia.value)
+        return speakers
 
-		@staticmethod
-		def GetAudioSessionManager():
-				speakers = AudioUtilities.GetSpeakers()
-				if speakers is None:
-						return None
-				# win7+ only
-				o = speakers.Activate(
-						IAudioSessionManager2._iid_, comtypes.CLSCTX_ALL, None)
-				mgr = o.QueryInterface(IAudioSessionManager2)
-				return mgr
+    @staticmethod
+    def GetDefaultMicrophone():
+        deviceEnumerator = comtypes.CoCreateInstance(
+            CLSID_MMDeviceEnumerator,
+            IMMDeviceEnumerator,
+            comtypes.CLSCTX_INPROC_SERVER)
+        microphone = deviceEnumerator.GetDefaultAudioEndpoint(
+            EDataFlow.eCapture.value, ERole.eMultimedia.value)
+        o = microphone.Activate(
+                IAudioEndpointVolume._iid_, comtypes.CLSCTX_ALL, None)
+        microphone = o.QueryInterface(IAudioEndpointVolume)
+        
+        return microphone
 
-		@staticmethod
-		def GetAllSessions():
-				audio_sessions = []
-				mgr = AudioUtilities.GetAudioSessionManager()
-				if mgr is None:
-						return audio_sessions
-				sessionEnumerator = mgr.GetSessionEnumerator()
-				count = sessionEnumerator.GetCount()
-				for i in range(count):
-						ctl = sessionEnumerator.GetSession(i)
-						if ctl is None:
-								continue
-						ctl2 = ctl.QueryInterface(IAudioSessionControl2)
-						if ctl2 is not None:
-								audio_session = AudioSession(ctl2)
-								audio_sessions.append(audio_session)
-				return audio_sessions
 
-		@staticmethod
-		def GetProcessSession(id):
-				for session in AudioUtilities.GetAllSessions():
-						if session.ProcessId == id:
-								return session
-						# session.Dispose()
-				return None
+    @staticmethod
+    def GetAudioSessionManager():
+            speakers = AudioUtilities.GetSpeakers()
+            if speakers is None:
+                    return None
+            # win7+ only
+            o = speakers.Activate(
+                    IAudioSessionManager2._iid_, comtypes.CLSCTX_ALL, None)
+            mgr = o.QueryInterface(IAudioSessionManager2)
+            return mgr
 
-		@staticmethod
-		def CreateDevice(dev):
-				if dev is None:
-						return None
-				id = dev.GetId()
-				state = dev.GetState()
-				properties = {}
-				store = dev.OpenPropertyStore(STGM.STGM_READ.value)
-				if store is not None:
-						propCount = store.GetCount()
-						for j in range(propCount):
-								pk = store.GetAt(j)
-								value = store.GetValue(pk)
-								v = value.GetValue()
-								# TODO
-								# PropVariantClear(byref(value))
-								name = str(pk)
-								properties[name] = v
-				audioState = AudioDeviceState(state)
-				return AudioDevice(id, audioState, properties)
+    @staticmethod
+    def GetAllSessions():
+            audio_sessions = []
+            mgr = AudioUtilities.GetAudioSessionManager()
+            if mgr is None:
+                    return audio_sessions
+            sessionEnumerator = mgr.GetSessionEnumerator()
+            count = sessionEnumerator.GetCount()
+            for i in range(count):
+                    ctl = sessionEnumerator.GetSession(i)
+                    if ctl is None:
+                            continue
+                    ctl2 = ctl.QueryInterface(IAudioSessionControl2)
+                    if ctl2 is not None:
+                            audio_session = AudioSession(ctl2)
+                            audio_sessions.append(audio_session)
+            return audio_sessions
 
-		@staticmethod
-		def GetAllDevices():
-				devices = []
-				deviceEnumerator = comtypes.CoCreateInstance(
-						CLSID_MMDeviceEnumerator,
-						IMMDeviceEnumerator,
-						comtypes.CLSCTX_INPROC_SERVER)
-				if deviceEnumerator is None:
-						return devices
+    @staticmethod
+    def GetProcessSession(id):
+            for session in AudioUtilities.GetAllSessions():
+                    if session.ProcessId == id:
+                            return session
+                    # session.Dispose()
+            return None
 
-				collection = deviceEnumerator.EnumAudioEndpoints(
-						EDataFlow.eAll.value, DEVICE_STATE.MASK_ALL.value)
-				if collection is None:
-						return devices
+    @staticmethod
+    def CreateDevice(dev):
+            if dev is None:
+                    return None
+            id = dev.GetId()
+            state = dev.GetState()
+            properties = {}
+            store = dev.OpenPropertyStore(STGM.STGM_READ.value)
+            if store is not None:
+                    propCount = store.GetCount()
+                    for j in range(propCount):
+                            pk = store.GetAt(j)
+                            value = store.GetValue(pk)
+                            v = value.GetValue()
+                            # TODO
+                            # PropVariantClear(byref(value))
+                            name = str(pk)
+                            properties[name] = v
+            audioState = AudioDeviceState(state)
+            return AudioDevice(id, audioState, properties)
 
-				count = collection.GetCount()
-				for i in range(count):
-						dev = collection.Item(i)
-						if dev is not None:
-								devices.append(AudioUtilities.CreateDevice(dev))
-				return devices
+    @staticmethod
+    def GetAllDevices():
+            devices = []
+            deviceEnumerator = comtypes.CoCreateInstance(
+                    CLSID_MMDeviceEnumerator,
+                    IMMDeviceEnumerator,
+                    comtypes.CLSCTX_INPROC_SERVER)
+            if deviceEnumerator is None:
+                    return devices
+
+            collection = deviceEnumerator.EnumAudioEndpoints(
+                    EDataFlow.eAll.value, DEVICE_STATE.MASK_ALL.value)
+            if collection is None:
+                    return devices
+
+            count = collection.GetCount()
+            for i in range(count):
+                    dev = collection.Item(i)
+                    if dev is not None:
+                            devices.append(AudioUtilities.CreateDevice(dev))
+            return devices
