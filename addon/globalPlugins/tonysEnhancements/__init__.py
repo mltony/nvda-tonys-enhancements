@@ -1584,6 +1584,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         cls = documentBase.DocumentWithTableNavigation
         funcName = "script_%s" % scriptName
         script = lambda self,gesture: function(self, gesture, *args, **kwargs)
+        script.__name__ = funcName
         script.__doc__ = doc
         script.category = self.scriptCategory
         setattr(cls, funcName, script)
