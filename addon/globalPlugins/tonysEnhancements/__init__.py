@@ -1264,6 +1264,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
     def terminate(self):
         updateSoundSplitterMonitorThread(exit=True)
+        from . pycaw.pycaw import AudioUtilities
         microphone = AudioUtilities.GetDefaultMicrophone()
         if microphone is not None:
             microphone.SetMute(False, None)
