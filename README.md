@@ -48,6 +48,13 @@ appName keystroke
 ```
 where `appName` is the name of the application where this keystroke is marked dynamic (or `*` to b marked dynamic in all applications), and`keystroke` is a keystroke in NVDA format, for example, `control+alt+shift+pagedown`.
 
+In order to figure out appName for your application, do this:
+
+1. Switch to your application.
+2. Open NVDA Python Console by pressing NVDA+Shift+Z.
+3. Type `focus.appModule.appName` and hit enter.
+4. Press F6 to go to output pane and find appName value in the last line.
+
 ## Showing and hiding windows
 You can hide current window, and you can show all currently hidden windows. This might be useful if you use multiple windows in the same app (say Chrome) and you would like to rearrange them.
 - NVDA+Shift+-: hide current window.
