@@ -1,7 +1,7 @@
 # nvda-tonys-enhancements
 This add-on contains a number of small improvements to NVDA screenreader, each of them too small to deserve a separate add-on.
 
-This add-on is only compatible with NVDA versions 2019.3 and above.
+This add-on is only compatible with NVDA versions 2022.4 and above.
 
 ## Downloads
 

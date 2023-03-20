@@ -676,8 +676,8 @@ def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
     formatConfig=config.conf["documentFormatting"].copy()
     formatConfig["reportTables"]=True
     try:
-        tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(selfself.selection)
-        info = selfself._getTableCellAt(tableID, selfself.selection,origRow, origCol)
+        origCell = selfself._getTableCellCoords(selfself.selection)
+        info = selfself._getTableCellAt(origCell.tableID, selfself.selection, origCell.row, origCell.col)
     except LookupError:
         # Translators: The message reported when a user attempts to use a table movement command
         # when the cursor is not within a table.
@@ -688,15 +688,15 @@ def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
 
     edgeFound = False
     for attempt in range(MAX_TABLE_DIMENSION):
-        tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(info)
+        origCell = selfself._getTableCellCoords(info)
         try:
-            info = selfself._getNearestTableCell(tableID, info, origRow, origCol, origRowSpan, origColSpan, movement, axis)
+            info = selfself._getNearestTableCell(info, origCell, movement, axis)
         except LookupError:
             edgeFound = True
             break
     if not edgeFound:
         ui.message(_("Cannot find edge of table in this direction"))
-        info = self._getTableCellAt(tableID, self.selection,origRow, origCol)
+        info = self._getTableCellAt(origCell.tableID, self.selection, origCell.row, origCell.col)
         info.collapse()
         self.selection = info
         return
@@ -704,9 +704,9 @@ def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
     if index > 1:
         inverseMovement = "next" if movement == "previous" else "previous"
         for i in range(1, index):
-            tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(info)
+            origCell = selfself._getTableCellCoords(info)
             try:
-                info = selfself._getNearestTableCell(tableID, selfself.selection, origRow, origCol, origRowSpan, origColSpan, inverseMovement, axis)
+                info = selfself._getNearestTableCell(selfself.selection, origCell, inverseMovement, axis)
             except LookupError:
                 ui.message(_("Cannot find {axis} with index {index} in this table").format(**locals()))
                 return
@@ -723,8 +723,8 @@ def speakRowOrColumn(selfself, gesture, axis=None, initialMovement=None, updateC
     formatConfig=config.conf["documentFormatting"].copy()
     formatConfig["reportTables"]=True
     try:
-        tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(selfself.selection)
-        info = selfself._getTableCellAt(tableID, selfself.selection,origRow, origCol)
+        origCell = selfself._getTableCellCoords(selfself.selection)
+        info = selfself._getTableCellAt(origCell.tableID, selfself.selection, origCell.row, origCell.col)
     except LookupError:
         # Translators: The message reported when a user attempts to use a table movement command
         # when the cursor is not within a table.
@@ -736,9 +736,9 @@ def speakRowOrColumn(selfself, gesture, axis=None, initialMovement=None, updateC
 
         edgeFound = False
         for attempt in range(MAX_TABLE_DIMENSION):
-            tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(info)
+            origCell = selfself._getTableCellCoords(info)
             try:
-                info = selfself._getNearestTableCell(tableID, info, origRow, origCol, origRowSpan, origColSpan, initialMovement, axis)
+                info = selfself._getNearestTableCell(info, origCell, movement, axis)
             except LookupError:
                 edgeFound = True
                 break
@@ -748,9 +748,9 @@ def speakRowOrColumn(selfself, gesture, axis=None, initialMovement=None, updateC
     def makeCallback(info):
         def callbackImpl():
             nonlocal info
-            tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(info)
+            origCell = selfself._getTableCellCoords(info)
             try:
-                info = selfself._getNearestTableCell(tableID, info, origRow, origCol, origRowSpan, origColSpan, movement, axis)
+                info = selfself._getNearestTableCell(info, origCell, movement, axis)
             except LookupError:
                 return
             seq = [
@@ -791,8 +791,8 @@ def speakColumn(selfself, gesture):
     formatConfig=config.conf["documentFormatting"].copy()
     formatConfig["reportTables"]=True
     try:
-        tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(selfself.selection)
-        info = selfself._getTableCellAt(tableID, selfself.selection,origRow, origCol)
+        origCell = selfself._getTableCellCoords(selfself.selection)
+        info = selfself._getTableCellAt(origCell.tableID, selfself.selection,origCell.row, origCell.col)
     except LookupError:
         # Translators: The message reported when a user attempts to use a table movement command
         # when the cursor is not within a table.
@@ -802,9 +802,9 @@ def speakColumn(selfself, gesture):
     MAX_TABLE_DIMENSION = 500
     for attempt in range(MAX_TABLE_DIMENSION):
         speech.speakTextInfo(info, formatConfig=formatConfig, reason=REASON_CARET)
-        tableID, origRow, origCol, origRowSpan, origColSpan = selfself._getTableCellCoords(info)
+        origCell = selfself._getTableCellCoords(info)
         try:
-            info = selfself._getNearestTableCell(tableID, info, origRow, origCol, origRowSpan, origColSpan, movement, axis)
+            info = selfself._getNearestTableCell(info, origCell, movement, axis)
         except LookupError:
             break
 
@@ -867,15 +867,15 @@ def copyRowImpl(selfself, tableID, startPos, row, col=None):
 
 def copyTableImpl(selfself, currentRow=False, currentColumn=False):
     try:
-        tableID, row, col, origRowSpan, origColSpan = selfself._getTableCellCoords(selfself.selection)
+        origCell = selfself._getTableCellCoords(selfself.selection)
     except LookupError:
         deferredMessage(_("Not in a table!"))
         return
     startPos = selfself.selection
     result = []
-    rowRange = range(row, row+1) if currentRow else range(1, 200)
+    rowRange = range(origCell.row, origCell.row+1) if currentRow else range(1, 200)
     for row in rowRange:
-        row = copyRowImpl(selfself, tableID, startPos, row, col if currentColumn else None)
+        row = copyRowImpl(selfself, origCell.tableID, startPos, row, origCell.col if currentColumn else None)
         if len(row) > 0:
             result.append(row)
         else:
@@ -909,7 +909,7 @@ def copyTable(selfself, gesture):
 
 def copyTablePopup(selfself,gesture):
     try:
-        tableID, row, col, origRowSpan, origColSpan = selfself._getTableCellCoords(selfself.selection)
+        origCell = selfself._getTableCellCoords(selfself.selection)
     except LookupError:
         deferredMessage(_("Not in a table!"))
         return
