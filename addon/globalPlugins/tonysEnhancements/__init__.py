@@ -715,100 +715,6 @@ def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
     info.collapse()
     selfself.selection = info
 
-def speakRowOrColumn(selfself, gesture, axis=None, initialMovement=None, updateCursor=False):
-    movement = "next"
-    from scriptHandler import isScriptWaiting
-    if isScriptWaiting():
-        return
-    formatConfig=config.conf["documentFormatting"].copy()
-    formatConfig["reportTables"]=True
-    try:
-        origCell = selfself._getTableCellCoords(selfself.selection)
-        info = selfself._getTableCellAt(origCell.tableID, selfself.selection, origCell.row, origCell.col)
-    except LookupError:
-        # Translators: The message reported when a user attempts to use a table movement command
-        # when the cursor is not within a table.
-        ui.message(_("Not in a table cell"))
-        return
-
-    if initialMovement is not None:
-        MAX_TABLE_DIMENSION = 500
-
-        edgeFound = False
-        for attempt in range(MAX_TABLE_DIMENSION):
-            origCell = selfself._getTableCellCoords(info)
-            try:
-                info = selfself._getNearestTableCell(info, origCell, movement, axis)
-            except LookupError:
-                edgeFound = True
-                break
-        if not edgeFound:
-            ui.message(_("Cannot find edge of table in this direction"))
-            return
-    def makeCallback(info):
-        def callbackImpl():
-            nonlocal info
-            origCell = selfself._getTableCellCoords(info)
-            try:
-                info = selfself._getNearestTableCell(info, origCell, movement, axis)
-            except LookupError:
-                return
-            seq = [
-                command  for subseq in
-                    speech.getTextInfoSpeech(
-                        info,
-                        formatConfig=formatConfig,
-                        reason=REASON_CARET,
-                    )
-                for command in subseq
-            ]
-            seq.append(makeCallback(info))
-            speech.speak(seq)
-            if updateCursor:
-                info.updateCaret()
-
-
-        return speech.commands.CallbackCommand(callbackImpl)
-    seq = [
-        command for subseq in
-            speech.getTextInfoSpeech(
-                info,
-                formatConfig=formatConfig,
-                reason=REASON_CARET,
-            )
-        for command in subseq
-    ] + [makeCallback(info)]
-    speech.speak(seq)
-
-
-
-def speakColumn(selfself, gesture):
-    movement = "next"
-    axis = "row"
-    from scriptHandler import isScriptWaiting
-    if isScriptWaiting():
-        return
-    formatConfig=config.conf["documentFormatting"].copy()
-    formatConfig["reportTables"]=True
-    try:
-        origCell = selfself._getTableCellCoords(selfself.selection)
-        info = selfself._getTableCellAt(origCell.tableID, selfself.selection,origCell.row, origCell.col)
-    except LookupError:
-        # Translators: The message reported when a user attempts to use a table movement command
-        # when the cursor is not within a table.
-        ui.message(_("Not in a table cell"))
-        return
-
-    MAX_TABLE_DIMENSION = 500
-    for attempt in range(MAX_TABLE_DIMENSION):
-        speech.speakTextInfo(info, formatConfig=formatConfig, reason=REASON_CARET)
-        origCell = selfself._getTableCellCoords(info)
-        try:
-            info = selfself._getNearestTableCell(info, origCell, movement, axis)
-        except LookupError:
-            break
-
-
 def deferredMessage(s):
     def func():
         speech.cancelSpeech()
@@ -1468,34 +1374,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         return outLines
 
     def injectTableFunctions(self):
-        self.injectTableFunction(
-            scriptName="firstColumn",
-            kb="Control+Alt+Home",
-            doc="Move to the first column in table",
-            movement="previous",
-            axis="column",
-        )
-        self.injectTableFunction(
-            scriptName="lastColumn",
-            kb="Control+Alt+End",
-            doc="Move to the last column in table",
-            movement="next",
-            axis="column",
-        )
-        self.injectTableFunction(
-            scriptName="firstRow",
-            kb="Control+Alt+PageUp",
-            doc="Move to the first row in table",
-            movement="previous",
-            axis="row",
-        )
-        self.injectTableFunction(
-            scriptName="lastRow",
-            kb="Control+Alt+PageDown",
-            doc="Move to the last row in table",
-            movement="next",
-            axis="row",
-        )
         for i in range(1, 11):
             self.injectTableFunction(
                 scriptName=f"jumpToColumn{i}",
@@ -1513,42 +1391,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 axis="row",
                 index = i,
             )
-        self.injectTableFunction(
-            scriptName="readColumn",
-            kb="NVDA+Shift+DownArrow",
-            doc="Read column starting from current cell",
-            function=speakRowOrColumn,
-            axis='row',
-            initialMovement=None,
-            updateCursor=True,
-        )
-        self.injectTableFunction(
-            scriptName="readRow",
-            kb="NVDA+Shift+RightArrow",
-            doc="Read row starting from current cell",
-            function=speakRowOrColumn,
-            axis='column',
-            initialMovement=None,
-            updateCursor=True,
-        )
-        self.injectTableFunction(
-            scriptName="readColumnFromTop",
-            kb="NVDA+Control+Shift+DownArrow",
-            doc="Read column starting from the top",
-            function=speakRowOrColumn,
-            axis='row',
-            initialMovement='previous',
-            updateCursor=False,
-        )
-        self.injectTableFunction(
-            scriptName="readRowFromBeginning",
-            kb="NVDA+Control+Shift+RightArrow",
-            doc="Read row starting from the beginning",
-            function=speakRowOrColumn,
-            axis='column',
-            initialMovement='previous',
-            updateCursor=False,
-        )
         self.injectTableFunction(
             scriptName="copyTableToClipboardPopup",
             kb="NVDA+Alt+T",
