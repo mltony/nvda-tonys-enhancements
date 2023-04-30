@@ -8,10 +8,17 @@ This add-on is only compatible with NVDA versions 2022.4 and above.
 [Tony's enhancements latest stable version](https://github.com/mltony/nvda-tonys-enhancements/releases/latest/download/tonysEnhancements.nvda-addon)
 
 ## Enhanced table navigation commands
-* Control+Alt+Home/End - jump to the first/last column in the table.
-* Control+Alt+PageUp/PageDown - jump to the first/last row in the table.
 * NVDA+Control+digit - jump to 1st/2nd/3rd/... 10th column in the table.
 * NVDA+Alt+digit - jump to 1st/2nd/3rd/... 10th row in the table.
+
+## Deprecated table navigation commands
+
+The following table navigation commands have been deprecated as they have been integrated into the latest version of NVDA core.
+
+Note: The gestures that were associated with the features mentioned below may not correspond exactly to the functions in the NVDA core. To learn about NVDA's default gestures for these features, please refer to the NVDA user guide.
+
+* Control+Alt+Home/End - jump to the first/last column in the table.
+* Control+Alt+PageUp/PageDown - jump to the first/last row in the table.
 * NVDA+Shift+DownArrow - read current column in the table starting from current cell down.
 * NVDA+Shift+RightArrow - read current row in the table starting from current cell.
 * NVDA+Control+Shift+DownArrow - read current column in the table starting from the top.
@@ -20,7 +27,7 @@ This add-on is only compatible with NVDA versions 2022.4 and above.
 ## Copying tables to clipboard
 
 With the following shortcuts you can copy either the whole table or current row or current column in a formatted way, so that you can paste it as a table to rich text editors, such as Microsoft Word or WordPad.
-- NVDA+Alt+T - shows popup menu with options to copy table or part of it
+- NVDA+Alt+T - shows popup menu with options to copy table or part of it.
 There are also separate scripts for copying tables, rows, columns and cells, but they don't have keyboard shortcuts  assigned by default, custom keyboard shortcuts cfor them can be assigned in InputGestures dialog of NVDA.
 
 ## Enhanced word navigation commands
