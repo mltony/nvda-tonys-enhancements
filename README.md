@@ -11,18 +11,18 @@ This add-on is only compatible with NVDA versions 2022.4 and above.
 * NVDA+Control+digit - jump to 1st/2nd/3rd/... 10th column in the table.
 * NVDA+Alt+digit - jump to 1st/2nd/3rd/... 10th row in the table.
 
-## Deprecated table navigation commands
+## Removed table navigation commands
 
-The following table navigation commands have been deprecated as they have been integrated into the latest version of NVDA core.
+The following table navigation commands have been Removed as they have been integrated into the latest version of NVDA core.
 
-Note: The gestures that were associated with the features mentioned below may not correspond exactly to the functions in the NVDA core. To learn about NVDA's default gestures for these features, please refer to the NVDA user guide.
+* Jump to the first/last column in the table.
+* Jump to the first/last row in the table.
+* Read current column in the table starting from current cell down.
+* Read current row in the table starting from current cell.
+* Read current column in the table starting from the top.
+* Read current row in the table starting from the beginning of the row.
 
-* Control+Alt+Home/End - jump to the first/last column in the table.
-* Control+Alt+PageUp/PageDown - jump to the first/last row in the table.
-* NVDA+Shift+DownArrow - read current column in the table starting from current cell down.
-* NVDA+Shift+RightArrow - read current row in the table starting from current cell.
-* NVDA+Control+Shift+DownArrow - read current column in the table starting from the top.
-* NVDA+Control+Shift+RightArrow - read current row in the table starting from the beginning of the row.
+Note: To learn about NVDA's default gestures for these features, please refer to the NVDA user guide.
 
 ## Copying tables to clipboard
 
