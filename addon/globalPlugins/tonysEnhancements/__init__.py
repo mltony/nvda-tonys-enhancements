@@ -760,9 +760,8 @@ def copyTableToClipboard(table):
     wx.TheClipboard.Close()
 
 
-def copyRowImpl(selfself, tableID, startPos, row, col=None):
+def copyRowImpl(selfself, tableID, startPos, row, colRange):
     result = []
-    colRange = range(col, col+1) if col is not None else range(1, 200)
     for col in colRange:
         try:
             info = selfself._getTableCellAt(tableID,startPos,row,col)
@@ -771,7 +770,7 @@ def copyRowImpl(selfself, tableID, startPos, row, col=None):
         result.append(info.text)
     return result
 
-def copyTableImpl(selfself, currentRow=False, currentColumn=False):
+def copyTableImpl(selfself, currentRow=False, currentColumn=False, partial=False):
     try:
         origCell = selfself._getTableCellCoords(selfself.selection)
     except LookupError:
@@ -779,7 +778,9 @@ def copyTableImpl(selfself, currentRow=False, currentColumn=False):
         return
     startPos = selfself.selection
     result = []
-    rowRange = range(origCell.row, origCell.row+1) if currentRow else range(1, 200)
+    api.origCell = origCell
+    rowRange = range(origCell.row, origCell.row+1) if currentRow else range(origCell.row if partial else 1, 200)
+    colRange = range(origCell.col, origCell.col+1) if currentColumn else range(origCell.col if partial else 1, 200)
     for row in rowRange:
         row = copyRowImpl(selfself, origCell.tableID, startPos, row, origCell.col if currentColumn else None)
         if len(row) > 0:
@@ -801,11 +802,23 @@ def copyRow(selfself, gesture):
         copyTableToClipboard(cells)
         deferredMessage(_("Row copied"))
 
+def copyRowPartial(selfself, gesture):
+    cells = copyTableImpl(selfself, currentRow=True, partial=True)
+    if cells is not None:
+        copyTableToClipboard(cells)
+        deferredMessage(_("Partial row copied"))
+
 def copyColumn(selfself, gesture):
     cells = copyTableImpl(selfself, currentColumn=True)
     if cells is not None:
         copyTableToClipboard(cells)
         deferredMessage(_("Column copied"))
+
+def copyColumnPartial(selfself, gesture):
+    cells = copyTableImpl(selfself, currentColumn=True, partial=True)
+    if cells is not None:
+        copyTableToClipboard(cells)
+        deferredMessage(_("Partial column copied"))
 
 def copyTable(selfself, gesture):
     cells = copyTableImpl(selfself)
@@ -827,7 +840,9 @@ def copyTablePopup(selfself,gesture):
         for func, menuStr  in [
             (copyCell, _("Copy ce&ll")),
             (copyColumn, _("Copy &column")),
+            (copyColumnPartial, _("Copy column from current cell &down")),
             (copyRow, _("Copy &row")),
+            (copyRowPartial, _("Copy row from current cell to the ri&ght")),
             (copyTable, _("Copy &table")),
         ]:
             item = menu.Append(wx.ID_ANY, menuStr)
