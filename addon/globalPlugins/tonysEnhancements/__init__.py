@@ -1208,8 +1208,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.myWatchdog.start()
         originalSpeakSelectionChange = speech.speakSelectionChange
         speech.speakSelectionChange = preSpeakSelectionChange
-        originalSpeechSpeak = speech.speak
-        speech.speak = newSpeechSpeak
+        originalSpeechSpeak = speech.speech.speak
+        speech.speech.speak = newSpeechSpeak
 
         for i in [1,2,3]:
             configKey = f"quickSearch{i}"
@@ -1229,7 +1229,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         watchdog.asleep = originalWatchdogAsleep
         self.myWatchdog.terminate()
         speech.speakSelectionChange = originalSpeakSelectionChange
-        speech.speak = originalSpeechSpeak
+        speech.speech.speak = originalSpeechSpeak
         for i in [1,2,3]:
             delattr(editableText.EditableText, f"script_quickSearch{i}")
             del editableText.EditableText._EditableText__gestures[f"kb:{self.quickSearchGestures[i]}"]
