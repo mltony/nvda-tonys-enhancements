@@ -779,8 +779,8 @@ def copyTableImpl(selfself, currentRow=False, currentColumn=False, partial=False
     startPos = selfself.selection
     result = []
     api.origCell = origCell
-    rowRange = range(origCell.row, origCell.row+1) if currentRow else range(origCell.row if partial else 1, 200)
-    colRange = range(origCell.col, origCell.col+1) if currentColumn else range(origCell.col if partial else 1, 200)
+    rowRange = range(origCell.row, origCell.row+1) if currentRow else range(origCell.row if partial else 1, 1000)
+    colRange = range(origCell.col, origCell.col+1) if currentColumn else range(origCell.col if partial else 1, 1000)
     for row in rowRange:
         row = copyRowImpl(selfself, origCell.tableID, startPos, row, colRange)
         if len(row) > 0:
