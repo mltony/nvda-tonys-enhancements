@@ -1,7 +1,7 @@
 # nvda-tonys-enhancements
 This add-on contains a number of small improvements to NVDA screenreader, each of them too small to deserve a separate add-on.
 
-This add-on is compatible with NVDA versions 2022.4 and 2023.1, but it is not compatible with NVDA-Alpha or version 2023.2.
+This add-on is compatible with NVDA versions 2022.4 and 2023.1.
 
 ## Downloads
 
@@ -83,16 +83,11 @@ Check this option for NVDA to provide audio feedback when NVDA is busy. NVDA bei
 
 ## Volume adjustment
 
-* NVDA+Control+PageUp/PageDown - adjust NVDA volume.
-* NVDA+Alt+PageUp/PageDown - adjust volume of all applications except for NVDA.
+Due to compatibility issues with the WASAPI added in NVDA-2023.2, the volume adjustment have been temporarily removed, but may be restored in the future.
 
 ## Sound split
 
-In Sound split mode NVDA will direct all sound output to the right channel, while applications will play their sounds in the left channel. Channels can be switched in settings.
-
-* NVDA+Alt+S toggles sound split mode. 
-
-Please note, that in certain situations sound output from an application might be limited to one channel even when NVDA is not running. For example, this could happen if NVDA has crashed while sound split was on, or when NVDA exited cleanly while the app in question was not running. In those situations, please restart NVDA,  and turn off sound split while the app in question is running.
+As of version 1.16 this functionality has been moved to [soundSplitter add-on](https://github.com/opensourcesys/soundSplitter/) maintained by Luke.
 
 ## Enhanced mouse functions
 
