@@ -118,10 +118,6 @@ def initConfiguration():
         "blockDoubleInsert" : "boolean( default=False)",
         "blockDoubleCaps" : "boolean( default=False)",
         "blockScrollLock" : "boolean( default=False)",
-        "nvdaVolume" : "integer( default=100, min=0, max=100)",
-        "appsVolume" : "integer( default=100, min=0, max=100)",
-        "soundSplitLeft" : "boolean( default=False)",
-        "soundSplit" : "boolean( default=False)",
         "busyBeep" : "boolean( default=False)",
         "dynamicKeystrokesTable" : f"string( default='{defaultDynamicKeystrokes}')",
         "fixWindowNumber" : "boolean( default=False)",
@@ -323,37 +319,6 @@ class SettingsDialog(SettingsPanel):
         self.suppressUnselectedCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.suppressUnselectedCheckbox.Value = getConfig("suppressUnselected")
 
-      # NVDA volume slider
-        sizer=wx.BoxSizer(wx.HORIZONTAL)
-        # Translators: slider to select NVDA  volume
-        label=wx.StaticText(self,wx.ID_ANY,label=_("NVDA volume"))
-        slider=wx.Slider(self, wx.NewId(), minValue=0,maxValue=100)
-        slider.SetValue(getConfig("nvdaVolume"))
-        sizer.Add(label)
-        sizer.Add(slider)
-        settingsSizer.Add(sizer)
-        self.nvdaVolumeSlider = slider
-      # Apps  volume slider
-        sizer=wx.BoxSizer(wx.HORIZONTAL)
-        # Translators: slider to select Apps   volume
-        label=wx.StaticText(self,wx.ID_ANY,label=_("Applications volume"))
-        slider=wx.Slider(self, wx.NewId(), minValue=0,maxValue=100)
-        slider.SetValue(getConfig("appsVolume"))
-        sizer.Add(label)
-        sizer.Add(slider)
-        settingsSizer.Add(sizer)
-        self.appsVolumeSlider = slider
-      # checkbox Enable sound split
-        # Translators: Checkbox for sound split
-        label = _("Split NVDA sound and applications' sounds into left and right channels.")
-        self.soundSplitCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
-        self.soundSplitCheckbox.Value = getConfig("soundSplit")
-      # checkbox switch left and rright during sound split
-        # Translators: Checkbox for switching left and right sound split
-        label = _("Switch left and right during sound split.")
-        self.soundSplitLeftCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
-        self.soundSplitLeftCheckbox.Value = getConfig("soundSplitLeft")
-
       # Dynamic keystrokes table
         # Translators: Label for dynamic keystrokes table edit box
         label = _("Edit dynamic keystrokes table - see add-on documentation for more information")
@@ -459,10 +424,6 @@ class SettingsDialog(SettingsPanel):
         setConfig("fixWindowNumber", self.fixWindowNumberCheckbox.Value)
         setConfig("suppressUnselected", self.suppressUnselectedCheckbox.Value)
         setConfig("detectInsertMode", self.detectInsertModeCheckbox.Value)
-        setConfig("nvdaVolume", self.nvdaVolumeSlider.Value)
-        setConfig("appsVolume", self.appsVolumeSlider.Value)
-        setConfig("soundSplit", self.soundSplitCheckbox.Value)
-        setConfig("soundSplitLeft", self.soundSplitLeftCheckbox.Value)
         setConfig("dynamicKeystrokesTable", self.dynamicKeystrokesTable)
         reloadDynamicKeystrokes()
         setConfig("enableLangMap", self.langMapCheckbox.Value)
@@ -475,7 +436,6 @@ class SettingsDialog(SettingsPanel):
         updateScrollLockBlocking()
         setConfig("priority", self.priorityCombobox.Selection)
         updatePriority()
-        updateSoundSplitterMonitorThread()
 
 class Memoize:
     def __init__(self, f):
@@ -602,72 +562,6 @@ class Beeper:
 originalWaveOpen = None
 originalWatchdogAlive = None
 originalWatchdogAsleep = None
-
-def preWaveOpen(selfself, *args, **kwargs):
-    global originalWaveOpen
-    result = originalWaveOpen(selfself, *args, **kwargs)
-    volume = getConfig("nvdaVolume")
-    volume2 = int(0xFFFF * (volume / 100))
-    if not getConfig("soundSplit"):
-        volume2 = volume2 | (volume2 << 16)
-    else:
-        if getConfig("soundSplitLeft"):
-            pass
-        else:
-            volume2 = (volume2 << 16)
-    winmm.waveOutSetVolume(selfself._waveout, volume2)
-    return result
-
-def setAppsVolume(volumes=None):
-    from . pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, IChannelAudioVolume
-    if volumes is not None:
-        leftVolume, rightVolume = volumes
-    else:
-        volume = getConfig("appsVolume")
-        if getConfig("soundSplit"):
-            if getConfig("soundSplitLeft"):
-                leftVolume = 0
-                rightVolume = volume
-            else:
-                leftVolume = volume
-                rightVolume = 0
-        else:
-            leftVolume = rightVolume = volume
-
-    leftVolume /= 100.0
-    rightVolume /= 100.0
-
-    audioSessions = AudioUtilities.GetAllSessions()
-    for s in audioSessions:
-        if s.Process is not None and 'nvda' in s.Process.name().lower():
-            continue
-        channelVolume = s._ctl.QueryInterface(IChannelAudioVolume)
-        if channelVolume.GetChannelCount() == 2:
-            channelVolume.SetChannelVolume(0, leftVolume, None)
-            channelVolume.SetChannelVolume(1, rightVolume, None)
-
-soundSplitterMonitorCounter = 0
-def soundSplitterMonitorThread(localSoundSplitterMonitorCounter):
-    global soundSplitterMonitorCounter
-    while localSoundSplitterMonitorCounter == soundSplitterMonitorCounter:
-        if not getConfig("soundSplit"):
-            return
-        setAppsVolume()
-        #time.sleep(1)
-        yield 1000
-
-def updateSoundSplitterMonitorThread(exit=False):
-    global soundSplitterMonitorCounter
-    soundSplitterMonitorCounter += 1
-    if exit:
-        setAppsVolume((100,100))
-        return
-    ss = getConfig("soundSplit")
-    if ss:
-        executeAsynchronously(soundSplitterMonitorThread(soundSplitterMonitorCounter))
-    else:
-        setAppsVolume()
-
 
 def findTableCell(selfself, gesture, movement="next", axis=None, index = 0):
     from scriptHandler import isScriptWaiting
@@ -1166,7 +1060,6 @@ class MousePointerHover:
 reloadDynamicKeystrokes()
 reloadLangMap()
 updatePriority()
-updateSoundSplitterMonitorThread()
 updateScrollLockBlocking()
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
@@ -1184,7 +1077,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         gui.settingsDialogs.NVDASettingsDialog.categoryClasses.append(SettingsDialog)
 
     def terminate(self):
-        updateSoundSplitterMonitorThread(exit=True)
         from . pycaw.pycaw import AudioUtilities
         microphone = AudioUtilities.GetDefaultMicrophone()
         if microphone is not None:
@@ -1194,11 +1086,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
     quickSearchGestures = ",PrintScreen,ScrollLock,Pause".split(",")
     def injectHooks(self):
-        global originalWaveOpen, originalWatchdogAlive, originalWatchdogAsleep,  originalSpeakSelectionChange, originalCaretMovementScriptHelper,  originalSpeechSpeak
+        global originalWatchdogAlive, originalWatchdogAsleep,  originalSpeakSelectionChange, originalCaretMovementScriptHelper,  originalSpeechSpeak
         self.originalExecuteGesture = inputCore.InputManager.executeGesture
         inputCore.InputManager.executeGesture = lambda selfself, gesture, *args, **kwargs: self.preExecuteGesture(selfself, gesture, *args, **kwargs)
-        originalWaveOpen = nvwave.WavePlayer.open
-        nvwave.WavePlayer.open = preWaveOpen
         originalWatchdogAlive = watchdog.alive
         watchdog.alive = preWatchdogAlive
         originalWatchdogAsleep = watchdog.asleep
@@ -1449,46 +1339,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         if kb is not None:
             cls._DocumentWithTableNavigation__gestures["kb:%s" % kb] = scriptName
 
-    @script(description='Increase NVDA volume.', gestures=['kb:NVDA+control+PageUp'])
-    def script_increaseVolume(self, gesture):
-        self.adjustVolume(5)
-
-    @script(description='Decrease NVDA volume.', gestures=['kb:NVDA+control+PageDown'])
-    def script_decreaseVolume(self, gesture):
-        self.adjustVolume(-5)
-
-    def adjustVolume(self, increment):
-        volume = getConfig("nvdaVolume")
-        volume += increment
-        if volume > 100:
-            volume = 100
-        if volume < 0:
-            volume = 0
-        setConfig("nvdaVolume", volume)
-        message = _("NVDA volume %d") % volume
-        ui.message(message)
-
-    @script(description='Increase applications volume.', gestures=['kb:NVDA+Alt+PageUp'])
-    def script_increaseAppVolume(self, gesture):
-        self.adjustAppVolume(5)
-
-    @script(description='Decrease applications volume.', gestures=['kb:NVDA+Alt+PageDown'])
-    def script_decreaseAppVolume(self, gesture):
-        self.adjustAppVolume(-5)
-
-    def adjustAppVolume(self, increment):
-        volume = getConfig("appsVolume")
-        volume += increment
-        if volume > 100:
-            volume = 100
-        if volume < 0:
-            volume = 0
-        setConfig("appsVolume", volume)
-        message = _("Applications volume %d") % volume
-        ui.message(message)
-        setAppsVolume()
-
-
     def script_quickSearch(self, selfself, gesture, regex):
         if "shift" in gesture._get_modifierNames():
             direction = -1
@@ -1571,19 +1421,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             ui.message(_("%d windows shown") % n)
         core.callLater(100, delayedSpeak)
         self.hiddenWindows = []
-
-    @script(description='Toggle sound split.', gestures=['kb:NVDA+Alt+S'])
-    def script_toggleSoundSplit(self, gesture):
-        ss = getConfig("soundSplit")
-        ss = not ss
-        msg = _("Sound split enabled") if ss else _("Sound split disabled")
-        setConfig("soundSplit", False)
-        def updateSoundSplit():
-            setConfig("soundSplit", ss)
-            updateSoundSplitterMonitorThread()
-        #core.callLater(100, updateSoundSplit)
-        updateSoundSplit()
-        ui.message(msg)
 
     @script(description='Toggle microphone mute.', gestures=['kb:NVDA+Delete'])
     def script_toggleMicrophoneMute(self, gesture):
