@@ -1283,7 +1283,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             self.injectTableFunction(
                 scriptName=f"jumpToColumn{i}",
                 kb="NVDA+Control+%d" % (i%10),
-                doc="Move to the %d-th column in table" % i,
+                doc=_("Move to the %d-th column in table") % i,
                 movement="previous",
                 axis="column",
                 index = i,
@@ -1291,7 +1291,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             self.injectTableFunction(
                 scriptName=f"jumpToRow{i}",
                 kb="NVDA+Alt+%d" % (i%10),
-                doc="Move to the %d-th row in table" % i,
+                doc=_("Move to the %d-th row in table") % i,
                 movement="previous",
                 axis="row",
                 index = i,
@@ -1299,31 +1299,31 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.injectTableFunction(
             scriptName="copyTableToClipboardPopup",
             kb="NVDA+Alt+T",
-            doc="Show popup menu with copy table to clipboard commands.",
+            doc=_("Show popup menu with copy table to clipboard commands."),
             function=copyTablePopup,
         )
         self.injectTableFunction(
             scriptName="copyCellToClipboard",
             kb=None,
-            doc="Copy table cell to clipboard.",
+            doc=_("Copy table cell to clipboard."),
             function=copyCell,
         )
         self.injectTableFunction(
             scriptName="copyColumnToClipboard",
             kb=None,
-            doc="Copy table column to clipboard.",
+            doc=_("Copy table column to clipboard."),
             function=copyColumn,
         )
         self.injectTableFunction(
             scriptName="copyRowToClipboard",
             kb=None,
-            doc="Copy table row to clipboard.",
+            doc=_("Copy table row to clipboard."),
             function=copyRow,
         )
         self.injectTableFunction(
             scriptName="copyTableToClipboard",
             kb=None,
-            doc="Copy the whole table to clipboard.",
+            doc=_("Copy the whole table to clipboard."),
             function=copyTable,
         )
 
@@ -1392,7 +1392,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         speech.speakTextInfo(lineInfo, unit=textInfos.UNIT_PARAGRAPH, reason=REASON_CARET)
 
     hiddenWindows = []
-    @script(description='Hide current window.', gestures=['kb:NVDA+Shift+-'])
+    @script(description=_("Hide current window."), gestures=['kb:NVDA+Shift+-'])
     def script_HideWindow(self, gesture):
         fg = api.getForegroundObject()
         handle = fg.windowHandle
@@ -1405,7 +1405,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             ui.message(_("Hid current window. Now there are %d windows hidden.") % len(self.hiddenWindows))
         core.callLater(100, delayedSpeak)
 
-    @script(description='Show hidden windows.', gestures=['kb:NVDA+Shift+='])
+    @script(description=_("Show hidden windows."), gestures=['kb:NVDA+Shift+='])
     def script_showWindows(self, gesture):
         if len(self.hiddenWindows) == 0:
             ui.message(_("No windows hidden or all hidden windows have been already shown."))
@@ -1422,7 +1422,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         core.callLater(100, delayedSpeak)
         self.hiddenWindows = []
 
-    @script(description='Toggle microphone mute.', gestures=['kb:NVDA+Delete'])
+    @script(description=_("Toggle microphone mute."), gestures=['kb:NVDA+Delete'])
     def script_toggleMicrophoneMute(self, gesture):
         from . pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
         microphone = AudioUtilities.GetDefaultMicrophone()
@@ -1438,7 +1438,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             ui.message(msg)
         core.callLater(100, announce)
 
-    @script(description='Left click on current object.', gestures=['kb:Alt+NumPadDivide'])
+    @script(description=_("Left click on current object."), gestures=['kb:Alt+NumPadDivide'])
     def script_leftClick(self, gesture):
         with ReleaseControlModifier():
             with MousePointerHover() as m:
@@ -1447,7 +1447,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_LEFTDOWN,0,0)
                 mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_LEFTUP,0,0)
 
-    @script(description='Right click on current object.', gestures=['kb:Alt+NumPadMultiply'])
+    @script(description=_("Right click on current object."), gestures=['kb:Alt+NumPadMultiply'])
     def script_rightClick(self, gesture):
         with ReleaseControlModifier():
             with MousePointerHover() as m:
@@ -1456,21 +1456,21 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_RIGHTDOWN,0,0)
                 mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_RIGHTUP,0,0)
 
-    @script(description='Mouse wheel scroll down on current object.', gestures=['kb:Alt+NumPadPlus'])
+    @script(description=_("Mouse wheel scroll down on current object."), gestures=['kb:Alt+NumPadPlus'])
     def script_scrollDown(self, gesture):
         with ReleaseControlModifier():
             with MousePointerHover() as m:
                 ui.message(_("Scroll down"))
                 mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_WHEEL,0,0, -1000)
 
-    @script(description='Mouse wheel scroll up on current object.', gestures=['kb:Alt+NumPadMinus'])
+    @script(description=_("Mouse wheel scroll up on current object."), gestures=['kb:Alt+NumPadMinus'])
     def script_scrollUp(self, gesture):
         with ReleaseControlModifier():
             with MousePointerHover() as m:
                 ui.message(_("Scroll up"))
                 mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_WHEEL,0,0, 1000)
 
-    @script(description='Move mouse pointer to top left corner.', gestures=['kb:Alt+NumPadDelete'])
+    @script(description=_("Move mouse pointer to top left corner."), gestures=['kb:Alt+NumPadDelete'])
     def script_mouseMoveToTopLeft(self, gesture):
         ui.message(_("Mouse pointer moved to top left corner. "))
         mouseHandler.executeMouseMoveEvent(0, 0)
