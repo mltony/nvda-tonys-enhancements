@@ -1,0 +1,347 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
+"POT-Creation-Date: 2023-09-21 06:11+0300\n"
+"PO-Revision-Date: 2023-09-25 11:58+0300\n"
+"Last-Translator: Heorhii <nvda.translation.uk@gmail.com>\n"
+"Language-Team: \n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Generator: Poedit 3.3.2\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Bookmarks: 25,-1,-1,-1,-1,-1,-1,-1,-1,-1\n"
+
+msgid "Normal,Above normal,High,Realtime"
+msgstr "Нормальний, Вище норми, Високий, Реальний час"
+
+#, python-format
+msgid "Failed to set process priority to %s."
+msgstr "Не вдалося встановити пріоритет процесу на %s."
+
+msgid "Tony's enhancement add-on encountered an error"
+msgstr "У додатку Tony's enhancements виникла помилка"
+
+msgid "OK"
+msgstr "Гаразд"
+
+msgid "Cancel"
+msgstr "Скасувати"
+
+#. Translators: Title for the settings dialog
+msgid "Tony's enhancements  settings"
+msgstr "Налаштування Tony's enhancements"
+
+#. checkbox Detect insert mode
+#. Translators: Checkbox for insert mode detection
+msgid ""
+"Detect insert mode in text documents and beep on every keystroke when insert "
+"mode is on."
+msgstr ""
+"Виявляти режим вставки в текстових документах і сигналити при кожному "
+"натисканні клавіш, коли увімкнено режим вставки."
+
+#. checkbox block double insert
+#. Translators: Checkbox for block double insert
+msgid "Block double insert"
+msgstr "Блокувати подвійний insert"
+
+#. checkbox block double caps
+#. Translators: Checkbox for block double caps
+msgid "Block double Caps Lock"
+msgstr "Блокувати подвійний Caps Lock"
+
+#. checkbox Busy beep
+#. Translators: Checkbox for busy beep
+msgid "Beep when NVDA is busy"
+msgstr "Звуковий сигнал, коли NVDA зайнята"
+
+#. checkbox fix windows+Number
+#. Translators: Checkbox for windows_Number
+msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
+msgstr ""
+"Виправляти застрягання фокуса на панелі завдань під час натискання "
+"Windows+цифра"
+
+#. checkbox suppress unselected
+#. Translators: Checkbox for suppress unselected
+msgid "Suppress saying of 'unselected'."
+msgstr "Приглушити вислів «не виділено»."
+
+#. Dynamic keystrokes table
+#. Translators: Label for dynamic keystrokes table edit box
+msgid ""
+"Edit dynamic keystrokes table - see add-on documentation for more information"
+msgstr ""
+"Редагування таблиці динамічних сполучень клавіш - див. документацію до "
+"додатка для отримання додаткової інформації"
+
+#. LangMap checkbox and multiline edit button
+msgid "Enable automatic language switching based on character set"
+msgstr "Увімкнути автоматичне перемикання мови на основі набору символів"
+
+msgid "Edit language map"
+msgstr "Редагувати мовну мапу"
+
+#. QuickSearch regexp text edit
+msgid "QuickSearch1 regexp (assigned to PrintScreen)"
+msgstr "Регулярний вираз швидкий пошук1 (призначено для друк екрана)"
+
+#. QuickSearch2 regexp text edit
+msgid "QuickSearch2 regexp (assigned to ScrollLock))"
+msgstr "Регулярний вираз швидкий пошук2 (призначено для ScrollLock)"
+
+#. QuickSearch3 regexp text edit
+msgid "QuickSearch3 regexp (assigned to Pause)"
+msgstr "Регулярний вираз швидкий пошук3 (призначено для Pause)"
+
+#. checkbox block scroll lock
+#. Translators: Checkbox for blocking scroll lock
+msgid "Suppress scroll lock mode announcements"
+msgstr "Приглушити оголошення про режим прокрутки"
+
+#. System priority Combo box
+#. Translators: Label for system priority combo box
+msgid "NVDA process system priority:"
+msgstr "Системний пріоритет процесу NVDA:"
+
+msgid "Error"
+msgstr "Помилка"
+
+msgid "Edit dynamic keystrokes table"
+msgstr "Редагувати таблицю динамічних сполучень клавіш"
+
+#. Translators: The message reported when a user attempts to use a table movement command
+#. when the cursor is not within a table.
+msgid "Not in a table cell"
+msgstr "Не в комірці таблиці"
+
+msgid "Cannot find edge of table in this direction"
+msgstr "Не вдалося знайти край таблиці в цьому напрямку"
+
+msgid "Cannot find {axis} with index {index} in this table"
+msgstr "Не вдалося знайти {axis} з індексом {index} у цій таблиці"
+
+msgid "Not in a table!"
+msgstr "Не в таблиці!"
+
+msgid "Cell copied"
+msgstr "Комірку скопійовано"
+
+msgid "Row copied"
+msgstr "Рядок скопійовано"
+
+msgid "Partial row copied"
+msgstr "Скопійовано частину рядка"
+
+msgid "Column copied"
+msgstr "Стовпець скопійовано"
+
+msgid "Partial column copied"
+msgstr "Скопійовано частину стовпця"
+
+msgid "Table copied"
+msgstr "Таблицю скопійовано"
+
+msgid "Copy ce&ll"
+msgstr "&Копіювати комірку"
+
+msgid "Copy &column"
+msgstr "Копіювати &стовпець"
+
+msgid "Copy column from current cell &down"
+msgstr "Копіювати стовпець від поточної комірки &вниз"
+
+msgid "Copy &row"
+msgstr "Копіювати &рядок"
+
+msgid "Copy row from current cell to the ri&ght"
+msgstr "Копіювати рядок від поточної комірки &праворуч"
+
+msgid "Copy &table"
+msgstr "Копіювати &таблицю"
+
+msgid "focusable object"
+msgstr "об'єкт фокусування"
+
+msgid "current review character"
+msgstr "поточний символ перегляду"
+
+msgid "navigator object"
+msgstr "об'єктний навігатор"
+
+msgid "repeat"
+msgstr "повторити"
+
+msgid "Tony's Enhancements"
+msgstr "Tony's Enhancements"
+
+msgid "QuickSearch"
+msgstr "Швидкий пошук"
+
+msgid ""
+"Performs QuickSearch back or forward in editables according to "
+"quickSearch{i} regexp"
+msgstr ""
+"Виконує швидкий пошук вперед або назад у редагованих файлах відповідно до "
+"регулярних виразів швидкого пошуку{i}"
+
+#, python-format
+msgid "Move to the %d-th column in table"
+msgstr "Перейти до %d-го стовпця в таблиці"
+
+#, python-format
+msgid "Move to the %d-th row in table"
+msgstr "Перейти до %d-го рядка в таблиці"
+
+msgid "Show popup menu with copy table to clipboard commands."
+msgstr ""
+"Показати спливаюче меню з командами копіювання таблиці до буфера обміну."
+
+msgid "Copy table cell to clipboard."
+msgstr "Копіювати комірку таблиці в буфер обміну."
+
+msgid "Copy table column to clipboard."
+msgstr "Копіювати стовпець таблиці в буфер обміну."
+
+msgid "Copy table row to clipboard."
+msgstr "Копіювати рядок таблиці в буфер обміну."
+
+msgid "Copy the whole table to clipboard."
+msgstr "Копіювати всю таблицю в буфер обміну."
+
+msgid "Hide current window."
+msgstr "Приховати поточне вікно."
+
+#, python-format
+msgid "Hid current window. Now there are %d windows hidden."
+msgstr "Поточне вікно приховане. Тепер приховано %d вікон."
+
+msgid "Show hidden windows."
+msgstr "Показати приховані вікна."
+
+msgid "No windows hidden or all hidden windows have been already shown."
+msgstr "Немає прихованих вікон або всі приховані вікна вже показано."
+
+#, python-format
+msgid "%d windows shown"
+msgstr "показано %d вікон"
+
+msgid "Toggle microphone mute."
+msgstr "Перемикає вимкнення звуку мікрофона."
+
+msgid "Default microphone not found."
+msgstr "Основний мікрофон не знайдено."
+
+msgid "Muted microphone"
+msgstr "Мікрофон вимкнено"
+
+msgid "Unmuted microphone"
+msgstr "Мікрофон увімкнено"
+
+msgid "Left click on current object."
+msgstr "Клацніть лівою кнопкою миші на поточному об'єкті."
+
+msgid "Left click on {kind}"
+msgstr "Клацніть лівою кнопкою миші на {kind}"
+
+msgid "Right click on current object."
+msgstr "Клацніть правою кнопкою миші на поточному об'єкті."
+
+msgid "Mouse wheel scroll down on current object."
+msgstr "Прокручує  колесо миші на поточному об’єкті вниз."
+
+msgid "Scroll down"
+msgstr "Прокрутити вниз"
+
+msgid "Mouse wheel scroll up on current object."
+msgstr "Прокручує  колесо миші на поточному об’єкті вгору."
+
+msgid "Scroll up"
+msgstr "Прокрутити вгору"
+
+msgid "Move mouse pointer to top left corner."
+msgstr "Перемістити вказівник миші у верхній лівий кут."
+
+msgid "Mouse pointer moved to top left corner. "
+msgstr "Вказівник миші переміщено у верхній лівий кут. "
+
+#. Add-on summary, usually the user visible name of the addon.
+#. Translators: Summary for this add-on
+#. to be shown on installation and add-on information found in Add-ons Manager.
+msgid "Tony's enhancements"
+msgstr "Tony's enhancements"
+
+#. Add-on description
+#. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
+msgid "Various NVDA enhancements."
+msgstr "Різні покращення NVDA."
+
+#~ msgid "Normal"
+#~ msgstr "Нормальний"
+
+#~ msgid "Above normal"
+#~ msgstr "Вище норми"
+
+#~ msgid "High"
+#~ msgstr "Високий"
+
+#~ msgid "Realtime"
+#~ msgstr "Реальний час"
+
+#~ msgid "jumpToColumn{i}"
+#~ msgstr "перейтиДоСтовпця{i}"
+
+#~ msgid "jumpToRow{i}"
+#~ msgstr "перейти до рядка{i}"
+
+#~ msgid "previous"
+#~ msgstr "попередній"
+
+#~ msgid "column"
+#~ msgstr "стовпець"
+
+#~ msgid "row"
+#~ msgstr "рядок"
+
+#, python-format
+#~ msgid "NVDA+Control+%d"
+#~ msgstr "NVDA+Control+%d"
+
+#~ msgid "NVDA+Alt+T"
+#~ msgstr "NVDA+Alt+T"
+
+#, python-format
+#~ msgid "NVDA+Alt+%d"
+#~ msgstr "NVDA+Alt+%d"
+
+#~ msgid "NVDA volume"
+#~ msgstr "Гучність NVDA"
+
+#~ msgid "Applications volume"
+#~ msgstr "Гучність додатків"
+
+#~ msgid ""
+#~ "Split NVDA sound and applications' sounds into left and right channels."
+#~ msgstr "Розділити звук NVDA і звуки програм на лівий і правий канали."
+
+#~ msgid "Switch left and right during sound split."
+#~ msgstr "Перемикання вліво та вправо під час розділення звуку."
+
+#, python-format
+#~ msgid "NVDA volume %d"
+#~ msgstr "гучність NVDA %d"
+
+#, python-format
+#~ msgid "Applications volume %d"
+#~ msgstr "Гучність додатків %d"
+
+#~ msgid "Sound split enabled"
+#~ msgstr "Розділення звуку ввімкнено"
+
+#~ msgid "Sound split disabled"
+#~ msgstr "Розділення  звуку вимкнено"

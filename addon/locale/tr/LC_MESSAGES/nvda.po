@@ -1,0 +1,354 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the IndentNav package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Tony'nin Geliştirmeleri\n"
+"Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
+"POT-Creation-Date: 2023-09-22 20:25+0000\n"
+"PO-Revision-Date: 2023-09-24 15:14+0300\n"
+"Last-Translator: Umut KORKMAZ <umutkork@gmail.com>\n"
+"Language-Team: Çağrı Doğan ve Umut KORKMAZ <umutkork@gmail.com>\n"
+"Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.3.2\n"
+"X-Poedit-Basepath: ../../../globalPlugins/tonysEnhancements\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "Normal,Above normal,High,Realtime"
+msgstr "Normal,Normalin üzerinde,Yüksek,Gerçek Zamanlı"
+
+#, python-format
+msgid "Failed to set process priority to %s."
+msgstr "İşlem önceliği %s olarak ayarlanamadı."
+
+msgid "Tony's enhancement add-on encountered an error"
+msgstr "Tony'nin geliştirmeleri eklentisi bir hatayla karşılaştı"
+
+msgid "OK"
+msgstr "Tamam"
+
+msgid "Cancel"
+msgstr "İptal"
+
+#. Translators: Title for the settings dialog
+msgid "Tony's enhancements  settings"
+msgstr "Tony'nin geliştirmeleri ayarları"
+
+#. checkbox Detect insert mode
+#. Translators: Checkbox for insert mode detection
+msgid ""
+"Detect insert mode in text documents and beep on every keystroke when insert "
+"mode is on."
+msgstr ""
+"Metin belgelerinde ekleme (insert) modunu algıla ve ekleme modu açıkken her "
+"tuşa basıldığında bip sesi çıkar."
+
+#. checkbox block double insert
+#. Translators: Checkbox for block double insert
+msgid "Block double insert"
+msgstr "İnsert tuşuna iki kez basılmasını engelle"
+
+#. checkbox block double caps
+#. Translators: Checkbox for block double caps
+msgid "Block double Caps Lock"
+msgstr "Büyük harf kilidi tuşuna iki kez basılmasını engelle"
+
+#. checkbox Busy beep
+#. Translators: Checkbox for busy beep
+msgid "Beep when NVDA is busy"
+msgstr "NVDA meşgulken bip sesi çıkar"
+
+#. checkbox fix windows+Number
+#. Translators: Checkbox for windows_Number
+msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
+msgstr ""
+"Windows+rakam'a basıldığında odağın görev çubuğunda takılı kalmasını engelle"
+
+#. checkbox suppress unselected
+#. Translators: Checkbox for suppress unselected
+msgid "Suppress saying of 'unselected'."
+msgstr "'seçili değil' denmesini engelle."
+
+#. Dynamic keystrokes table
+#. Translators: Label for dynamic keystrokes table edit box
+msgid ""
+"Edit dynamic keystrokes table - see add-on documentation for more information"
+msgstr ""
+"Dinamik tuş girişleri tablosunu düzenle - daha fazla bilgi için eklenti "
+"belgelerine bakın"
+
+#. LangMap checkbox and multiline edit button
+msgid "Enable automatic language switching based on character set"
+msgstr "Karakter setine göre otomatik dil geçişini etkinleştir"
+
+msgid "Edit language map"
+msgstr "Dil haritasını düzenle"
+
+#. QuickSearch regexp text edit
+msgid "QuickSearch1 regexp (assigned to PrintScreen)"
+msgstr "ÇabukAra1 regexp (ekran çıktısı tuşuna atanmış)"
+
+#. QuickSearch2 regexp text edit
+msgid "QuickSearch2 regexp (assigned to ScrollLock))"
+msgstr "ÇabukAra2 regexp (ScrollLock'a atanmış)"
+
+#. QuickSearch3 regexp text edit
+msgid "QuickSearch3 regexp (assigned to Pause)"
+msgstr "ÇabukAra3 regexp (Pause tuşuna atanmış)"
+
+#. checkbox block scroll lock
+#. Translators: Checkbox for blocking scroll lock
+msgid "Suppress scroll lock mode announcements"
+msgstr "Scroll lock modu duyurularını engelle"
+
+#. System priority Combo box
+#. Translators: Label for system priority combo box
+msgid "NVDA process system priority:"
+msgstr "NVDA işlem sistem önceliği:"
+
+msgid "Error"
+msgstr "Hata"
+
+msgid "Edit dynamic keystrokes table"
+msgstr "Dinamik tuş girişi tablosunu düzenle"
+
+#. Translators: The message reported when a user attempts to use a table movement command
+#. when the cursor is not within a table.
+msgid "Not in a table cell"
+msgstr "Tablo hücresinde değil"
+
+msgid "Cannot find edge of table in this direction"
+msgstr "Bu yönde tablo kenarı bulunamadı"
+
+#, python-brace-format
+msgid "Cannot find {axis} with index {index} in this table"
+msgstr "Bu tabloda {index} endeksli {axis} bulunamadı"
+
+msgid "Not in a table!"
+msgstr "Tabloda değil."
+
+msgid "Cell copied"
+msgstr "Hücre kopyalandı"
+
+msgid "Row copied"
+msgstr "Satır kopyalandı"
+
+#| msgid "Row copied"
+msgid "Partial row copied"
+msgstr "Satırın bir kısmı kopyalandı"
+
+msgid "Column copied"
+msgstr "Sütun kopyalandı"
+
+#| msgid "Column copied"
+msgid "Partial column copied"
+msgstr "Sütunun bir kısmı kopyalandı"
+
+msgid "Table copied"
+msgstr "Tablo kopyalandı"
+
+msgid "Copy ce&ll"
+msgstr "&Hücreyi kopyala"
+
+msgid "Copy &column"
+msgstr "S&ütunu kopyala"
+
+#| msgid "Read column starting from current cell"
+msgid "Copy column from current cell &down"
+msgstr "Sütunu geçerli hücre&den aşağıya doğru kopyala"
+
+msgid "Copy &row"
+msgstr "&Satırı kopyala"
+
+msgid "Copy row from current cell to the ri&ght"
+msgstr "Satırı &geçerli hücreden sağa doğru kopyalar"
+
+msgid "Copy &table"
+msgstr "&Tabloyu kopyala"
+
+msgid "focusable object"
+msgstr "odaklanabilir nesne"
+
+msgid "current review character"
+msgstr "mevcut inceleme karakteri"
+
+msgid "navigator object"
+msgstr "nesne sunucusu"
+
+msgid "repeat"
+msgstr "tekrar"
+
+msgid "Tony's Enhancements"
+msgstr "Tony'nin Geliştirmeleri"
+
+msgid "QuickSearch"
+msgstr "Çabuk arama"
+
+#, python-brace-format
+msgid ""
+"Performs QuickSearch back or forward in editables according to "
+"quickSearch{i} regexp"
+msgstr ""
+"Düzenlenebilir alanlarda çabukArama{i} regexp için İleri ya da geriye doğru "
+"çabukArama yapar"
+
+#, python-format
+msgid "Move to the %d-th column in table"
+msgstr "Tablodaki %d numaralı sütuna git"
+
+#, python-format
+msgid "Move to the %d-th row in table"
+msgstr "Tablodaki %d  numaralı satıra git"
+
+msgid "Show popup menu with copy table to clipboard commands."
+msgstr "Tabloyu panoya kopyalamakla ilgili komutları içeren menüyü göster."
+
+msgid "Copy table cell to clipboard."
+msgstr "Tablo hücresini panoya kopyala."
+
+msgid "Copy table column to clipboard."
+msgstr "Tablo sütununu panoya kopyala."
+
+msgid "Copy table row to clipboard."
+msgstr "Tablo satırını panoya kopyala."
+
+msgid "Copy the whole table to clipboard."
+msgstr "Tüm tabloyu panoya kopyala."
+
+msgid "Hide current window."
+msgstr "Geçerli pencereyi gizle."
+
+#, python-format
+msgid "Hid current window. Now there are %d windows hidden."
+msgstr "Geçerli pencereyi gizle. Şimdi gizlenmiş %d pencere var."
+
+msgid "Show hidden windows."
+msgstr "Gizli pencereleri göster."
+
+msgid "No windows hidden or all hidden windows have been already shown."
+msgstr "Gizli pencere yok veya tüm gizli pencereler gösteriliyor."
+
+#, python-format
+msgid "%d windows shown"
+msgstr "%d pencere gösteriliyor"
+
+msgid "Toggle microphone mute."
+msgstr "Mikrofonu kapatıp aç."
+
+msgid "Default microphone not found."
+msgstr "Varsayılan mikrofon bulunamadı."
+
+msgid "Muted microphone"
+msgstr "Mikrofon kapalı"
+
+msgid "Unmuted microphone"
+msgstr "Mikrofon açık"
+
+msgid "Left click on current object."
+msgstr "Mevcut nesneye sol tıkla."
+
+#, python-brace-format
+msgid "Left click on {kind}"
+msgstr "{kind} üzerine sol tık"
+
+msgid "Right click on current object."
+msgstr "Mevcut nesneye sağ tıkla."
+
+msgid "Mouse wheel scroll down on current object."
+msgstr "Fare tekerleği, geçerli nesne üzerinde aşağı kaydırır."
+
+msgid "Scroll down"
+msgstr "Aşağı kaydır"
+
+msgid "Mouse wheel scroll up on current object."
+msgstr "Fare tekerleği, geçerli nesne üzerinde yukarı kaydırır."
+
+msgid "Scroll up"
+msgstr "Yukarı kaydır"
+
+msgid "Move mouse pointer to top left corner."
+msgstr "Fare imlecini sol üst köşeye taşı."
+
+msgid "Mouse pointer moved to top left corner. "
+msgstr "Fare imleci sol üst köşeye taşındı"
+
+#. Add-on summary, usually the user visible name of the addon.
+#. Translators: Summary for this add-on
+#. to be shown on installation and add-on information found in Add-ons Manager.
+msgid "Tony's enhancements"
+msgstr "Tony'nin Geliştirmeleri"
+
+#. Add-on description
+#. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
+#| msgid "Tony's Enhancements"
+msgid "Various NVDA enhancements."
+msgstr "Çeşitli NVDA geliştirmeleri."
+
+#~ msgid "NVDA volume"
+#~ msgstr "NVDA ses düzeyi"
+
+#~ msgid "Applications volume"
+#~ msgstr "Uygulama ses düzeyi"
+
+#~ msgid ""
+#~ "Split NVDA sound and applications' sounds into left and right channels."
+#~ msgstr "NVDA sesini ve uygulamaların seslerini sol ve sağ kanallara ayır."
+
+#~ msgid "Switch left and right during sound split."
+#~ msgstr "Ses ayırma sırasında sola ve sağa geçiş yap."
+
+#~ msgid "Move to the first column in table"
+#~ msgstr "Tablodaki ilk sütuna git"
+
+#~ msgid "Move to the last column in table"
+#~ msgstr "Tablodaki son sütuna git"
+
+#~ msgid "Move to the first row in table"
+#~ msgstr "Tablodaki ilk satıra git"
+
+#~ msgid "Move to the last row in table"
+#~ msgstr "Tablodaki son satıra git"
+
+#~ msgid "Read row starting from current cell"
+#~ msgstr "Satırı geçerli hücreden başlayarak oku"
+
+#~ msgid "Read column starting from the top"
+#~ msgstr "Sütunu ilkinden başlayarak oku"
+
+#~ msgid "Read row starting from the beginning"
+#~ msgstr "Satırı ilkinden başlayarak oku"
+
+#~ msgid "Increase NVDA volume."
+#~ msgstr "NVDA sesini artır."
+
+#~ msgid "Decrease NVDA volume."
+#~ msgstr "NVDA sesini düşür."
+
+#, python-format
+#~ msgid "NVDA volume %d"
+#~ msgstr "NVDA ses düzeyi %d"
+
+#~ msgid "Increase applications volume."
+#~ msgstr "Uygulama sesini arttır."
+
+#~ msgid "Decrease applications volume."
+#~ msgstr "Uygulama sesini düşür."
+
+#, python-format
+#~ msgid "Applications volume %d"
+#~ msgstr "Uygulama ses düzeyi %d"
+
+#~ msgid "Toggle sound split."
+#~ msgstr "Ses ayırmayı aç/kapat."
+
+#~ msgid "Sound split enabled"
+#~ msgstr "Ses ayırma etkin"
+
+#~ msgid "Sound split disabled"
+#~ msgstr "Ses ayırma devre dışı"

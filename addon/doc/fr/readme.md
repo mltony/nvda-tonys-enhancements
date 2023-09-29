@@ -63,10 +63,11 @@ moment.
 ## Commandes de recherche rapide
 
 Vous pouvez avoir jusqu'à trois emplacements pour des expressions régulières
-configurables que vous recherchez fréquemment pour les rédacteurs. Par
-défaut, ils sont affectés aux touches `PrintScreen`, `ScrollLock` et `Pause`
-Vous pouvez effectuer une recherche en avant, ou une recherche en arrière en
-appuyant sur `Shift` combinée avec ces touches.
+configurables que vous recherchez fréquemment pour les champs
+modifiables. Par défaut, ils sont assignés aux touches `impression écran`,
+`arrêt défilement` et `pause` Vous pouvez effectuer une recherche en avant,
+ou une recherche en arrière en appuyant sur `Shift` combinée avec ces
+touches.
 
 ## Supprimer l'annonce "non sélectionné" indésirable de NVDA
 
@@ -193,11 +194,11 @@ basculé en appuyant sur NVDA+F2 puis sur Insertion.
 Cette option est désactivée par défaut et doit être activée dans les
 paramètres.
 
-## Priorité du système du processus de NVDA
+## Priorité du processus de NVDA dans le système
 
-Cela permet d'augmenter la priorité du système du processus de NVDA, ce qui
-pourrait améliorer la réactivité de NVDA, en particulier lorsque la charge
-du processeur est élevée.
+Cela permet d'augmenter la priorité du processus de NVDA dans le système, ce
+qui pourrait améliorer la réactivité de NVDA, en particulier lorsque la
+charge du processeur est élevée.
 
 ## Correction d'un bogue lorsque le focus est coincée dans la barre des tâches lorsque vous appuyez sur Windows+numéros
 

@@ -1,0 +1,285 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the tonysEnhancements package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: tonysEnhancements 1.16\n"
+"Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
+"POT-Creation-Date: 2023-09-22 20:25+0000\n"
+"PO-Revision-Date: 2023-09-24 15:45+0200\n"
+"Last-Translator: zvonimir stanecic <zvonimirek222@yandex.com>\n"
+"Language-Team: \n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
+
+msgid "Normal,Above normal,High,Realtime"
+msgstr "Normalny,powyżej normalnego,wysoki,w czasie rzeczywistym"
+
+#, python-format
+msgid "Failed to set process priority to %s."
+msgstr "Nie udało się ustawić priorytetu procesu na %s."
+
+msgid "Tony's enhancement add-on encountered an error"
+msgstr "Dodatek Toni's enhancement napotkał błąd"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Anuluj"
+
+#. Translators: Title for the settings dialog
+msgid "Tony's enhancements  settings"
+msgstr "Ustawienia Tony's enhancements"
+
+#. checkbox Detect insert mode
+#. Translators: Checkbox for insert mode detection
+msgid ""
+"Detect insert mode in text documents and beep on every keystroke when insert "
+"mode is on."
+msgstr ""
+"Wykrywaj tryb wstawiania w dokumentach tekstowych i odtwarzaj sygnał "
+"dźwiękowy gdy jest włączony."
+
+#. checkbox block double insert
+#. Translators: Checkbox for block double insert
+msgid "Block double insert"
+msgstr "Blokuj podwójny insert"
+
+#. checkbox block double caps
+#. Translators: Checkbox for block double caps
+msgid "Block double Caps Lock"
+msgstr "Blokuj podwójny capslock"
+
+#. checkbox Busy beep
+#. Translators: Checkbox for busy beep
+msgid "Beep when NVDA is busy"
+msgstr "Odtwarzaj sygnał dźwiękowy podczas zawieszania się NVDA"
+
+#. checkbox fix windows+Number
+#. Translators: Checkbox for windows_Number
+msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
+msgstr "Napraw zablokowany fokus na pasku zadań po naciśnięciu Windows + cyfra"
+
+#. checkbox suppress unselected
+#. Translators: Checkbox for suppress unselected
+msgid "Suppress saying of 'unselected'."
+msgstr "Nie wymawiaj 'niezaznaczone'."
+
+#. Dynamic keystrokes table
+#. Translators: Label for dynamic keystrokes table edit box
+msgid ""
+"Edit dynamic keystrokes table - see add-on documentation for more information"
+msgstr ""
+"Edytuj tablicę skrótów dynamicznych - po więcej informacji, przeczytaj "
+"dokumentację dodatku"
+
+#. LangMap checkbox and multiline edit button
+msgid "Enable automatic language switching based on character set"
+msgstr "Włącz automatyczne wykrywanie języków oparte na znakach unicode"
+
+msgid "Edit language map"
+msgstr "Edytuj definicje języków"
+
+#. QuickSearch regexp text edit
+msgid "QuickSearch1 regexp (assigned to PrintScreen)"
+msgstr "Szybkei wyszukiwanie1 wyrażenie regularne (przypisane do PrintScreen)"
+
+#. QuickSearch2 regexp text edit
+msgid "QuickSearch2 regexp (assigned to ScrollLock))"
+msgstr "Szybkie wyszukiwanie2 wyrażenie regularne (przypisane do ScrollLock))"
+
+#. QuickSearch3 regexp text edit
+msgid "QuickSearch3 regexp (assigned to Pause)"
+msgstr ""
+"szybkie wyszukiwanie3 wyrażenie regularne (przypisane do klawisza Pauza)"
+
+#. checkbox block scroll lock
+#. Translators: Checkbox for blocking scroll lock
+msgid "Suppress scroll lock mode announcements"
+msgstr "Nie wymawiaj stanu klawisza scroll lock"
+
+#. System priority Combo box
+#. Translators: Label for system priority combo box
+msgid "NVDA process system priority:"
+msgstr "Priorytet procesu NVDA w systemie:"
+
+msgid "Error"
+msgstr "Błąd"
+
+msgid "Edit dynamic keystrokes table"
+msgstr "Edytuj tablicę skrótów dynamicznych"
+
+#. Translators: The message reported when a user attempts to use a table movement command
+#. when the cursor is not within a table.
+msgid "Not in a table cell"
+msgstr "Nie jesteś w komórce tabeli"
+
+msgid "Cannot find edge of table in this direction"
+msgstr "Nie można znaleźć krawędzi tabeli w tym kierunku"
+
+#, python-brace-format
+msgid "Cannot find {axis} with index {index} in this table"
+msgstr "Nie można znaleźć {axis} z indeksem {index} w tej tabeli"
+
+msgid "Not in a table!"
+msgstr "Nie jesteśw tabeli!"
+
+msgid "Cell copied"
+msgstr "Komórka skopiowana"
+
+msgid "Row copied"
+msgstr "Wiersz skopiowany"
+
+msgid "Partial row copied"
+msgstr "Wiersz częściowo skopiowany"
+
+msgid "Column copied"
+msgstr "Skopiowana kolumna"
+
+msgid "Partial column copied"
+msgstr "Kolumna zostałą częściowo skopiowana"
+
+msgid "Table copied"
+msgstr "Tabela skopiowana"
+
+msgid "Copy ce&ll"
+msgstr "Skopiuj kom&órkę"
+
+msgid "Copy &column"
+msgstr "Skopiuj &kolumnę"
+
+msgid "Copy column from current cell &down"
+msgstr "Skopiuj kolumnę od bieżącej komórki w dół"
+
+msgid "Copy &row"
+msgstr "Skopiuj wiersz"
+
+msgid "Copy row from current cell to the ri&ght"
+msgstr "Skopiuj wiersz od bieżącej kolumny w prawo"
+
+msgid "Copy &table"
+msgstr "Skopiuj &tabelę"
+
+msgid "focusable object"
+msgstr "Obiekt, którego można sfokusować"
+
+msgid "current review character"
+msgstr "aktualny Znak pod kursorem przeglądu"
+
+msgid "navigator object"
+msgstr "Obiekt nawigatora"
+
+msgid "repeat"
+msgstr "powtórz"
+
+msgid "Tony's Enhancements"
+msgstr "Tony's Enhancements"
+
+msgid "QuickSearch"
+msgstr "Szybkie wyszukiwanie"
+
+#, python-brace-format
+msgid ""
+"Performs QuickSearch back or forward in editables according to "
+"quickSearch{i} regexp"
+msgstr ""
+"Wykonuje szybkie wyszukiwanie do tyłu lub do przodu w polach edycyjnych "
+"zgodnie z quickSearch {i} wyrażeniami regularnymi"
+
+#, python-format
+msgid "Move to the %d-th column in table"
+msgstr "Przechodzenie do %d. kolumny w tabeli"
+
+#, python-format
+msgid "Move to the %d-th row in table"
+msgstr "Przechodzenie do %d. wiersza w tabeli"
+
+msgid "Show popup menu with copy table to clipboard commands."
+msgstr "Pokaż menu podręczne z poleceniami kopiowania tabeli do schowka."
+
+msgid "Copy table cell to clipboard."
+msgstr "Skopiuj komórkę tabeli do schowka."
+
+msgid "Copy table column to clipboard."
+msgstr "Skopiuj kolumnę tabeli do schowka."
+
+msgid "Copy table row to clipboard."
+msgstr "Skopiuj wiersz tabeli do schowka."
+
+msgid "Copy the whole table to clipboard."
+msgstr "Skopiuj całą tabelę do schowka."
+
+msgid "Hide current window."
+msgstr "Ukryj bieżące okno."
+
+#, python-format
+msgid "Hid current window. Now there are %d windows hidden."
+msgstr "Ukryto bieżące okno. Teraz są ukryte %d okna."
+
+msgid "Show hidden windows."
+msgstr "Pokaż ukryte okna."
+
+msgid "No windows hidden or all hidden windows have been already shown."
+msgstr ""
+"Żadnych ukrytych okien lub wszystkie ukryte okna nie zostały już wyświetlone."
+
+#, python-format
+msgid "%d windows shown"
+msgstr "%d wyświetlonych okien"
+
+msgid "Toggle microphone mute."
+msgstr "Przełącz wyciszenie mikrofonu."
+
+msgid "Default microphone not found."
+msgstr "Nie znaleziono mikrofonu domyślnego."
+
+msgid "Muted microphone"
+msgstr "Wyciszony mikrofon"
+
+msgid "Unmuted microphone"
+msgstr "Niewyciszony mikrofon"
+
+msgid "Left click on current object."
+msgstr "Lewy przycisk na bieżącym obiekcie."
+
+#, python-brace-format
+msgid "Left click on {kind}"
+msgstr "Kliknij lewym przyciskiem myszy na {kind}"
+
+msgid "Right click on current object."
+msgstr "Prawy przycisk na bieżącym obiekcie."
+
+msgid "Mouse wheel scroll down on current object."
+msgstr "Przewiń kółkiem myszy w dół na bieżącym obiekcie."
+
+msgid "Scroll down"
+msgstr "Przewiń w dół"
+
+msgid "Mouse wheel scroll up on current object."
+msgstr "Przewiń kółkiem myszy w górę na bieżącym obiekcie."
+
+msgid "Scroll up"
+msgstr "Przewiń w górę"
+
+msgid "Move mouse pointer to top left corner."
+msgstr "Przesuń wskaźnik myszy do lewego górnego rogu."
+
+msgid "Mouse pointer moved to top left corner. "
+msgstr "Wskaźnik myszy przeniesiony do lewego górnego rogu. "
+
+#. Add-on summary, usually the user visible name of the addon.
+#. Translators: Summary for this add-on
+#. to be shown on installation and add-on information found in Add-ons Manager.
+msgid "Tony's enhancements"
+msgstr "Tony's enhancements"
+
+#. Add-on description
+#. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
+msgid "Various NVDA enhancements."
+msgstr "Różne usprawnienia dla NVDA."

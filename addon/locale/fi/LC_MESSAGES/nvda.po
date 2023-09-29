@@ -1,0 +1,287 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the tonysEnhancements package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: tonysEnhancements 1.16\n"
+"Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
+"POT-Creation-Date: 2023-09-22 20:25+0000\n"
+"PO-Revision-Date: 2023-09-23 21:29+0200\n"
+"Last-Translator: Jani Kinnunen <janikinnunen340@gmail.com>\n"
+"Language-Team: fi_FI <janikinnunen340@gmail.com>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.11\n"
+
+msgid "Normal,Above normal,High,Realtime"
+msgstr "Normaali,Normaalia korkeampi,Korkea,Reaaliaikainen"
+
+#, python-format
+msgid "Failed to set process priority to %s."
+msgstr "Prosessin prioriteetiksi ei voitu määrittää %s."
+
+msgid "Tony's enhancement add-on encountered an error"
+msgstr "Tonyn laajennukset -lisäosa kohtasi virheen"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Peruuta"
+
+#. Translators: Title for the settings dialog
+msgid "Tony's enhancements  settings"
+msgstr "Tonyn laajennusten asetukset"
+
+#. checkbox Detect insert mode
+#. Translators: Checkbox for insert mode detection
+msgid ""
+"Detect insert mode in text documents and beep on every keystroke when insert "
+"mode is on."
+msgstr ""
+"Tunnista tekstiasiakirjojen lisäystila ja piippaa jokaisella "
+"näppäinpainalluksella sen ollessa käytössä"
+
+#. checkbox block double insert
+#. Translators: Checkbox for block double insert
+msgid "Block double insert"
+msgstr "Estä Insert-näppäimen tuplapainallukset"
+
+#. checkbox block double caps
+#. Translators: Checkbox for block double caps
+msgid "Block double Caps Lock"
+msgstr "Estä Caps Lock -näppäimen tuplapainallukset"
+
+#. checkbox Busy beep
+#. Translators: Checkbox for busy beep
+msgid "Beep when NVDA is busy"
+msgstr "Piippaa, kun NVDA on varattu"
+
+#. checkbox fix windows+Number
+#. Translators: Checkbox for windows_Number
+msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
+msgstr ""
+"Korjaa kohdistuksen jääminen tehtäväpalkkiin Win+numero-näppäimiä "
+"painettaessa"
+
+#. checkbox suppress unselected
+#. Translators: Checkbox for suppress unselected
+msgid "Suppress saying of 'unselected'."
+msgstr "Estä \"ei valittu\" -ilmoituksen sanominen"
+
+#. Dynamic keystrokes table
+#. Translators: Label for dynamic keystrokes table edit box
+msgid ""
+"Edit dynamic keystrokes table - see add-on documentation for more information"
+msgstr ""
+"Muokkaa dynaamisten näppäinpainallusten taulukkoa (katso lisätietoja "
+"lisäosan dokumentaatiosta)"
+
+#. LangMap checkbox and multiline edit button
+msgid "Enable automatic language switching based on character set"
+msgstr "Ota käyttöön merkistöön perustuva automaattinen kielen vaihtaminen"
+
+msgid "Edit language map"
+msgstr "Muokkaa kielimäärityksiä"
+
+#. QuickSearch regexp text edit
+msgid "QuickSearch1 regexp (assigned to PrintScreen)"
+msgstr "Pikahaku1:n sääntölauseke (liitetty PrintScreen-näppäimeen)"
+
+#. QuickSearch2 regexp text edit
+msgid "QuickSearch2 regexp (assigned to ScrollLock))"
+msgstr "Pikahaku2:n sääntölauseke (liitetty ScrollLock-näppäimeen))"
+
+#. QuickSearch3 regexp text edit
+msgid "QuickSearch3 regexp (assigned to Pause)"
+msgstr "Pikahaku3:n sääntölauseke (liitetty Pause-näppäimeen)"
+
+#. checkbox block scroll lock
+#. Translators: Checkbox for blocking scroll lock
+msgid "Suppress scroll lock mode announcements"
+msgstr "Estä scroll lock -tilan ilmoitukset"
+
+#. System priority Combo box
+#. Translators: Label for system priority combo box
+msgid "NVDA process system priority:"
+msgstr "NVDA-prosessin järjestelmäprioriteetti:"
+
+msgid "Error"
+msgstr "Virhe"
+
+msgid "Edit dynamic keystrokes table"
+msgstr "Muokkaa dynaamisten näppäinpainallusten taulukkoa"
+
+#. Translators: The message reported when a user attempts to use a table movement command
+#. when the cursor is not within a table.
+msgid "Not in a table cell"
+msgstr "Ei taulukon solussa"
+
+msgid "Cannot find edge of table in this direction"
+msgstr "Taulukon reunaa ei löydy"
+
+#, python-brace-format
+msgid "Cannot find {axis} with index {index} in this table"
+msgstr "Taulukosta ei löydy solua, jonka akseli on {axis} ja indeksi {index}"
+
+msgid "Not in a table!"
+msgstr "Ei taulukossa"
+
+msgid "Cell copied"
+msgstr "Solu kopioitu"
+
+msgid "Row copied"
+msgstr "Rivi kopioitu"
+
+msgid "Partial row copied"
+msgstr "Osittainen rivi kopioitu"
+
+msgid "Column copied"
+msgstr "Sarake kopioitu"
+
+msgid "Partial column copied"
+msgstr "Osittainen sarake kopioitu"
+
+msgid "Table copied"
+msgstr "Taulukko kopioitu"
+
+msgid "Copy ce&ll"
+msgstr "Kopioi so&lu"
+
+msgid "Copy &column"
+msgstr "Kopioi sara&ke"
+
+msgid "Copy column from current cell &down"
+msgstr "Kopioi sarake nykyisestä solusta a&laspäin"
+
+msgid "Copy &row"
+msgstr "Kopioi r&ivi"
+
+msgid "Copy row from current cell to the ri&ght"
+msgstr "Kopioi rivi nykyisestä solusta &oikealle"
+
+msgid "Copy &table"
+msgstr "Kopioi ta&ulukko"
+
+msgid "focusable object"
+msgstr "kohdistettava objekti"
+
+msgid "current review character"
+msgstr "nykyinen tarkasteltava merkki"
+
+msgid "navigator object"
+msgstr "navigointiobjekti"
+
+msgid "repeat"
+msgstr "toista"
+
+msgid "Tony's Enhancements"
+msgstr "Tonyn laajennukset"
+
+msgid "QuickSearch"
+msgstr "Pikahaku"
+
+#, python-brace-format
+msgid ""
+"Performs QuickSearch back or forward in editables according to "
+"quickSearch{i} regexp"
+msgstr ""
+"Suorittaa pikahaun eteen- tai taaksepäin muokattavissa tekstikentissä "
+"pikahaku{i}:n sääntölausekkeen mukaisesti"
+
+#, python-format
+msgid "Move to the %d-th column in table"
+msgstr "Siirry taulukon %d. sarakkeeseen"
+
+#, python-format
+msgid "Move to the %d-th row in table"
+msgstr "Siirry taulukon %d. riville"
+
+msgid "Show popup menu with copy table to clipboard commands."
+msgstr ""
+"Näytä ponnahdusvalikko, jossa on taulukon leikepöydälle kopioivia komentoja"
+
+msgid "Copy table cell to clipboard."
+msgstr "Kopioi taulukon solu leikepöydälle"
+
+msgid "Copy table column to clipboard."
+msgstr "Kopioi taulukon sarake leikepöydälle"
+
+msgid "Copy table row to clipboard."
+msgstr "Kopioi taulukon rivi leikepöydälle"
+
+msgid "Copy the whole table to clipboard."
+msgstr "Kopioi koko taulukko leikepöydälle"
+
+msgid "Hide current window."
+msgstr "Piilota nykyinen ikkuna"
+
+#, python-format
+msgid "Hid current window. Now there are %d windows hidden."
+msgstr "Nykyinen ikkuna piilotettu. Piilotettuja ikkunoita on nyt %d."
+
+msgid "Show hidden windows."
+msgstr "Näytä piilotetut ikkunat"
+
+msgid "No windows hidden or all hidden windows have been already shown."
+msgstr "Piilotettuja ikkunoita ei ole tai ne kaikki ovat jo näkyvissä"
+
+#, python-format
+msgid "%d windows shown"
+msgstr "%d ikkunaa näytetään"
+
+msgid "Toggle microphone mute."
+msgstr "Vaihda mikrofonin mykistyksen tilaa"
+
+msgid "Default microphone not found."
+msgstr "Oletusmikrofonia ei löydy"
+
+msgid "Muted microphone"
+msgstr "Mikrofoni mykistetty"
+
+msgid "Unmuted microphone"
+msgstr "Mikrofonin mykistys poistettu"
+
+msgid "Left click on current object."
+msgstr "Napsauta hiiren vasenta painiketta nykyisessä objektissa"
+
+#, python-brace-format
+msgid "Left click on {kind}"
+msgstr "Vasen napsautus kohteessa {kind}"
+
+msgid "Right click on current object."
+msgstr "Napsauta hiiren oikeaa painiketta nykyisessä objektissa"
+
+msgid "Mouse wheel scroll down on current object."
+msgstr "Vieritä hiiren rullaa alas nykyisessä objektissa"
+
+msgid "Scroll down"
+msgstr "Vieritä alas"
+
+msgid "Mouse wheel scroll up on current object."
+msgstr "Vieritä hiiren rullaa ylös nykyisessä objektissa"
+
+msgid "Scroll up"
+msgstr "Vieritä ylös"
+
+msgid "Move mouse pointer to top left corner."
+msgstr "Siirrä hiiren osoitin vasempaan yläkulmaan"
+
+msgid "Mouse pointer moved to top left corner. "
+msgstr "Hiiren osoitin siirretty vasempaan yläkulmaan"
+
+#. Add-on summary, usually the user visible name of the addon.
+#. Translators: Summary for this add-on
+#. to be shown on installation and add-on information found in Add-ons Manager.
+msgid "Tony's enhancements"
+msgstr "Tonyn laajennukset"
+
+#. Add-on description
+#. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
+msgid "Various NVDA enhancements."
+msgstr "Useita NVDA:n laajennuksia"

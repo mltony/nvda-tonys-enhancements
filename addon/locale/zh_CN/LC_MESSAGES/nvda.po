@@ -1,0 +1,275 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 'tonysEnhancements' '1.16'\n"
+"Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
+"POT-Creation-Date: 2023-09-13 06:30+0800\n"
+"PO-Revision-Date: 2023-09-13 06:33+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
+
+msgid "Normal,Above normal,High,Realtime"
+msgstr "正常,高于正常,高,实时"
+
+#, python-format
+msgid "Failed to set process priority to %s."
+msgstr "无法将进程优先级设置为 %s。"
+
+msgid "Tony's enhancement add-on encountered an error"
+msgstr "Tony的增强遇到错误"
+
+msgid "OK"
+msgstr "确定"
+
+msgid "Cancel"
+msgstr "取消"
+
+#. Translators: Title for the settings dialog
+msgid "Tony's enhancements  settings"
+msgstr "Tony的增强"
+
+#. checkbox Detect insert mode
+#. Translators: Checkbox for insert mode detection
+msgid ""
+"Detect insert mode in text documents and beep on every keystroke when insert "
+"mode is on."
+msgstr ""
+"检测文本文档中的插入模式，在插入模式打开的情况下，每次按键时发出蜂鸣声。"
+
+#. checkbox block double insert
+#. Translators: Checkbox for block double insert
+msgid "Block double insert"
+msgstr "禁止双击插入键"
+
+#. checkbox block double caps
+#. Translators: Checkbox for block double caps
+msgid "Block double Caps Lock"
+msgstr "禁止双击大小写锁定键"
+
+#. checkbox Busy beep
+#. Translators: Checkbox for busy beep
+msgid "Beep when NVDA is busy"
+msgstr "NVDA 忙碌时发出蜂鸣声"
+
+#. checkbox fix windows+Number
+#. Translators: Checkbox for windows_Number
+msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
+msgstr "修复按 Windows+数字时焦点卡在任务栏中的问题"
+
+#. checkbox suppress unselected
+#. Translators: Checkbox for suppress unselected
+msgid "Suppress saying of 'unselected'."
+msgstr "禁止朗读“未选择”"
+
+#. Dynamic keystrokes table
+#. Translators: Label for dynamic keystrokes table edit box
+msgid ""
+"Edit dynamic keystrokes table - see add-on documentation for more information"
+msgstr "编辑动态按键表 - 有关更多信息，请参阅插件文档"
+
+#. LangMap checkbox and multiline edit button
+msgid "Enable automatic language switching based on character set"
+msgstr "启用基于字符集的自动语言切换"
+
+msgid "Edit language map"
+msgstr "编辑语言映射"
+
+#. QuickSearch regexp text edit
+msgid "QuickSearch1 regexp (assigned to PrintScreen)"
+msgstr "快速搜索1 正则表达式（分配给 PrintScreen）"
+
+#. QuickSearch2 regexp text edit
+msgid "QuickSearch2 regexp (assigned to ScrollLock))"
+msgstr "快速搜索2 正则表达式（分配给 ScrollLock））"
+
+#. QuickSearch3 regexp text edit
+msgid "QuickSearch3 regexp (assigned to Pause)"
+msgstr "快速搜索3 正则表达式（分配给Pause）"
+
+#. checkbox block scroll lock
+#. Translators: Checkbox for blocking scroll lock
+msgid "Suppress scroll lock mode announcements"
+msgstr "禁止朗读滚动锁定模式"
+
+#. System priority Combo box
+#. Translators: Label for system priority combo box
+msgid "NVDA process system priority:"
+msgstr "NVDA 进程优先级"
+
+msgid "Error"
+msgstr "错误"
+
+msgid "Edit dynamic keystrokes table"
+msgstr "编辑动态按键表"
+
+#. Translators: The message reported when a user attempts to use a table movement command
+#. when the cursor is not within a table.
+msgid "Not in a table cell"
+msgstr "不在表格的单元格中"
+
+msgid "Cannot find edge of table in this direction"
+msgstr "该方向没有表格边缘"
+
+msgid "Cannot find {axis} with index {index} in this table"
+msgstr "找不到索引为 {index} {axis} 的单元格"
+
+msgid "Not in a table!"
+msgstr "未在表格中"
+
+msgid "Cell copied"
+msgstr "已复制单元格"
+
+msgid "Row copied"
+msgstr "已复制行"
+
+msgid "Partial row copied"
+msgstr "已复制部分行"
+
+msgid "Column copied"
+msgstr "已复制列"
+
+msgid "Partial column copied"
+msgstr "已复制部分列"
+
+msgid "Table copied"
+msgstr "已复制表格"
+
+msgid "Copy ce&ll"
+msgstr "复制单元格(&L)"
+
+msgid "Copy &column"
+msgstr "复制列(&C)"
+
+msgid "Copy column from current cell &down"
+msgstr "从当前单元格向下复制列(&D)"
+
+msgid "Copy &row"
+msgstr "复制行(&R)"
+
+msgid "Copy row from current cell to the ri&ght"
+msgstr "从当前单元格向右复制行(&D)"
+
+msgid "Copy &table"
+msgstr "复制表格(&T)"
+
+msgid "focusable object"
+msgstr "可聚焦对象"
+
+msgid "current review character"
+msgstr "当前浏览光标所指向的字符"
+
+msgid "navigator object"
+msgstr "导航对象"
+
+msgid "repeat"
+msgstr "重复"
+
+msgid "Tony's Enhancements"
+msgstr "Tony的增强"
+
+msgid "QuickSearch"
+msgstr "快速搜索"
+
+msgid ""
+"Performs QuickSearch back or forward in editables according to "
+"quickSearch{i} regexp"
+msgstr "根据 快速搜索{i} 正则表达式在可编辑内容中向后或向前执行快速搜索"
+
+#, python-format
+msgid "Move to the %d-th column in table"
+msgstr "移至表中的第 %d 列"
+
+#, python-format
+msgid "Move to the %d-th row in table"
+msgstr "移至表中的第 %d 行"
+
+msgid "Show popup menu with copy table to clipboard commands."
+msgstr "显示复制表到剪贴板的弹出菜单。"
+
+msgid "Copy table cell to clipboard."
+msgstr "复制单元格到剪贴板。"
+
+msgid "Copy table column to clipboard."
+msgstr "复制列到剪贴板。"
+
+msgid "Copy table row to clipboard."
+msgstr "复制行到剪贴板。"
+
+msgid "Copy the whole table to clipboard."
+msgstr "复制整个表到剪贴板。"
+
+msgid "Hide current window."
+msgstr "隐藏当前窗口。"
+
+#, python-format
+msgid "Hid current window. Now there are %d windows hidden."
+msgstr "隐藏当前窗口。已隐藏 %d 个窗口。"
+
+msgid "Show hidden windows."
+msgstr "显示隐藏的窗口。"
+
+msgid "No windows hidden or all hidden windows have been already shown."
+msgstr "未隐藏窗口或所有隐藏的窗口已显示。"
+
+#, python-format
+msgid "%d windows shown"
+msgstr "%d 个窗口已显示"
+
+msgid "Toggle microphone mute."
+msgstr "切换麦克风静音。"
+
+msgid "Default microphone not found."
+msgstr "未找到默认麦克风。"
+
+msgid "Muted microphone"
+msgstr "已静音麦克风"
+
+msgid "Unmuted microphone"
+msgstr "已取消静音麦克风"
+
+msgid "Left click on current object."
+msgstr "左键单击当前对象。"
+
+msgid "Left click on {kind}"
+msgstr "左键单击{kind}"
+
+msgid "Right click on current object."
+msgstr "右键单击当前对象。"
+
+msgid "Mouse wheel scroll down on current object."
+msgstr "在当前对象上向下滚动鼠标滚轮"
+
+msgid "Scroll down"
+msgstr "向下滚动"
+
+msgid "Mouse wheel scroll up on current object."
+msgstr "在当前对象上向上滚动鼠标滚轮"
+
+msgid "Scroll up"
+msgstr "向上滚动"
+
+msgid "Move mouse pointer to top left corner."
+msgstr "将鼠标指针移至左上角。"
+
+msgid "Mouse pointer moved to top left corner. "
+msgstr "将鼠标指针移至左上角。"
+
+#. Add-on summary, usually the user visible name of the addon.
+#. Translators: Summary for this add-on
+#. to be shown on installation and add-on information found in Add-ons Manager.
+msgid "Tony's enhancements"
+msgstr "Tony 的增强"
+
+#. Add-on description
+#. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
+msgid "Various NVDA enhancements."
+msgstr "NVDA 的各种增强功能。"
