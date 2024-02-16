@@ -17,28 +17,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.3.2\n"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:184
 msgid "Normal,Above normal,High,Realtime"
 msgstr "正常,高于正常,高,实时"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:198
 #, python-format
 msgid "Failed to set process priority to %s."
 msgstr "无法将进程优先级设置为 %s。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:198
 msgid "Tony's enhancement add-on encountered an error"
 msgstr "Tony的增强遇到错误"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:218
 msgid "OK"
 msgstr "确定"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:220
 msgid "Cancel"
 msgstr "取消"
 
 #. Translators: Title for the settings dialog
+#: addon\globalPlugins\tonysEnhancements\__init__.py:280
 msgid "Tony's enhancements  settings"
 msgstr "Tony的增强"
 
 #. checkbox Detect insert mode
 #. Translators: Checkbox for insert mode detection
+#: addon\globalPlugins\tonysEnhancements\__init__.py:289
 msgid ""
 "Detect insert mode in text documents and beep on every keystroke when insert "
 "mode is on."
@@ -47,229 +54,299 @@ msgstr ""
 
 #. checkbox block double insert
 #. Translators: Checkbox for block double insert
+#: addon\globalPlugins\tonysEnhancements\__init__.py:296
 msgid "Block double insert"
 msgstr "禁止双击插入键"
 
 #. checkbox block double caps
 #. Translators: Checkbox for block double caps
+#: addon\globalPlugins\tonysEnhancements\__init__.py:301
 msgid "Block double Caps Lock"
 msgstr "禁止双击大小写锁定键"
 
 #. checkbox Busy beep
 #. Translators: Checkbox for busy beep
+#: addon\globalPlugins\tonysEnhancements\__init__.py:307
 msgid "Beep when NVDA is busy"
 msgstr "NVDA 忙碌时发出蜂鸣声"
 
 #. checkbox fix windows+Number
 #. Translators: Checkbox for windows_Number
+#: addon\globalPlugins\tonysEnhancements\__init__.py:312
 msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
 msgstr "修复按 Windows+数字时焦点卡在任务栏中的问题"
 
 #. checkbox suppress unselected
 #. Translators: Checkbox for suppress unselected
+#: addon\globalPlugins\tonysEnhancements\__init__.py:318
 msgid "Suppress saying of 'unselected'."
 msgstr "禁止朗读“未选择”"
 
 #. Dynamic keystrokes table
 #. Translators: Label for dynamic keystrokes table edit box
+#: addon\globalPlugins\tonysEnhancements\__init__.py:324
 msgid ""
 "Edit dynamic keystrokes table - see add-on documentation for more information"
 msgstr "编辑动态按键表 - 有关更多信息，请参阅插件文档"
 
 #. LangMap checkbox and multiline edit button
+#: addon\globalPlugins\tonysEnhancements\__init__.py:330
 msgid "Enable automatic language switching based on character set"
 msgstr "启用基于字符集的自动语言切换"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:333
+#: addon\globalPlugins\tonysEnhancements\__init__.py:402
 msgid "Edit language map"
 msgstr "编辑语言映射"
 
 #. QuickSearch regexp text edit
+#: addon\globalPlugins\tonysEnhancements\__init__.py:337
 msgid "QuickSearch1 regexp (assigned to PrintScreen)"
 msgstr "快速搜索1 正则表达式（分配给 PrintScreen）"
 
 #. QuickSearch2 regexp text edit
+#: addon\globalPlugins\tonysEnhancements\__init__.py:341
 msgid "QuickSearch2 regexp (assigned to ScrollLock))"
 msgstr "快速搜索2 正则表达式（分配给 ScrollLock））"
 
 #. QuickSearch3 regexp text edit
+#: addon\globalPlugins\tonysEnhancements\__init__.py:345
 msgid "QuickSearch3 regexp (assigned to Pause)"
 msgstr "快速搜索3 正则表达式（分配给Pause）"
 
 #. checkbox block scroll lock
 #. Translators: Checkbox for blocking scroll lock
+#: addon\globalPlugins\tonysEnhancements\__init__.py:350
 msgid "Suppress scroll lock mode announcements"
 msgstr "禁止朗读滚动锁定模式"
 
 #. System priority Combo box
 #. Translators: Label for system priority combo box
+#: addon\globalPlugins\tonysEnhancements\__init__.py:355
 msgid "NVDA process system priority:"
 msgstr "NVDA 进程优先级"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:366
+#: addon\globalPlugins\tonysEnhancements\__init__.py:392
 msgid "Error"
 msgstr "错误"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:377
 msgid "Edit dynamic keystrokes table"
 msgstr "编辑动态按键表"
 
 #. Translators: The message reported when a user attempts to use a table movement command
 #. when the cursor is not within a table.
+#: addon\globalPlugins\tonysEnhancements\__init__.py:578
 msgid "Not in a table cell"
 msgstr "不在表格的单元格中"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:592
 msgid "Cannot find edge of table in this direction"
 msgstr "该方向没有表格边缘"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:605
 msgid "Cannot find {axis} with index {index} in this table"
 msgstr "找不到索引为 {index} {axis} 的单元格"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:671
+#: addon\globalPlugins\tonysEnhancements\__init__.py:727
 msgid "Not in a table!"
 msgstr "未在表格中"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:690
 msgid "Cell copied"
 msgstr "已复制单元格"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:697
 msgid "Row copied"
 msgstr "已复制行"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:703
 msgid "Partial row copied"
 msgstr "已复制部分行"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:709
 msgid "Column copied"
 msgstr "已复制列"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:715
 msgid "Partial column copied"
 msgstr "已复制部分列"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:721
 msgid "Table copied"
 msgstr "已复制表格"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:735
 msgid "Copy ce&ll"
 msgstr "复制单元格(&L)"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:736
 msgid "Copy &column"
 msgstr "复制列(&C)"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:737
 msgid "Copy column from current cell &down"
 msgstr "从当前单元格向下复制列(&D)"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:738
 msgid "Copy &row"
 msgstr "复制行(&R)"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:739
 msgid "Copy row from current cell to the ri&ght"
 msgstr "从当前单元格向右复制行(&D)"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:740
 msgid "Copy &table"
 msgstr "复制表格(&T)"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1007
 msgid "focusable object"
 msgstr "可聚焦对象"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1011
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1017
 msgid "current review character"
 msgstr "当前浏览光标所指向的字符"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1021
 msgid "navigator object"
 msgstr "导航对象"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1041
 msgid "repeat"
 msgstr "重复"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1066
 msgid "Tony's Enhancements"
 msgstr "Tony的增强"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1108
 msgid "QuickSearch"
 msgstr "快速搜索"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1109
 msgid ""
 "Performs QuickSearch back or forward in editables according to "
 "quickSearch{i} regexp"
 msgstr "根据 快速搜索{i} 正则表达式在可编辑内容中向后或向前执行快速搜索"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1286
 #, python-format
 msgid "Move to the %d-th column in table"
 msgstr "移至表中的第 %d 列"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1294
 #, python-format
 msgid "Move to the %d-th row in table"
 msgstr "移至表中的第 %d 行"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1302
 msgid "Show popup menu with copy table to clipboard commands."
 msgstr "显示复制表到剪贴板的弹出菜单。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1308
 msgid "Copy table cell to clipboard."
 msgstr "复制单元格到剪贴板。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1314
 msgid "Copy table column to clipboard."
 msgstr "复制列到剪贴板。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1320
 msgid "Copy table row to clipboard."
 msgstr "复制行到剪贴板。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1326
 msgid "Copy the whole table to clipboard."
 msgstr "复制整个表到剪贴板。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1395
 msgid "Hide current window."
 msgstr "隐藏当前窗口。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1405
 #, python-format
 msgid "Hid current window. Now there are %d windows hidden."
 msgstr "隐藏当前窗口。已隐藏 %d 个窗口。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1408
 msgid "Show hidden windows."
 msgstr "显示隐藏的窗口。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1411
 msgid "No windows hidden or all hidden windows have been already shown."
 msgstr "未隐藏窗口或所有隐藏的窗口已显示。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1421
 #, python-format
 msgid "%d windows shown"
 msgstr "%d 个窗口已显示"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1425
 msgid "Toggle microphone mute."
 msgstr "切换麦克风静音。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1430
 msgid "Default microphone not found."
 msgstr "未找到默认麦克风。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1435
 msgid "Muted microphone"
 msgstr "已静音麦克风"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1435
 msgid "Unmuted microphone"
 msgstr "已取消静音麦克风"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1441
 msgid "Left click on current object."
 msgstr "左键单击当前对象。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1446
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1455
 msgid "Left click on {kind}"
 msgstr "左键单击{kind}"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1450
 msgid "Right click on current object."
 msgstr "右键单击当前对象。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1459
 msgid "Mouse wheel scroll down on current object."
 msgstr "在当前对象上向下滚动鼠标滚轮"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1463
 msgid "Scroll down"
 msgstr "向下滚动"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1466
 msgid "Mouse wheel scroll up on current object."
 msgstr "在当前对象上向上滚动鼠标滚轮"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1470
 msgid "Scroll up"
 msgstr "向上滚动"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1473
 msgid "Move mouse pointer to top left corner."
 msgstr "将鼠标指针移至左上角。"
 
+#: addon\globalPlugins\tonysEnhancements\__init__.py:1475
 msgid "Mouse pointer moved to top left corner. "
 msgstr "将鼠标指针移至左上角。"
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
 #. to be shown on installation and add-on information found in Add-ons Manager.
+#: buildVars.py:23
 msgid "Tony's enhancements"
 msgstr "Tony 的增强"
 
 #. Add-on description
 #. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
+#: buildVars.py:26
 msgid "Various NVDA enhancements."
 msgstr "NVDA 的各种增强功能。"

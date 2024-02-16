@@ -164,7 +164,7 @@ est en cours d'exécution.
 ## Fonctions améliorées de la souris
 
 * Alt+pavNumDivisé : Le curseur  du pointeur de la souris  à l'objet actuel
-  et cliquer avec lui
+  et cliquer avec lui.
 * Alt+pavNumMultiplié : Le curseur  du pointeur de la souris  à l'objet
   actuel et cliquer  avec le bouton droit de la souris.
 * Alt+pavNumPlus / pavNumMoins : Le curseur  du pointeur de la souris  à
