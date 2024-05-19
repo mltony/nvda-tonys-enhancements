@@ -5,7 +5,7 @@ This add-on is compatible with NVDA versions 2022.4 and 2024.1.
 
 ## Downloads
 
-[Tony's enhancements latest stable version](https://github.com/mltony/nvda-tonys-enhancements/releases/latest/download/tonysEnhancements.nvda-addon)
+Please install the latest version from NVDA add-on store.
 
 ## Enhanced table navigation commands
 * NVDA+Control+digit - jump to 1st/2nd/3rd/... 10th column in the table.
