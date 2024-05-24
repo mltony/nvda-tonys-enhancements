@@ -1,14 +1,15 @@
 # Tonyn laajennukset #
 
-* Tekijä: Tony Malykh
-* Lataa [vakaa versio][1]
-* Yhteensopivuus: NVDA 2022.4 ja 2023.1
-
 Tämä lisäosa sisältää useita pieniä NVDA-ruudunlukijan parannuksia, jotka
 ovat liian pieniä ansaitakseen erillisen lisäosan.
 
-## Laajennetut taulukkonavigointikomennot
+Tämä lisäosa on yhteensopiva NVDA 2022.4:n ja 2024.1:n kanssa.
 
+## Lataukset
+
+Asenna uusin versio NVDA:n lisäosakaupasta.
+
+## Laajennetut taulukkonavigointikomennot
 * NVDA+Ctrl+numero: Siirrä taulukon
   ensimmäiseen/toiseen/kolmanteen/... kymmenenteen sarakkeeseen.
 * NVDA+Alt+numero: Siirrä taulukon
@@ -31,16 +32,14 @@ NVDA-näppäinkomennot NVDA:n käyttöoppaasta.
 
 ## Taulukoiden kopiointi leikepöydälle
 
-Seuraavilla pikanäppäimillä voit kopioida muotoiltuna joko koko taulukon tai
-nykyisen rivin/sarakkeen, jotta voit liittää sen taulukkona
-rikastekstieditoreihin, kuten Microsoft Word tai WordPad.
-
-* NVDA+Alt+T: Näyttää ponnahdusvalikon, jossa on vaihtoehdot taulukon tai
-  sen osan kopioimiseen.
-
-Taulukoiden, rivien, sarakkeiden ja solujen kopiointia varten on myös
-erilliset komennot, mutta niille ei ole määritetty pikanäppäimiä. Ne on
-mahdollista määrittää NVDA:n Näppäinkomennot-valintaikkunassa.
+Seuraavat pikanäppäimet kopioivat muotoiltuna joko koko taulukon, nykyisen
+rivin  tai nykyisen sarakkeen, jotta voit liittää sen taulukkona
+rikastekstieditoreihin, kuten Microsoft Wordiin tai WordPadiin.  -
+NVDA+Alt+T: näyttää ponnahdusvalikon, jossa on vaihtoehdot koko taulukon tai
+sen osan kopiointiin. Taulukoiden, rivien, sarakkeiden ja solujen kopiointia
+varten on myös erilliset komennot, mutta niille ei ole määritetty
+pikanäppäimiä. Ne on mahdollista määrittää NVDA:n
+Näppäinkomennot-valintaikkunassa.
 
 ## Laajennetut sananavigointikomennot
 
@@ -48,7 +47,6 @@ Tämä toiminnallisuus on siirretty versiosta 1.8 lähtien
 [Sananavigointi-lisäosaan](https://github.com/mltony/nvda-word-nav/).
 
 ## Automaattinen kielen vaihtaminen
-
 Mahdollistaa puhesyntetisaattorin kielen vaihtamisen automaattisesti
 merkistön perusteella. Kielten säännölliset lausekkeet voidaan määrittää
 tämän lisäosan asetuksista. Varmista, että käyttämäsi syntetisaattori tukee
@@ -100,14 +98,11 @@ Selvitä sovelluksen nimi seuraavasti:
    arvo.
 
 ## Ikkunoiden näyttäminen ja piilottaminen
-
 Voit piilottaa nykyisen ikkunan ja näyttää kaikki tällä hetkellä
-piilotettuina olevat ikkunat. Tästä saattaa olla hyötyä, jos käytät useita
-ikkunoita samassa sovelluksessa (esim. Chromessa) ja haluat
-uudelleenjärjestää ne.
-
-* NVDA+Vaihto+-: Piilota nykyinen ikkuna.
-* NVDA+Vaihto+=: Näytä kaikki tällä hetkellä piilotettuina olevat ikkunat.
+piilotettuina olevat. Tästä saattaa olla hyötyä, jos käytät useita ikkunoita
+samassa sovelluksessa (esim. Chromessa) ja haluat uudelleenjärjestää ne. -
+NVDA+Vaihto+-: piilota nykyinen ikkuna. - NVDA+Vaihto+=: näytä kaikki tällä
+hetkellä piilotettuina olevat ikkunat.
 
 Huom: Mikäli suljet NVDA:n, kun ikkuna on piilotettuna, sitä ei ole tällä
 hetkellä mahdollista tuoda näkyviin NVDA:n uudelleenkäynnistyksen jälkeen.
@@ -118,10 +113,8 @@ Tämä lisäosa sisälsi aiemmin useita konsoliin liittyviä
 ominaisuuksia. Versiosta 1.8 lähtien ne on siirretty [Konsolin työkalupakki
 -lisäosaan](https://github.com/mltony/nvda-console-toolkit/). Erityisesti:
 
-* Reaaliaikainen konsolitulostus
-* Reaaliaikainen konsolin tulostus, Anna äänimerkki konsolin päivittyessä,
-  Pakota Ctrl+V konsoleissa
-* Toteuta Ctrl+V konsoleissa
+- Reaaliaikainen konsolitulostus - Äänimerkki konsolipäivityksille - Pakota
+Ctrl+V konsoleissa
 
 ## Anna äänimerkki, kun NVDA on varattu
 
@@ -131,24 +124,14 @@ on merkki käyttäjälle siitä, että NVDA-komentoja ei käsitellä heti.
 
 ## Äänenvoimakkuuden säätö
 
-* NVDA+Ctrl+Page up/Page down: säädä NVDA:n äänenvoimakkuutta.
-* NVDA+Alt+Page up/Page down: Säädä kaikkien sovellusten paitsi NVDA:n
-  äänenvoimakkuutta.
+NVDA 2023.2:een lisättyyn WASAPIin liittyvien yhteensopivuusongelmien vuoksi
+äänenvoimakkuuden säätö on tilapäisesti poistettu, mutta se saatetaan
+palauttaa tulevaisuudessa.
 
 ## Äänenjako
 
-Äänenjakotilassa NVDA ohjaa kaiken äänitulosteen oikeaan kanavaan, kun taas
-sovellukset toistavat ääntä vasemmassa kanavassa. Kanavia voidaan vaihtaa
-tämän lisäosan asetuksissa.
-
-* NVDA+Alt+S ottaa käyttöön äänenjakotilan tai poistaa sen käytöstä.
-
-Huom: Sovelluksen äänituloste saatetaan rajoittaa tietyissä tilanteissa
-yhteen kanavaan, vaikka NVDA ei ole käynnissä. Tätä voi tapahtua
-esim. silloin, jos NVDA on kaatunut äänenjaon ollessa käytössä tai kun NVDA
-sulkeutui puhtaasti kun kyseinen sovellus ei ollut
-käynnissä. Uudelleenkäynnistä NVDA tällaisissa tilanteissa ja poista
-äänenjako käytöstä, kun kyseinen sovellus on käynnissä.
+Tämä toiminnallisuus on siirretty versiosta 1.16 lähtien
+[Äänijakaja-lisäosaan](https://github.com/opensourcesys/soundSplitter/).
 
 ## Laajennetut hiiritoiminnot
 

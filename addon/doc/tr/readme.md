@@ -1,14 +1,15 @@
 # Tony'nin geliştirmeleri #
 
-* Yazar: Tony Malykh
-* [kararlı sürümü][1] indir
-* NVDA uyumluluğu: 2022.4 ve 2023.1
-
 Bu eklenti, NVDA ekran okuyucu için her biri ayrı bir eklentiyi hak
 etmeyecek kadar küçük olan bir dizi küçük iyileştirme içerir.
 
-## Geliştirilmiş tablo gezinme komutları
+Bu eklenti NVDA'nın 2022.4 ve 2024.1 sürümleriyle uyumludur.
 
+## İndirin
+
+Lütfen NVDA eklenti mağazasından en son sürümü yükleyin.
+
+## Geliştirilmiş tablo gezinme komutları
 * NVDA+Control+rakamlar - tablodaki 1./2./3./... 10. sütuna atlayın.
 * NVDA+Alt+rakamlar - tabloda 1./2./3./... 10. sıraya atla.
 
@@ -29,18 +30,14 @@ edinmek için lütfen NVDA kullanım kılavuzuna bakın.
 
 ## Tabloları panoya kopyalama
 
-Aşağıdaki kısayollarla, tablonun tamamını veya geçerli satırı veya geçerli
-sütunu biçimlendirilmiş bir şekilde kopyalayabilir, böylece Microsoft Word
-veya WordPad gibi zengin metin editörlerine tablo olarak
-yapıştırabilirsiniz.
-
-* NVDA+Alt+T - tabloyu veya bir kısmını kopyalamak için seçenekler içeren
-  açılır menüyü gösterir.
-
-Tabloları, satırları, sütunları ve hücreleri kopyalamak için ayrı komutlar
-da vardır, ancak bunların varsayılan olarak atanmış klavye kısayolları
-yoktur, onlar için özel klavye kısayolları NVDA'nın Girdi Hareketleri
-iletişim kutusunda atanabilir.
+Aşağıdaki kısayolları kullanarak tablonun tamamını, geçerli satırı veya
+geçerli sütunu biçimlendirilmiş bir şekilde kopyalayabilirsiniz. Böylece
+bunu Microsoft Word veya WordPad gibi zengin metin düzenleyicilere tablo
+olarak yapıştırabilirsiniz. - NVDA+Alt+T - tabloyu veya bir kısmını
+kopyalama seçeneklerini içeren açılır menüyü gösterir. Tabloları, satırları,
+sütunları ve hücreleri kopyalamak için ayrı kısayollar da vardır, ancak
+bunlara varsayılan olarak atanmış hareketler yoktur; bunlar için özel klavye
+kısayolları NVDA'nın Girdi Hareketleri iletişim kutusunda atanabilir.
 
 ## Gelişmiş kelime gezinme komutları
 
@@ -48,7 +45,6 @@ iletişim kutusunda atanabilir.
 eklentisine](https://github.com/mltony/nvda-word-nav/) taşınmıştır.
 
 ## Otomatik dil değiştirme
-
 Sentezleyicinizin dilini karakter kümesine göre otomatik olarak
 değiştirmenize izin verir. Bu eklenti için tercihler penceresinde her dil
 için refgular ifade yapılandırılabilir. Lütfen sentezleyicinizin
@@ -100,14 +96,11 @@ Uygulamanız için appName'i bulmak için şunu yapın:
    basın.
 
 ## Pencereleri gösterme ve gizleme
-
 Geçerli pencereyi gizleyebilir ve o anda gizli olan tüm pencereleri
-gösterebilirsiniz. Aynı uygulamada birden fazla pencere kullanıyorsanız
-(Chrome diyelim) ve bunları yeniden düzenlemek istiyorsanız bu yararlı
-olabilir.
-
-* NVDA+Shift+-: mevcut pencereyi gizler.
-* NVDA+Shift+=: Şu anda kapalı olan tüm pencereleri gösterir.
+gösterebilirsiniz. Aynı uygulamada (Chrome diyelim) birden fazla pencere
+kullanıyorsanız ve bunları yeniden düzenlemek istiyorsanız bu yararlı
+olabilir. - NVDA+Shift+*: geçerli pencereyi gizler. - NVDA+Shift+-: Şu anda
+kapalı olan tüm pencereleri gösterir.
 
 Bir pencere gizliyken NVDA'dan çıkarsanız, şu anda NVDA yeniden
 başlatıldıktan sonra pencereyi göstermenin bir yolu olmadığını unutmayın.
@@ -119,9 +112,8 @@ sürümünden itibaren, konsolla ilgili tüm özellikler [Konsol Araç Seti
 eklentisine](https://github.com/mltony/nvda-console-toolkit/)
 taşınmıştır. özellikle:
 
-* Gerçek zamanlı konsol çıktısı
-* Konsol güncellemelerinde bip sesi
-* Konsollarda Control+V'yi zorunlu kılın
+- Gerçek zamanlı konsol çıktısı - Konsol güncellemelerinde bip sesi -
+Konsollarda Control+V'yi zorunlu kılma
 
 ## NVDA meşgulken bip sesi
 
@@ -132,23 +124,15 @@ komutunun hemen çalıştıramayacağının bir işaretidir.
 
 ## Ses ayarı
 
-* NVDA+Control+sayfa yukarı/sayfa aşağı - NVDA sesini ayarlayın.
-* NVDA+Alt+Sayfa yukarı/Sayfa Aşağı - NVDA hariç tüm uygulamaların ses
-  seviyesini ayarlar.
+NVDA-2023.2'de eklenen WASAPI ile uyumluluk sorunları nedeniyle, ses
+seviyesi ayarı geçici olarak kaldırılmıştır, ancak gelecekte geri
+yüklenebilir.
 
 ## Ses ayırıcı
 
-Ses ayırıcı modunda, NVDA tüm ses çıkışını sağ kanala yönlendirirken,
-uygulamalar seslerini sol kanalda çalar. Kanallar ayarlarda
-değiştirilebilir.
-
-* NVDA+Alt+S, ses ayırıcı modunu değiştirir.
-
-Belirli durumlarda, NVDA çalışmıyorken bile bir uygulamadan ses çıkışının
-bir kanalla sınırlı olabileceğini lütfen unutmayın. Örneğin, ses ayırma
-açıkken NVDA çökerse veya söz konusu uygulama çalışmıyorken NVDA temiz bir
-şekilde çıkarsa bu durum meydana gelebilir. Bu gibi durumlarda, lütfen söz
-konusu uygulama çalışırken NVDA'yı yeniden başlatın ve ses ayırmayı kapatın.
+Sürüm 1.16'dan itibaren bu işlevsellik, Luke tarafından sağlanan [ses
+ayırıcı eklentisine](https://github.com/opensourcesys/soundSplitter/)
+taşınmıştır.
 
 ## Gelişmiş fare işlevleri
 

@@ -1,14 +1,15 @@
 # Tonys Verbesserungen #
 
-* Autor: Tony Malykh
-* [Stabile Version herunterladen][1]
-* NVDA-Kompatibilität: 2022.4 und 2023.1
-
 Diese NVDA-Erweiterung enthält eine Reihe kleinerer Verbesserungen, von
 denen jede zu klein ist, um ein eigene NVDA-Erweiterung daraus zu machen.
 
-## Erweiterte Tabellen-Navigationsbefehle
+This add-on is compatible with NVDA versions 2022.4 and 2024.1.
 
+## Downloads
+
+Please install the latest version from NVDA add-on store.
+
+## Erweiterte Tabellen-Navigationsbefehle
 * NVDA+Steuerung+Ziffer - springe zu Spalte 1, 2, 3 bis 10 in einer Tabelle.
 * NVDA+Alt+Ziffer - springe zu Reihe 1, 2, 3 bis 10 in einer Tabelle.
 
@@ -32,13 +33,11 @@ Funktionen finden Sie im NVDA-Benutzerhandbuch.
 
 With the following shortcuts you can copy either the whole table or current
 row or current column in a formatted way, so that you can paste it as a
-table to rich text editors, such as Microsoft Word or WordPad.
-
-* NVDA+Alt+T - shows popup menu with options to copy table or part of it.
-
-There are also separate scripts for copying tables, rows, columns and cells,
-but they don't have keyboard shortcuts assigned by default, custom keyboard
-shortcuts cfor them can be assigned in InputGestures dialog of NVDA.
+table to rich text editors, such as Microsoft Word or WordPad.  - NVDA+Alt+T
+- shows popup menu with options to copy table or part of it.  There are also
+separate scripts for copying tables, rows, columns and cells, but they don't
+have keyboard shortcuts assigned by default, custom keyboard shortcuts cfor
+them can be assigned in InputGestures dialog of NVDA.
 
 ## Verbesserte Wort-Navigationsbefehle
 
@@ -46,7 +45,6 @@ Ab Version 1.8 wurde diese Funktionalität in die NVDA-Erweiterung
 [WordNav](https://github.com/mltony/nvda-word-nav/) ausgelagert.
 
 ## Automatische Sprachumschaltung
-
 Ermöglicht es, die Sprache der Sprachausgabe automatisch nach Zeichensatz
 umzuschalten. Reflektierende Ausdrücke für jede Sprache können im
 Einstellungsfenster für dieser NVDA-Erweiterung konfiguriert werden. Bitte
@@ -101,13 +99,10 @@ vor:
    Wert appName in der letzten Zeile.
 
 ## Fenster ein- und ausblenden
-
 You can hide current window, and you can show all currently hidden
 windows. This might be useful if you use multiple windows in the same app
-(say Chrome) and you would like to rearrange them.
-
-* NVDA+Shift+-: hide current window.
-* NVDA+Shift+=: Show all currently closed windows.
+(say Chrome) and you would like to rearrange them.  - NVDA+Shift+-: hide
+current window.  - NVDA+Shift+=: Show all currently closed windows.
 
 Bitte beachten Sie, dass es derzeit keine Möglichkeit gibt, ein
 ausgeblendetes Fenster nach einem Neustart von NVDA wieder einzublenden,
@@ -121,9 +116,9 @@ NVDA-Erweiterung [Werkzeug für die
 Konsole](https://github.com/mltony/nvda-console-toolkit/) ausgelagert. Im
 Einzelnen:
 
-* Echtzeit-Konsolenausgabe
-* Beep on console updates
-* Enforce Control+V in consoles
+- Konsolen-Ausgabe in Echtzeit
+- Signalton bei Konsolen-Aktualisierungen
+- Erzwingt Strg+V in Konsolen
 
 ## Signalisiere, wenn NVDA ausgelastet ist
 
@@ -134,25 +129,13 @@ ausgeführt wird.
 
 ## Einstellung der Lautstärke
 
-* NVDA+Steuerung+Seite rauf/runter - NVDA-Lautstärke anpassen.
-* NVDA+Alt+Seite nach oben/unten - Lautstärke aller Anwendungen außer NVDA
-  einstellen.
+Due to compatibility issues with the WASAPI added in NVDA-2023.2, the volume
+adjustment have been temporarily removed, but may be restored in the future.
 
 ## Sound-Aufteilung
 
-Im Modus für die Sound-Aufteilung leitet NVDA die gesamte Soundausgabe auf
-den rechten Kanal um, während die Sounds der Anwendungen auf dem linken
-Kanal umgeleitet werden. Die Kanäle können in den Einstellungen umgeschaltet
-werden.
-
-* NVDA+Alt+S schaltet den Modus für die Sound-Aufteilung um.
-
-Bitte beachten Sie, dass in bestimmten Situationen die Sound-Ausgabe einer
-Anwendung auf einen Kanal beschränkt sein kann, auch wenn NVDA nicht
-läuft. Dies kann z. B. vorkommen, wenn NVDA abgestürzt ist, während Sound
-Split eingeschaltet war, oder wenn NVDA sauber beendet wurde, während die
-betreffende Anwendung nicht lief. Starten Sie in solchen Fällen NVDA neu und
-schalten Sie Sound Split aus, während die betreffende Anwendung läuft.
+As of version 1.16 this functionality has been moved to [soundSplitter
+add-on](https://github.com/opensourcesys/soundSplitter/) maintained by Luke.
 
 ## Verbesserte Maus-Funktionen
 

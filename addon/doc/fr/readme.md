@@ -1,15 +1,16 @@
 # Tony's enhancements #
 
-* Auteur : Tony Malykh
-* Télécharger [version stable][1]
-* Compatibilité NVDA : 2022.4 et 2023.1
-
 Cette extension contient un certain nombre de petites améliorations
 apportées au lecteur d'écran NVDA, chacune d'entre elles étant trop petite
 pour mériter une extension séparée.
 
-## Commandes de navigation améliorées dans les tableaux
+This add-on is compatible with NVDA versions 2022.4 and 2024.1.
 
+## Downloads
+
+Please install the latest version from NVDA add-on store.
+
+## Commandes de navigation améliorées dans les tableaux
 * NVDA+Contrôle+chiffre - aller à la 1ère/2ème/3ème/... 10ème colonne du
   tableau.
 * NVDA+Alt+chiffre - aller à la 1ère/2ème/3ème/... 10ème ligne du tableau.
@@ -32,18 +33,13 @@ fonctionnalités, veuillez vous référer au Guide de l'utilisateur de NVDA.
 
 ## Copier des tableaux dans le presse-papiers
 
-Avec les raccourcis suivants, vous pouvez copier le tableau entier ou la
-ligne actuelle ou la colonne actuelle de manière formatée, afin que vous
-puissiez le coller comme un tableau dans un éditeurs de texte riches, tels
-que Microsoft Word ou WordPad.
-
-* NVDA+Alt+T - Affiche le menu contextuel avec des options pour copier le
-  tableau ou une partie de celui-ci.
-
-Il existe également des scripts distincts pour la copie des tableaux, des
-lignes, des colonnes et des cellules, mais ils n'ont pas de raccourcis
-clavier assignés par défaut, les raccourcis clavier personnalisés pour eux
-peuvent être assignés dans la boîte de dialogue Gestes de commandes de NVDA.
+With the following shortcuts you can copy either the whole table or current
+row or current column in a formatted way, so that you can paste it as a
+table to rich text editors, such as Microsoft Word or WordPad.  - NVDA+Alt+T
+- shows popup menu with options to copy table or part of it.  There are also
+separate scripts for copying tables, rows, columns and cells, but they don't
+have keyboard shortcuts assigned by default, custom keyboard shortcuts cfor
+them can be assigned in InputGestures dialog of NVDA.
 
 ## Commandes de navigation améliorées dans les mots
 
@@ -51,7 +47,6 @@ peuvent être assignés dans la boîte de dialogue Gestes de commandes de NVDA.
 [l'extension WordNav](https://github.com/mltony/nvda-word-nav/).
 
 ## Commutation automatique de la langue
-
 Permet de changer automatiquement la langue de votre synthétiseur par le jeu
 de caractères. lexpression régulière pour chaque langue peut être configurée
 dans la fenêtre Préférences pour cette extension. Veuillez vous assurer que
@@ -107,14 +102,10 @@ Afin de comprendre appName pour votre application, faites ceci :
    appName dans la dernière ligne.
 
 ## Affichage et masquage des fenêtres
-
-Vous pouvez masquer la fenêtre actuelle et vous pouvez afficher toutes les
-fenêtres actuellement masquées. Cela peut être utile si vous utilisez
-plusieurs fenêtres dans la même application (disons Chrome) et que vous
-souhaitez les réorganiser.
-
-* NVDA+Shift+ tiret (-) : Masquer la fenêtre actuelle.
-* NVDA+Shift+= : Afficher toutes les fenêtres actuellement fermées.
+You can hide current window, and you can show all currently hidden
+windows. This might be useful if you use multiple windows in the same app
+(say Chrome) and you would like to rearrange them.  - NVDA+Shift+-: hide
+current window.  - NVDA+Shift+=: Show all currently closed windows.
 
 Veuillez noter que si vous quittez NVDA pendant qu'une fenêtre est masquée,
 il n'y a actuellement aucun moyen de l'afficher après le redémarrage de
@@ -127,9 +118,8 @@ liées à la console. À partir de la version 1.8, toutes les fonctionnalités
 liées à la console ont été déplacées vers [l'extension Console
 Toolkit](https://github.com/mltony/nvda-console-toolkit/). Spécifiquement :
 
-* Sortie console en temps réel
-* Mises à jour  du bip sur la console
-* Appliquer Contrôle+V dans les consoles
+- Real-time console output - Beep on console updates - Enforce Control+V in
+consoles
 
 ## Bip lorsque NVDA est occupé
 
@@ -140,26 +130,13 @@ commandes NVDA ne seront pas traitées immédiatement.
 
 ## Réglage du volume
 
-* NVDA+Contrôle+PagePrec/PageSuiv - ajuste le volume NVDA.
-* NVDA+Alt+PagePrec/PageSuiv - ajuste le volume de toutes les applications à
-  l'exception de NVDA.
+Due to compatibility issues with the WASAPI added in NVDA-2023.2, the volume
+adjustment have been temporarily removed, but may be restored in the future.
 
 ## Séparation de l'audio
 
-En mode Séparation de l'audio, NVDA orientera toute la sortie audio vers le
-canal droit, tandis que les applications joueront l'audio dans le canal de
-gauche. Les canaux peuvent être basculés dans les paramètres.
-
-* NVDA+Alt+S Bascule le mode séparation de l'audio.
-
-Veuillez noter que dans certaines situations, la sortie audio d'une
-application peut être limitée à un canal même lorsque NVDA n'est pas en
-cours d'exécution. Par exemple, cela pourrait se produire si NVDA s'est
-bloqué pendant que la séparation de l'audio était activée, ou lorsque NVDA
-est sorti proprement pendant que l'application en question n'était pas en
-cours d'exécution. Dans ces situations, veuillez redémarrer NVDA et
-désactiver la séparation de l'audio pendant que l'application en question
-est en cours d'exécution.
+As of version 1.16 this functionality has been moved to [soundSplitter
+add-on](https://github.com/opensourcesys/soundSplitter/) maintained by Luke.
 
 ## Fonctions améliorées de la souris
 
