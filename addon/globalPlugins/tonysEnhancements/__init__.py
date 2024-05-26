@@ -307,18 +307,11 @@ class SettingsDialog(SettingsPanel):
         label = _("Beep when NVDA is busy")
         self.busyBeepCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.busyBeepCheckbox.Value = getConfig("busyBeep")
-      # checkbox fix windows+Number
-        # Translators: Checkbox for windows_Number
-        label = _("Fix focus being stuck in the taskbar when pressing Windows+Number")
-        self.fixWindowNumberCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
-        self.fixWindowNumberCheckbox.Value = getConfig("fixWindowNumber")
-
       # checkbox suppress unselected
         # Translators: Checkbox for suppress unselected
         label = _("Suppress saying of 'unselected'.")
         self.suppressUnselectedCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.suppressUnselectedCheckbox.Value = getConfig("suppressUnselected")
-
       # Dynamic keystrokes table
         # Translators: Label for dynamic keystrokes table edit box
         label = _("Edit dynamic keystrokes table - see add-on documentation for more information")
@@ -333,18 +326,6 @@ class SettingsDialog(SettingsPanel):
         label = _('Edit language map')
         self.langMapButton = sHelper.addItem (wx.Button (self, label = label))
         self.langMapButton.Bind(wx.EVT_BUTTON, self.onLangMapClick)
-      # QuickSearch regexp text edit
-        label = _("QuickSearch1 regexp (assigned to PrintScreen)")
-        self.quickSearchEdit = sHelper.addLabeledControl(label, wx.TextCtrl)
-        self.quickSearchEdit.Value = getConfig("quickSearch1")
-      # QuickSearch2 regexp text edit
-        label = _("QuickSearch2 regexp (assigned to ScrollLock))")
-        self.quickSearch2Edit = sHelper.addLabeledControl(label, wx.TextCtrl)
-        self.quickSearch2Edit.Value = getConfig("quickSearch2")
-      # QuickSearch3 regexp text edit
-        label = _("QuickSearch3 regexp (assigned to Pause)")
-        self.quickSearch3Edit = sHelper.addLabeledControl(label, wx.TextCtrl)
-        self.quickSearch3Edit.Value = getConfig("quickSearch3")
       # checkbox block scroll lock
         # Translators: Checkbox for blocking scroll lock
         label = _("Suppress scroll lock mode announcements")
@@ -421,7 +402,6 @@ class SettingsDialog(SettingsPanel):
         setConfig("blockDoubleInsert", self.blockDoubleInsertCheckbox.Value)
         setConfig("blockDoubleCaps", self.blockDoubleCapsCheckbox.Value)
         setConfig("busyBeep", self.busyBeepCheckbox.Value)
-        setConfig("fixWindowNumber", self.fixWindowNumberCheckbox.Value)
         setConfig("suppressUnselected", self.suppressUnselectedCheckbox.Value)
         setConfig("detectInsertMode", self.detectInsertModeCheckbox.Value)
         setConfig("dynamicKeystrokesTable", self.dynamicKeystrokesTable)
@@ -429,9 +409,6 @@ class SettingsDialog(SettingsPanel):
         setConfig("enableLangMap", self.langMapCheckbox.Value)
         setConfig("langMap", self.langMap)
         reloadLangMap()
-        setConfig("quickSearch1", self.quickSearchEdit.Value)
-        setConfig("quickSearch2", self.quickSearch2Edit.Value)
-        setConfig("quickSearch3", self.quickSearch3Edit.Value)
         setConfig("blockScrollLock", self.blockScrollLockCheckbox.Value)
         updateScrollLockBlocking()
         setConfig("priority", self.priorityCombobox.Selection)
@@ -1077,14 +1054,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         gui.settingsDialogs.NVDASettingsDialog.categoryClasses.append(SettingsDialog)
 
     def terminate(self):
-        from . pycaw.pycaw import AudioUtilities
-        microphone = AudioUtilities.GetDefaultMicrophone()
+        from  pycaw.pycaw import AudioUtilities
+        microphone = AudioUtilities.CreateDevice(AudioUtilities.GetMicrophone())
         if microphone is not None:
-            microphone.SetMute(False, None)
+            microphone.EndpointVolume.SetMute(False, None)
         self.removeHooks()
         gui.settingsDialogs.NVDASettingsDialog.categoryClasses.remove(SettingsDialog)
 
-    quickSearchGestures = ",PrintScreen,ScrollLock,Pause".split(",")
     def injectHooks(self):
         global originalWatchdogAlive, originalWatchdogAsleep,  originalSpeakSelectionChange, originalCaretMovementScriptHelper,  originalSpeechSpeak
         self.originalExecuteGesture = inputCore.InputManager.executeGesture
@@ -1101,15 +1077,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         originalSpeechSpeak = speech.speech.speak
         speech.speech.speak = newSpeechSpeak
 
-        for i in [1,2,3]:
-            configKey = f"quickSearch{i}"
-            script = lambda selfself, gesture, configKey=configKey: self.script_quickSearch(selfself, gesture, getConfig(configKey))
-            script.category = "Tony's Enhancements"
-            script.__name__ = _("QuickSearch") + str(i)
-            script.__doc__ = _("Performs QuickSearch back or forward in editables according to quickSearch{i} regexp").format(**locals())
-            setattr(editableText.EditableText, f"script_quickSearch{i}", script)
-            editableText.EditableText._EditableText__gestures[f"kb:{self.quickSearchGestures[i]}"] = f"quickSearch{i}"
-            editableText.EditableText._EditableText__gestures[f"kb:Shift+{self.quickSearchGestures[i]}"] = f"quickSearch{i}"
 
     def  removeHooks(self):
         global originalWaveOpen
@@ -1164,10 +1131,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 checkUpdate,
                 gestureCounter, 0, time.time(), gesture
             )
-
-        if getConfig("fixWindowNumber") and self.windowsSwitchingRe.search(kb) is not None:
-
-            executeAsynchronously(self.asyncSwitchWindowHandler(gestureCounter))
         if getConfig("detectInsertMode") and self.typingKeystrokeRe.search(kb):
             text = None
             caret = None
@@ -1177,37 +1140,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         else:
             performingShiftGesture = False
         return self.originalExecuteGesture(selfself, gesture, *args, **kwargs)
-
-    def asyncSwitchWindowHandler(self, thisGestureCounter):
-        global gestureCounter
-        timeout = time.time() + 2
-        yield 1
-      # step 1. wait for all modifiers to be released
-        while True:
-            if time.time() > timeout:
-                return
-            if gestureCounter != thisGestureCounter:
-                return
-            status = [
-                winUser.getKeyState(k) & 32768
-                for k in allModifiers
-            ]
-            if not any(status):
-                break
-            yield 1
-      # Step 2
-        #for i in range(100):
-        yield 50
-        if gestureCounter != thisGestureCounter:
-            return
-        if True:
-            focus = api.getFocusObject()
-            if focus.appModule.appName == "explorer":
-                if focus.windowClassName == "TaskListThumbnailWnd":
-                    kbdEnter = keyboardHandler.KeyboardInputGesture.fromName("Enter")
-                    kbdEnter.send()
-                    tones.beep(100, 20)
-                    return
 
     def getCurrentLineAndCaret(self):
         focus = api.getFocusObject()
@@ -1339,99 +1271,16 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         if kb is not None:
             cls._DocumentWithTableNavigation__gestures["kb:%s" % kb] = scriptName
 
-    def script_quickSearch(self, selfself, gesture, regex):
-        if "shift" in gesture._get_modifierNames():
-            direction = -1
-        else:
-            direction = 1
-        caretInfo = selfself.makeTextInfo(textInfos.POSITION_SELECTION)
-        caretInfo.collapse(end=(direction > 0))
-        info = selfself.makeTextInfo(textInfos.POSITION_ALL)
-        info.setEndPoint(caretInfo, 'startToStart' if direction > 0 else 'endToEnd')
-        text = info.text
-        text = text.replace("\r\n", "\n") # Fix for Notepad++
-        text = text.replace("\r", "\n") # Fix for AkelPad
-        matches = list(re.finditer(regex, text, re.MULTILINE))
-        if len(matches) == 0:
-            self.beeper.fancyBeep('HF', 100, left=25, right=25)
-            return
-        if direction > 0:
-            match = matches[0]
-            #adjustment = match.start()
-            preLines = text[:match.start()].split("\n")
-            if len(preLines) > 1:
-                # Go to the beginning of the line to avoid some inconsistent behavior
-                caretInfo.expand(textInfos.UNIT_PARAGRAPH)
-                caretInfo.collapse(end=False)
-                caretInfo.move(textInfos.UNIT_PARAGRAPH, len(preLines) - 1)
-                caretInfo.expand(textInfos.UNIT_PARAGRAPH)
-                caretInfo.collapse(end=False)
-            caretInfo.move(textInfos.UNIT_CHARACTER, len(preLines[-1]))
-        else:
-            match = matches[-1]
-            #adjustment = match.start() - len(text)
-            preLines = text[:match.start()].split("\n")
-            postLines = text[match.start():].split("\n")
-            if len(postLines) > 1:
-                q = -len(postLines) + 1
-                # Go to the beginning of the line to avoid some inconsistent behavior
-                caretInfo.expand(textInfos.UNIT_PARAGRAPH)
-                caretInfo.collapse(end=False)
-                caretInfo.move(textInfos.UNIT_PARAGRAPH, -len(postLines) + 1)
-            caretInfo.expand(textInfos.UNIT_PARAGRAPH)
-            caretInfo.collapse(end=False)
-            caretInfo.move(textInfos.UNIT_CHARACTER, len(preLines[-1]))
-        caretInfo.move(textInfos.UNIT_CHARACTER, match.end() - match.start(), endPoint='end')
-        caretInfo.updateSelection()
-        mylog(f"1. {caretInfo.text}")
-        lineInfo = caretInfo.copy()
-        lineInfo.expand(textInfos.UNIT_PARAGRAPH)
-        mylog(f"2. {lineInfo.text}")
-        lineInfo.setEndPoint(caretInfo, 'startToStart')
-        mylog(lineInfo.text)
-        speech.speakTextInfo(lineInfo, unit=textInfos.UNIT_PARAGRAPH, reason=REASON_CARET)
-
-    hiddenWindows = []
-    @script(description=_("Hide current window."), gestures=['kb:NVDA+Shift+-'])
-    def script_HideWindow(self, gesture):
-        fg = api.getForegroundObject()
-        handle = fg.windowHandle
-        self.hiddenWindows.append(handle)
-        winUser.user32.ShowWindow(handle, winUser.SW_HIDE)
-        keyboardHandler.KeyboardInputGesture.fromName("Alt+Tab").send()
-        #winUser.setForegroundWindow(api.getDesktopObject().windowHandle)
-        def delayedSpeak():
-            speech.cancelSpeech()
-            ui.message(_("Hid current window. Now there are %d windows hidden.") % len(self.hiddenWindows))
-        core.callLater(100, delayedSpeak)
-
-    @script(description=_("Show hidden windows."), gestures=['kb:NVDA+Shift+='])
-    def script_showWindows(self, gesture):
-        if len(self.hiddenWindows) == 0:
-            ui.message(_("No windows hidden or all hidden windows have been already shown."))
-            return
-        n = len(self.hiddenWindows)
-        for handle in self.hiddenWindows:
-            time.sleep(0.1)
-            SW_SHOW = 5
-            winUser.user32.ShowWindow(handle, SW_SHOW)
-        winUser.setForegroundWindow(self.hiddenWindows[-1])
-        def delayedSpeak():
-            speech.cancelSpeech()
-            ui.message(_("%d windows shown") % n)
-        core.callLater(100, delayedSpeak)
-        self.hiddenWindows = []
-
     @script(description=_("Toggle microphone mute."), gestures=['kb:NVDA+Delete'])
     def script_toggleMicrophoneMute(self, gesture):
-        from . pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
-        microphone = AudioUtilities.GetDefaultMicrophone()
+        from  pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+        microphone = AudioUtilities.CreateDevice(AudioUtilities.GetMicrophone())
         if microphone is None:
             ui.message(_("Default microphone not found."))
             return
-        mm = bool(microphone.GetMute())
+        mm = bool(microphone.EndpointVolume.GetMute())
         mm = not mm
-        microphone.SetMute(mm, None)
+        microphone.EndpointVolume.SetMute(mm, None)
         msg = _("Muted microphone") if mm else _("Unmuted microphone")
         def announce():
             speech.cancelSpeech()

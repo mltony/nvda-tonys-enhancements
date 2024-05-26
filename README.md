@@ -11,35 +11,18 @@ Please install the latest version from NVDA add-on store.
 * NVDA+Control+digit - jump to 1st/2nd/3rd/... 10th column in the table.
 * NVDA+Alt+digit - jump to 1st/2nd/3rd/... 10th row in the table.
 
-## Removed table navigation commands
-
-The following table navigation commands have been Removed as they have been integrated into the latest version of NVDA core.
-
-* Jump to the first/last column in the table.
-* Jump to the first/last row in the table.
-* Read current column in the table starting from current cell down.
-* Read current row in the table starting from current cell.
-* Read current column in the table starting from the top.
-* Read current row in the table starting from the beginning of the row.
-
-Note: To learn about NVDA's default gestures for these features, please refer to the NVDA user guide.
-
 ## Copying tables to clipboard
 
 With the following shortcuts you can copy either the whole table or current row or current column in a formatted way, so that you can paste it as a table to rich text editors, such as Microsoft Word or WordPad.
 - NVDA+Alt+T - shows popup menu with options to copy table or part of it.
 There are also separate scripts for copying tables, rows, columns and cells, but they don't have keyboard shortcuts  assigned by default, custom keyboard shortcuts cfor them can be assigned in InputGestures dialog of NVDA.
 
-## Enhanced word navigation commands
-
-As of version 1.8 this functionality has been moved to [WordNav add-on](https://github.com/mltony/nvda-word-nav/).
-
 ## Automatic language switching
 Allows to automatically switch the language of your synthesizer by character set. Refgular expression for every language can be configured in the preferences window for this add-on. Please make sure that your synthesizer supports all the languages you're interested in. Switching between two Latin-based languages or two languages whose character sets are similar is not supported at this time.
 
 ## Quicksearch commands
 
-You can have up to three slots for configurable regular expressions that you frequencly search for in editables. By default they are assigned to `PrintScreen`, `ScrollLock` and `Pause` buttons. You can perform forward search, or backward search by pressing `Shift` combined with these buttons.
+As of version v1.18, QuickSearch commands have been moved to [IndentNav add-on](https://github.com/mltony/nvda-indent-nav).
 
 ## Suppress unwanted 'unselected' speech from NVDA
 
@@ -63,31 +46,20 @@ In order to figure out appName for your application, do this:
 4. Press F6 to go to output pane and find appName value in the last line.
 
 ## Showing and hiding windows
-You can hide current window, and you can show all currently hidden windows. This might be useful if you use multiple windows in the same app (say Chrome) and you would like to rearrange them.
-- NVDA+Shift+-: hide current window.
-- NVDA+Shift+=: Show all currently closed windows.
 
-Please note, that if you quit NVDA while a window is hidden, there is currently no way to show it after NVDA is restarted.
-
-## Console enhancements
-
-Previously this add-on included a number of console-related features. As of version 1.8, all console-related features have been moved to [Console Toolkit add-on](https://github.com/mltony/nvda-console-toolkit/). Specifically:
-
-- Real-time console output
-- Beep on console updates
-- Enforce Control+V in consoles
+As of version v1.18 show/hide commands have been moved to [Task Switcher add-on](https://github.com/mltony/nvda-task-switcher).
 
 ## Beep when NVDA is busy
 
 Check this option for NVDA to provide audio feedback when NVDA is busy. NVDA being busy does not necessarily indicate a problem with NVDA, but rather this is a signal to the user that any NVDA commands will not be processed immediately.
 
-## Volume adjustment
+## Application Volume adjustment
 
-Due to compatibility issues with the WASAPI added in NVDA-2023.2, the volume adjustment have been temporarily removed, but may be restored in the future.
+This functionality has been merged into NVDA core and is available in NVDA v2024.3 or later.
 
 ## Sound split
 
-As of version 1.16 this functionality has been moved to [soundSplitter add-on](https://github.com/opensourcesys/soundSplitter/) maintained by Luke.
+This functionality has been merged into NVDA core and is available in NVDA v2024.2 or later.
 
 ## Enhanced mouse functions
 
@@ -113,4 +85,4 @@ This allows to boost system priority of NVDA process, that might improve NVDA re
 
 ## Fixing a bug when focus gets stuck in the taskbar when pressing Windows+Numbers
 
-There is a bug in Windows 10, and possibly in other versions. When switching between applications using Windows+number shortcut sometimes the focus gets stuck in the taskbar area instead of jumping to the window being switched to. Since trying to report this bug to Microsoft is hopeless, a workaround has been implemented in this add-on. The add-on detects this situation and plays a short low-pitch beep when this situation is detected, then the add-on fixes it automatically.
+This feature has been removed as of version v1.18. If you need a more reliable task switching functionality, please consider using [Task Switcher add-on](https://github.com/mltony/nvda-task-switcher).
