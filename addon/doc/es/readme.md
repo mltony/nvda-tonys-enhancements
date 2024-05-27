@@ -1,15 +1,16 @@
 # Tony's enhancements (Mejoras de Tony) #
 
-* Autores: Tony Malykh
-* Descargar [versión estable][1]
-* Compatibilidad con NVDA: 2022.4 y 2023.1
-
 Este complemento aporta una serie de pequeñas mejoras para el lector de
 pantalla NVDA, insignificantes por sí solas para merecer complementos
 independientes.
 
-## Órdenes mejoradas de navegación por tablas
+This add-on is compatible with NVDA versions 2022.4 and 2024.1.
 
+## Downloads
+
+Please install the latest version from NVDA add-on store.
+
+## Órdenes mejoradas de navegación por tablas
 * NVDA+control+dígitos del 1 al 0 - Saltar a la primera, segunda,
   tercera... décima columna de la tabla.
 * NVDA+alt+dígitos del 1 al 0 - Saltar a la primera, segunda,
@@ -33,17 +34,13 @@ consulta la guía de usuario de NVDA.
 
 ## Copiar tablas al portapapeles
 
-Con los siguientes atajos se puede copiar una tabla entera, una fila o una
-columna preservando el formato, de tal forma que se pueda pegar como una
-tabla en editores de texto enriquecido como Microsoft Word o WordPad.
-
-* NVDA+alt+t - Muestra un menú emergente con opciones para copiar la tabla o
-  parte de ella.
-
-Hay también scripts independientes para copiar tablas, filas, columnas y
-celdas, pero no tienen atajos de teclado asignados por defecto. Se pueden
-asignar atajos personalizados para ellos desde el diálogo Gestos de entrada
-de NVDA.
+With the following shortcuts you can copy either the whole table or current
+row or current column in a formatted way, so that you can paste it as a
+table to rich text editors, such as Microsoft Word or WordPad.  - NVDA+Alt+T
+- shows popup menu with options to copy table or part of it.  There are also
+separate scripts for copying tables, rows, columns and cells, but they don't
+have keyboard shortcuts assigned by default, custom keyboard shortcuts cfor
+them can be assigned in InputGestures dialog of NVDA.
 
 ## Órdenes mejoradas de navegación por palabras
 
@@ -51,7 +48,6 @@ A partir de la versión 1.8, esta función se ha movido al [complemento
 WordNav](https://github.com/mltony/nvda-word-nav/).
 
 ## Cambio automático de idioma
-
 Permite cambiar automáticamente el idioma del sintetizador según el conjunto
 de caracteres. En la ventana de preferencias de este complemento se pueden
 configurar expresiones regulares para cada idioma. Asegúrate de que el
@@ -105,13 +101,10 @@ Para averiguar el nombre de tu aplicación, haz lo siguiente:
    aplicación en la última línea.
 
 ## Mostrar y ocultar ventanas
-
-Se puede ocultar la ventana actual, y mostrar todas las ventanas
-ocultas. Esto puede ser útil al usar varias ventanas en la misma aplicación
-(pongamos Chrome) cuando queremos reordenarlas.
-
-* NVDA+Shift+-: ocultar ventana actual.
-* NVDA+Shift+=: Mostrar todas las ventanas ocultas.
+You can hide current window, and you can show all currently hidden
+windows. This might be useful if you use multiple windows in the same app
+(say Chrome) and you would like to rearrange them.  - NVDA+Shift+-: hide
+current window.  - NVDA+Shift+=: Show all currently closed windows.
 
 Ten en cuenta que si cierras NVDA mientras una ventana está oculta, no hay
 forma de volver a mostrarla tras reiniciarlo.
@@ -123,9 +116,8 @@ consola. A partir de la versión 1.8, todas las funciones relacionadas con la
 consola se han movido al [complemento Console
 Toolkit](https://github.com/mltony/nvda-console-toolkit/). Concretamente:
 
-* Salida de la consola en tiempo real
-* Pitar cuando se actualiza la consola
-* Reforzar control+v en las consolas
+- Real-time console output - Beep on console updates - Enforce Control+V in
+consoles
 
 ## Pitar cuando NVDA esté ocupado
 
@@ -136,25 +128,13 @@ un problema necesariamente, pero sirve como señal al usuario de que las
 
 ## Ajuste de volumen
 
-* NVDA+control+retroceso y avance de página - Ajustar volumen de NVDA.
-* NVDA+alt+retroceso y avance de página - Ajustar volumen de todas las
-  aplicaciones excepto NVDA.
+Due to compatibility issues with the WASAPI added in NVDA-2023.2, the volume
+adjustment have been temporarily removed, but may be restored in the future.
 
 ## División de sonido
 
-En el modo de división de sonido, NVDA dirigirá todo el sonido saliente al
-canal derecho, mientras que las aplicaciones reproducirán sus sonidos por el
-canal izquierdo. Se pueden intercambiar los canales en las opciones.
-
-* NVDA+alt+s conmuta el modo de división de sonido.
-
-Ten en cuenta que en ciertas situaciones la salida de sonido de una
-aplicación podría estar limitada a un canal incluso cuando NVDA no está en
-ejecución. Por ejemplo, esto podría suceder si NVDA ha fallado mientras la
-división de sonido estaba activa, o cuando NVDA se cerró limpiamente cuando
-la aplicación en cuestión no estaba en ejecución. Ante esas situaciones,
-reinicia NVDA y desactiva la división de sonido mientras la aplicación esté
-en ejecución.
+As of version 1.16 this functionality has been moved to [soundSplitter
+add-on](https://github.com/opensourcesys/soundSplitter/) maintained by Luke.
 
 ## Funciones mejoradas del ratón
 

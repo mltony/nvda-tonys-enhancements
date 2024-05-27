@@ -1,14 +1,15 @@
 # Tony's enhancements #
 
-* Автор: Tony Malykh
-* Завантажити [стабільну версію][1]
-* Сумісність: NVDA 2022.4 і 2023.1
-
 Цей додаток містить низку невеликих поліпшень екранного читача NVDA, кожне з
 яких є занадто малим, щоб заслуговувати на окремий додаток.
 
-## Поліпшені команди навігації у таблиці
+This add-on is compatible with NVDA versions 2022.4 and 2024.1.
 
+## Downloads
+
+Please install the latest version from NVDA add-on store.
+
+## Поліпшені команди навігації у таблиці
 * NVDA+Control+цифра – перейти до першого/другого/третього/десятого
   стовпчика таблиці.
 * NVDA+Alt+цифра – перейти до першого/другого/третього/десятого рядка
@@ -31,17 +32,13 @@
 
 ## Копіювання таблиць у буфер обміну
 
-За допомогою наведених нижче комбінацій клавіш ви можете скопіювати або всю
-таблицю, або поточний рядок, або поточний стовпець у відформатованому
-вигляді, щоб потім вставити його як таблицю в текстові редактори, такі як
-Microsoft Word або WordPad.
-
-* NVDA+Alt+T — показує спливаюче меню з параметрами копіювання таблиці або
-  її частини.
-
-Існують також окремі сценарії для копіювання таблиць, рядків, стовпців і
-комірок, але вони не мають призначених початкових комбінацій клавіш, для них
-можна призначити власні комбінації клавіш у діалозі Жести вводу у NVDA.
+With the following shortcuts you can copy either the whole table or current
+row or current column in a formatted way, so that you can paste it as a
+table to rich text editors, such as Microsoft Word or WordPad.  - NVDA+Alt+T
+- shows popup menu with options to copy table or part of it.  There are also
+separate scripts for copying tables, rows, columns and cells, but they don't
+have keyboard shortcuts assigned by default, custom keyboard shortcuts cfor
+them can be assigned in InputGestures dialog of NVDA.
 
 ## Поліпшені команди навігації по словах
 
@@ -49,7 +46,6 @@ Microsoft Word або WordPad.
 WordNav](https://github.com/mltony/nvda-word-nav/).
 
 ## Автоматичне перемикання мов
-
 Дозволяє автоматично перемикати мову вашого синтезатора за набором
 символів. Регулярний вираз для кожної мови можна налаштувати у діалозі
 налаштувань додатка. Будь ласка, переконайтеся, що ваш синтезатор підтримує
@@ -100,13 +96,10 @@ appName keystroke
    в останньому рядку.
 
 ## Показ і приховування вікон
-
-Ви можете приховати поточне вікно, а також показати всі поточні приховані
-вікна. Це може бути корисно, якщо ви використовуєте кілька вікон в одній
-програмі (наприклад, Chrome) і хочете переставити їх місцями.
-
-* NVDA+Shift+-: приховати поточне вікно.
-* NVDA+Shift+=: Показати всі приховані вікна.
+You can hide current window, and you can show all currently hidden
+windows. This might be useful if you use multiple windows in the same app
+(say Chrome) and you would like to rearrange them.  - NVDA+Shift+-: hide
+current window.  - NVDA+Shift+=: Show all currently closed windows.
 
 Зверніть увагу, що якщо ви виходите з NVDA, коли вікно приховано, наразі
 немає можливості показати його після перезапуску NVDA.
@@ -117,9 +110,8 @@ appName keystroke
 версії 1.8, усі можливості, пов'язані з консоллю, було перенесено до Додатка
 [Console Toolkit](https://github.com/mltony/nvda-console-toolkit/). А саме:
 
-* Виведення у реальному часі для консолі
-* Звуковий сигнал при оновленнях консолі
-* Примусове використання Control+V в консолях
+- Real-time console output - Beep on console updates - Enforce Control+V in
+consoles
 
 ## Сигнал, коли NVDA зайнята
 
@@ -129,24 +121,13 @@ appName keystroke
 
 ## Налаштування гучності
 
-* NVDA+Control+сторінка вгору/сторінка вниз – налаштувати гучність NVDA.
-* NVDA+alt+сторінка вгору/сторінка вниз – налаштувати гучність усіх
-  застосунків, крім NVDA.
+Due to compatibility issues with the WASAPI added in NVDA-2023.2, the volume
+adjustment have been temporarily removed, but may be restored in the future.
 
 ## Розділення звуку
 
-У режимі розділення звуку NVDA спрямовуватиме весь вихідний звук у правий
-канал, тоді як програми відтворюватимуть свої звуки у лівому каналі. Канали
-можна перемикати у налаштуваннях.
-
-* NVDA+Alt+S перемикає режим розділення звуку.
-
-Зверніть увагу, що у певних ситуаціях виведення звуку з програми може бути
-обмежено одним каналом, навіть якщо NVDA не працює. Наприклад, це може
-статися, якщо NVDA завершила роботу під час увімкненого розділення звуку,
-або якщо NVDA завершила роботу під час вимкнення програми, у якій було
-увімкнено розділення звуку. У таких випадках перезапустіть NVDA і вимкніть
-розділення звуку під час роботи відповідної програми.
+As of version 1.16 this functionality has been moved to [soundSplitter
+add-on](https://github.com/opensourcesys/soundSplitter/) maintained by Luke.
 
 ## Покращені функції миші
 

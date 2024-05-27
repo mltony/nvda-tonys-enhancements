@@ -1,14 +1,15 @@
 # Tonijeva poboljšanja (Tony's Enhancements) #
 
-* Autori: Tony Malykh
-* Preuzmi [stabilnu verziju][1]
-* NVDA kompatibilnost: 2022.4 i 2023.1
-
 Ovaj dodatak sadrži mnoga mala poboljšanja NVDA čitača ekrana, a svako od
 tih poboljšanja je premaleno, da bi zaslužilo zaseban dodatak.
 
-## Poboljšani prečaci za kretanje po tablicama
+This add-on is compatible with NVDA versions 2022.4 and 2024.1.
 
+## Downloads
+
+Please install the latest version from NVDA add-on store.
+
+## Poboljšani prečaci za kretanje po tablicama
 * NVDA+kontrol+brojka – skoči na 1., 2., 3., … 10. stupac u tablici.
 * NVDA+Alt+brojka – skoči na 1., 2., 3., … 10. redak u tablici.
 
@@ -35,13 +36,11 @@ refer to the NVDA user guide.
 
 With the following shortcuts you can copy either the whole table or current
 row or current column in a formatted way, so that you can paste it as a
-table to rich text editors, such as Microsoft Word or WordPad.
-
-* NVDA+Alt+T - shows popup menu with options to copy table or part of it.
-
-There are also separate scripts for copying tables, rows, columns and cells,
-but they don't have keyboard shortcuts assigned by default, custom keyboard
-shortcuts cfor them can be assigned in InputGestures dialog of NVDA.
+table to rich text editors, such as Microsoft Word or WordPad.  - NVDA+Alt+T
+- shows popup menu with options to copy table or part of it.  There are also
+separate scripts for copying tables, rows, columns and cells, but they don't
+have keyboard shortcuts assigned by default, custom keyboard shortcuts cfor
+them can be assigned in InputGestures dialog of NVDA.
 
 ## Poboljšane naredbe za kretanje po riječima
 
@@ -49,7 +48,6 @@ As of version 1.8 this functionality has been moved to [WordNav
 add-on](https://github.com/mltony/nvda-word-nav/).
 
 ## Automatic language switching
-
 Allows to automatically switch the language of your synthesizer by character
 set. Refgular expression for every language can be configured in the
 preferences window for this add-on. Please make sure that your synthesizer
@@ -99,13 +97,10 @@ In order to figure out appName for your application, do this:
 4. Press F6 to go to output pane and find appName value in the last line.
 
 ## Showing and hiding windows
-
 You can hide current window, and you can show all currently hidden
 windows. This might be useful if you use multiple windows in the same app
-(say Chrome) and you would like to rearrange them.
-
-* NVDA+Shift+-: hide current window.
-* NVDA+Shift+=: Show all currently closed windows.
+(say Chrome) and you would like to rearrange them.  - NVDA+Shift+-: hide
+current window.  - NVDA+Shift+=: Show all currently closed windows.
 
 Please note, that if you quit NVDA while a window is hidden, there is
 currently no way to show it after NVDA is restarted.
@@ -117,9 +112,8 @@ version 1.8, all console-related features have been moved to [Console
 Toolkit
 add-on](https://github.com/mltony/nvda-console-toolkit/). Specifically:
 
-* Prikaz rezultata konzole uživo
-* Beep on console updates
-* Enforce Control+V in consoles
+- Real-time console output - Beep on console updates - Enforce Control+V in
+consoles
 
 ## Signaliziraj zvukom kad je NVDA zauzet
 
@@ -129,24 +123,13 @@ je to signal korisniku, da se bilo koje NVDA naredbe neće odmah izvršiti.
 
 ## Volume adjustment
 
-* NVDA+kontrol+pejdž ap/pejdž daun – prilagodi glasnoću NVDA čitača.
-* NVDA+kontrol+pejdž ap/pejdž daun – prilagodi glasnoću svih aplikacija osim
-  NVDA čitača.
+Due to compatibility issues with the WASAPI added in NVDA-2023.2, the volume
+adjustment have been temporarily removed, but may be restored in the future.
 
 ## Sound split
 
-In Sound split mode NVDA will direct all sound output to the right channel,
-while applications will play their sounds in the left channel. Channels can
-be switched in settings.
-
-* NVDA+Alt+S toggles sound split mode.
-
-Please note, that in certain situations sound output from an application
-might be limited to one channel even when NVDA is not running. For example,
-this could happen if NVDA has crashed while sound split was on, or when NVDA
-exited cleanly while the app in question was not running. In those
-situations, please restart NVDA, and turn off sound split while the app in
-question is running.
+As of version 1.16 this functionality has been moved to [soundSplitter
+add-on](https://github.com/opensourcesys/soundSplitter/) maintained by Luke.
 
 ## Enhanced mouse functions
 

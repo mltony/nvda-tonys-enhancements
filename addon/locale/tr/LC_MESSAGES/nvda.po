@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tony'nin Geliştirmeleri\n"
 "Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
 "POT-Creation-Date: 2023-09-22 20:25+0000\n"
-"PO-Revision-Date: 2023-09-24 15:14+0300\n"
+"PO-Revision-Date: 2024-05-19 15:39+0300\n"
 "Last-Translator: Umut KORKMAZ <umutkork@gmail.com>\n"
 "Language-Team: Çağrı Doğan ve Umut KORKMAZ <umutkork@gmail.com>\n"
 "Language: tr_TR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.4.4\n"
 "X-Poedit-Basepath: ../../../globalPlugins/tonysEnhancements\n"
 "X-Poedit-SearchPath-0: .\n"
 
@@ -131,7 +131,7 @@ msgid "Cannot find {axis} with index {index} in this table"
 msgstr "Bu tabloda {index} endeksli {axis} bulunamadı"
 
 msgid "Not in a table!"
-msgstr "Tabloda değil."
+msgstr "Tabloda değil!"
 
 msgid "Cell copied"
 msgstr "Hücre kopyalandı"
@@ -276,7 +276,7 @@ msgid "Move mouse pointer to top left corner."
 msgstr "Fare imlecini sol üst köşeye taşı."
 
 msgid "Mouse pointer moved to top left corner. "
-msgstr "Fare imleci sol üst köşeye taşındı"
+msgstr "Fare imleci sol üst köşeye taşındı "
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
