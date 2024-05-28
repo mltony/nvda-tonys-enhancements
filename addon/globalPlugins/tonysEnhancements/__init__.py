@@ -1054,7 +1054,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         gui.settingsDialogs.NVDASettingsDialog.categoryClasses.append(SettingsDialog)
 
     def terminate(self):
-        from  pycaw.pycaw import AudioUtilities
+        from  pycaw.utils import AudioUtilities
         microphone = AudioUtilities.CreateDevice(AudioUtilities.GetMicrophone())
         if microphone is not None:
             microphone.EndpointVolume.SetMute(False, None)
@@ -1087,10 +1087,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.myWatchdog.terminate()
         speech.speakSelectionChange = originalSpeakSelectionChange
         speech.speech.speak = originalSpeechSpeak
-        for i in [1,2,3]:
-            delattr(editableText.EditableText, f"script_quickSearch{i}")
-            del editableText.EditableText._EditableText__gestures[f"kb:{self.quickSearchGestures[i]}"]
-            del editableText.EditableText._EditableText__gestures[f"kb:Shift+{self.quickSearchGestures[i]}"]
 
     windowsSwitchingRe = re.compile(r':windows\+\d$')
     typingKeystrokeRe = re.compile(r':((shift\+)?[A-Za-z0-9]|space)$')
@@ -1273,7 +1269,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
     @script(description=_("Toggle microphone mute."), gestures=['kb:NVDA+Delete'])
     def script_toggleMicrophoneMute(self, gesture):
-        from  pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+        from  pycaw.utils import AudioUtilities, IAudioEndpointVolume
         microphone = AudioUtilities.CreateDevice(AudioUtilities.GetMicrophone())
         if microphone is None:
             ui.message(_("Default microphone not found."))
