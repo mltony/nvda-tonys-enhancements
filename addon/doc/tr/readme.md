@@ -13,36 +13,20 @@ Lütfen NVDA eklenti mağazasından en son sürümü yükleyin.
 * NVDA+Control+rakamlar - tablodaki 1./2./3./... 10. sütuna atlayın.
 * NVDA+Alt+rakamlar - tabloda 1./2./3./... 10. sıraya atla.
 
-## Kaldırılan tablo gezinme komutları
-
-Aşağıdaki tablo gezinme komutları, NVDA çekirdeğinin en son sürümüne entegre
-edildikleri için kaldırıldı.
-
-* Tablodaki ilk/son sütuna atlayın.
-* Tablodaki ilk/son satıra atlayın.
-* Geçerli hücreden başlayarak tablodaki geçerli sütunu okuyun.
-* Geçerli hücreden başlayarak tablodaki geçerli satırı okuyun.
-* Yukarıdan başlayarak tablodaki mevcut sütunu okuyun.
-* Satırın başından başlayarak tablodaki mevcut satırı okuyun.
-
-Not: NVDA'nın bu özellikler için varsayılan hareketleri hakkında bilgi
-edinmek için lütfen NVDA kullanım kılavuzuna bakın.
-
 ## Tabloları panoya kopyalama
 
-Aşağıdaki kısayolları kullanarak tablonun tamamını, geçerli satırı veya
-geçerli sütunu biçimlendirilmiş bir şekilde kopyalayabilirsiniz. Böylece
-bunu Microsoft Word veya WordPad gibi zengin metin düzenleyicilere tablo
-olarak yapıştırabilirsiniz. - NVDA+Alt+T - tabloyu veya bir kısmını
-kopyalama seçeneklerini içeren açılır menüyü gösterir. Tabloları, satırları,
-sütunları ve hücreleri kopyalamak için ayrı kısayollar da vardır, ancak
-bunlara varsayılan olarak atanmış hareketler yoktur; bunlar için özel klavye
-kısayolları NVDA'nın Girdi Hareketleri iletişim kutusunda atanabilir.
+Aşağıdaki kısayollarla, tablonun tamamını veya geçerli satırı veya geçerli
+sütunu biçimlendirilmiş bir şekilde kopyalayabilir, böylece Microsoft Word
+veya WordPad gibi zengin metin editörlerine tablo olarak
+yapıştırabilirsiniz.
 
-## Gelişmiş kelime gezinme komutları
+* NVDA+Alt+T - tabloyu veya bir kısmını kopyalamak için seçenekler içeren
+  açılır menüyü gösterir.
 
-1.8 sürümünden itibaren bu işlevsellik [WordNav
-eklentisine](https://github.com/mltony/nvda-word-nav/) taşınmıştır.
+Tabloları, satırları, sütunları ve hücreleri kopyalamak için ayrı komutlar
+da vardır, ancak bunlara varsayılan olarak atanmış klavye kısayolları
+yoktur; bunlar için özel klavye kısayolları NVDA'nın Girdi Hareketleri
+iletişim kutusunda atanabilir.
 
 ## Otomatik dil değiştirme
 Sentezleyicinizin dilini karakter kümesine göre otomatik olarak
@@ -54,11 +38,8 @@ desteklenmemektedir.
 
 ## Hızlı arama komutları
 
-Düzenlenebilir dosyalarda sıkça aradığınız yapılandırılabilir düzenli
-ifadeler için en fazla üç yuvaya sahip olabilirsiniz. Bunlar varsayılan
-olarak `PrintScreen`, `ScrollLock` ve `Pause` düğmelerine atanmıştır. Bu
-düğmelerle birlikte `Shift` tuşuna basarak ileri veya geri arama
-yapabilirsiniz.
+Sürüm 1.18'den itibaren, Hızlı Arama komutları [Girinti Dolaşımı
+eklentisine](https://github.com/mltony/nvda-indent-nav) taşınmıştır.
 
 ## NVDA'dan gelen istenmeyen 'seçilmemiş' konuşmayı bastırın
 
@@ -96,24 +77,9 @@ Uygulamanız için appName'i bulmak için şunu yapın:
    basın.
 
 ## Pencereleri gösterme ve gizleme
-Geçerli pencereyi gizleyebilir ve o anda gizli olan tüm pencereleri
-gösterebilirsiniz. Aynı uygulamada (Chrome diyelim) birden fazla pencere
-kullanıyorsanız ve bunları yeniden düzenlemek istiyorsanız bu yararlı
-olabilir. - NVDA+Shift+*: geçerli pencereyi gizler. - NVDA+Shift+-: Şu anda
-kapalı olan tüm pencereleri gösterir.
 
-Bir pencere gizliyken NVDA'dan çıkarsanız, şu anda NVDA yeniden
-başlatıldıktan sonra pencereyi göstermenin bir yolu olmadığını unutmayın.
-
-## Konsol geliştirmeleri
-
-Daha önce bu eklenti, konsolla ilgili bir dizi özellik içeriyordu. 1.8
-sürümünden itibaren, konsolla ilgili tüm özellikler [Konsol Araç Seti
-eklentisine](https://github.com/mltony/nvda-console-toolkit/)
-taşınmıştır. özellikle:
-
-- Gerçek zamanlı konsol çıktısı - Konsol güncellemelerinde bip sesi -
-Konsollarda Control+V'yi zorunlu kılma
+Sürüm 1.18'den itibaren göster/gizle komutları [Görev Değiştirici
+eklentisine](https://github.com/mltony/nvda-task-switcher) taşınmıştır.
 
 ## NVDA meşgulken bip sesi
 
@@ -122,17 +88,15 @@ seçeneği işaretleyin. NVDA'nın meşgul olması, mutlaka NVDA ile ilgili bir
 sorun olduğunu göstermez, bunun yerine, bu, kullanıcıya herhangi bir NVDA
 komutunun hemen çalıştıramayacağının bir işaretidir.
 
-## Ses ayarı
+## Uygulama Ses ayarı
 
-NVDA-2023.2'de eklenen WASAPI ile uyumluluk sorunları nedeniyle, ses
-seviyesi ayarı geçici olarak kaldırılmıştır, ancak gelecekte geri
-yüklenebilir.
+Bu işlevsellik NVDA çekirdeğiyle birleştirilmiştir ve NVDA v2024.3 veya
+sonraki sürümlerinde mevcuttur.
 
 ## Ses ayırıcı
 
-Sürüm 1.16'dan itibaren bu işlevsellik, Luke tarafından sağlanan [ses
-ayırıcı eklentisine](https://github.com/opensourcesys/soundSplitter/)
-taşınmıştır.
+Bu işlevsellik NVDA çekirdeğiyle birleştirilmiştir ve NVDA v2024.2 veya
+sonraki sürümlerinde mevcuttur.
 
 ## Gelişmiş fare işlevleri
 
@@ -169,13 +133,10 @@ NVDA işleminin sistem önceliğini artırmaya olanak tanır.
 
 ## Windows+sayı tuşlarına basıldığında odak görev çubuğunda takılıp kaldığında oluşan bir hatayı düzeltme
 
-Windows 10'da ve muhtemelen diğer sürümlerde bir hata var. Windows+sayı
-kısayolunu kullanan uygulamalar arasında geçiş yaparken bazen odak, geçiş
-yapılan pencereye atlamak yerine görev çubuğu alanında takılıp kalıyor. Bu
-hatayı Microsoft'a bildirmeye çalışmak umutsuz olduğundan, bu eklentide bir
-geçici çözüm uygulanmıştır. Eklenti bu durumu algılar ve bu durum
-algılandığında kısa, düşük perdeli bir bip sesi çıkarır, ardından eklenti
-otomatik olarak düzeltir.
+Bu özellik v1.18 sürümünden itibaren kaldırılmıştır. Daha güvenilir bir
+görev değiştirme işlevine ihtiyacınız varsa lütfen [Görev Değiştirici
+eklentisini](https://github.com/mltony/nvda-task-switcher) kullanmayı
+düşünün.
 
 [[!tag dev stable]]
 

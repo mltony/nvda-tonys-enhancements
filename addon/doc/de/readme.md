@@ -13,36 +13,17 @@ Please install the latest version from NVDA add-on store.
 * NVDA+Steuerung+Ziffer - springe zu Spalte 1, 2, 3 bis 10 in einer Tabelle.
 * NVDA+Alt+Ziffer - springe zu Reihe 1, 2, 3 bis 10 in einer Tabelle.
 
-## Befehle zur Tabellen-Navigation wurden entfernt
-
-Die folgenden Tabellen-Navigationsbefehle wurden entfernt, da sie bereits in
-NVDA integriert wurden.
-
-* Sprung zur ersten/letzten Spalte in der Tabelle.
-* Sprung zur ersten/letzten Zeile in der Tabelle.
-* Aktuelle Spalte in der Tabelle ab der aktuellen Zelle abwärts vorlesen.
-* Aktuelle Zeile in der Tabelle ab der aktuellen Zelle vorlesen.
-* Aktuelle Spalte in der Tabelle von oben nach unten vorlesen.
-* Aktuelle Zeile in der Tabelle, beginnend mit dem Anfang der Zeile,
-  vorlesen.
-
-Hinweis: Informationen zu den Standard-Tastenbefehlen in NVDA für diese
-Funktionen finden Sie im NVDA-Benutzerhandbuch.
-
 ## Kopieren von Tabellen in die Zwischenablage
 
 With the following shortcuts you can copy either the whole table or current
 row or current column in a formatted way, so that you can paste it as a
-table to rich text editors, such as Microsoft Word or WordPad.  - NVDA+Alt+T
-- shows popup menu with options to copy table or part of it.  There are also
-separate scripts for copying tables, rows, columns and cells, but they don't
-have keyboard shortcuts assigned by default, custom keyboard shortcuts cfor
-them can be assigned in InputGestures dialog of NVDA.
+table to rich text editors, such as Microsoft Word or WordPad.
 
-## Verbesserte Wort-Navigationsbefehle
+* NVDA+Alt+T - shows popup menu with options to copy table or part of it.
 
-Ab Version 1.8 wurde diese Funktionalität in die NVDA-Erweiterung
-[WordNav](https://github.com/mltony/nvda-word-nav/) ausgelagert.
+There are also separate scripts for copying tables, rows, columns and cells,
+but they don't have keyboard shortcuts assigned by default, custom keyboard
+shortcuts cfor them can be assigned in InputGestures dialog of NVDA.
 
 ## Automatische Sprachumschaltung
 Ermöglicht es, die Sprache der Sprachausgabe automatisch nach Zeichensatz
@@ -55,11 +36,8 @@ derzeit nicht unterstützt.
 
 ## Befehle für die Schnellsuche
 
-Sie können bis zu drei Slots für konfigurierbare reguläre Ausdrücke haben,
-nach denen Sie häufig in Eingabefeldern suchen. Standardmäßig sind sie den
-Schaltflächen "Bildschirm drucken", "Bildschirm sperren" und "Pause"
-zugewiesen. Sie können eine Vorwärts- oder Rückwärtssuche durchführen, indem
-Sie die Umschalttaste in Kombination mit diesen Tasten betätigen.
+As of version v1.18, QuickSearch commands have been moved to [IndentNav
+add-on](https://github.com/mltony/nvda-indent-nav).
 
 ## Unerwünschte "nicht ausgewählt"-Meldungen in NVDA unterdrücken
 
@@ -99,26 +77,9 @@ vor:
    Wert appName in der letzten Zeile.
 
 ## Fenster ein- und ausblenden
-You can hide current window, and you can show all currently hidden
-windows. This might be useful if you use multiple windows in the same app
-(say Chrome) and you would like to rearrange them.  - NVDA+Shift+-: hide
-current window.  - NVDA+Shift+=: Show all currently closed windows.
 
-Bitte beachten Sie, dass es derzeit keine Möglichkeit gibt, ein
-ausgeblendetes Fenster nach einem Neustart von NVDA wieder einzublenden,
-sobald Sie NVDA beendet haben.
-
-## Erweiterungen der Konsole
-
-Zuvor enthielt diese NVDA-Erweiterung eine Reihe von konsolenbezogenen
-Funktionen. Ab Version 1.8 wurden alle konsolenbezogenen Funktionen in die
-NVDA-Erweiterung [Werkzeug für die
-Konsole](https://github.com/mltony/nvda-console-toolkit/) ausgelagert. Im
-Einzelnen:
-
-- Konsolen-Ausgabe in Echtzeit
-- Signalton bei Konsolen-Aktualisierungen
-- Erzwingt Strg+V in Konsolen
+As of version v1.18 show/hide commands have been moved to [Task Switcher
+add-on](https://github.com/mltony/nvda-task-switcher).
 
 ## Signalisiere, wenn NVDA ausgelastet ist
 
@@ -127,15 +88,15 @@ beschäftigt ist. In diesem Fall gibt es nicht unbedingt ein Problem mit
 NVDA, zeigt dem Nutzer jedoch an, dass der nächste NVDA-Befehl nicht sofort
 ausgeführt wird.
 
-## Einstellung der Lautstärke
+## Application Volume adjustment
 
-Due to compatibility issues with the WASAPI added in NVDA-2023.2, the volume
-adjustment have been temporarily removed, but may be restored in the future.
+This functionality has been merged into NVDA core and is available in NVDA
+v2024.3 or later.
 
 ## Sound-Aufteilung
 
-As of version 1.16 this functionality has been moved to [soundSplitter
-add-on](https://github.com/opensourcesys/soundSplitter/) maintained by Luke.
+This functionality has been merged into NVDA core and is available in NVDA
+v2024.2 or later.
 
 ## Verbesserte Maus-Funktionen
 
@@ -179,14 +140,9 @@ CPU-Last.
 
 ## Behebung eines Fehlers, bei dem der Fokus in der Taskleiste hängen bleibt, wenn man Windows+Zahl drückt
 
-Es gibt einen Fehler in Windows 10 und möglicherweise auch in anderen
-Versionen. Beim Umschalten zwischen Anwendungen mit der Tastenkombination
-Windows+Zahl bleibt der Fokus manchmal im Bereich der Taskleiste hängen,
-anstatt zu dem Fenster zu springen, zu dem gewechselt wird. Da es
-aussichtslos ist, diesen Fehler an Microsoft zu melden, wurde in dieser
-NVDA-Erweiterung ein Workaround implementiert. Das Add-on erkennt diese
-Situation und gibt einen kurzen, tiefen Piepton ab, wenn diese Situation
-erkannt wird, und behebt sie dann automatisch.
+This feature has been removed as of version v1.18. If you need a more
+reliable task switching functionality, please consider using [Task Switcher
+add-on](https://github.com/mltony/nvda-task-switcher).
 
 [[!tag dev stable]]
 
