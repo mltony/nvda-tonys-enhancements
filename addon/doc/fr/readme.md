@@ -4,11 +4,11 @@ Cette extension contient un certain nombre de petites améliorations
 apportées au lecteur d'écran NVDA, chacune d'entre elles étant trop petite
 pour mériter une extension séparée.
 
-This add-on is compatible with NVDA versions 2022.4 and 2024.1.
+Cette extension est compatible avec les versions NVDA 2022.4 et 2024.1.
 
-## Downloads
+## Téléchargements
 
-Please install the latest version from NVDA add-on store.
+Veuillez installer la dernière version depuis l'add-on store de NVDA.
 
 ## Commandes de navigation améliorées dans les tableaux
 * NVDA+Contrôle+chiffre - aller à la 1ère/2ème/3ème/... 10ème colonne du
@@ -25,9 +25,10 @@ que Microsoft Word ou WordPad.
 * NVDA+Alt+T - Affiche le menu contextuel avec des options pour copier le
   tableau ou une partie de celui-ci.
 
-There are also separate scripts for copying tables, rows, columns and cells,
-but they don't have keyboard shortcuts assigned by default, custom keyboard
-shortcuts cfor them can be assigned in InputGestures dialog of NVDA.
+Il existe également des scripts distincts pour la copie des tableaux, des
+lignes, des colonnes et des cellules, mais aucun raccourci clavier n'est
+assigné par défaut, des raccourcis clavier personnalisés peuvent leur être
+assignés dans le dialogue  Gestes de commandes de NVDA.
 
 ## Commutation automatique de la langue
 Permet de changer automatiquement la langue de votre synthétiseur par le jeu
@@ -40,8 +41,8 @@ moment.
 
 ## Commandes de recherche rapide
 
-As of version v1.18, QuickSearch commands have been moved to [IndentNav
-add-on](https://github.com/mltony/nvda-indent-nav).
+À partir de la version v1.18, les commandes QuickSearch ont été déplacées
+vers [l'extension IndentNav](https://github.com/mltony/nvda-indent-nav).
 
 ## Supprimer l'annonce "non sélectionné" indésirable de NVDA
 
@@ -82,8 +83,9 @@ Afin de comprendre appName pour votre application, faites ceci :
 
 ## Affichage et masquage des fenêtres
 
-As of version v1.18 show/hide commands have been moved to [Task Switcher
-add-on](https://github.com/mltony/nvda-task-switcher).
+À partir de la version v1.18, afficher/masquer les commandes ont été
+déplacées vers [l'extension Task
+Switcher](https://github.com/mltony/nvda-task-switcher).
 
 ## Bip lorsque NVDA est occupé
 
@@ -92,15 +94,15 @@ occupé. Le fait que NVDA soit occupé n'indique pas nécessairement un
 problème avec NVDA, mais c'est plutôt un signal à l'utilisateur que les
 commandes NVDA ne seront pas traitées immédiatement.
 
-## Application Volume adjustment
+## Réglage du volume de l'application
 
-This functionality has been merged into NVDA core and is available in NVDA
-v2024.3 or later.
+Cette fonctionnalité a été fusionnée dans le noyau NVDA et est disponible
+dans NVDA v2024.3 ou version ultérieure.
 
 ## Séparation de l'audio
 
-This functionality has been merged into NVDA core and is available in NVDA
-v2024.2 or later.
+Cette fonctionnalité a été fusionnée dans le noyau NVDA et est disponible
+dans NVDA v2024.2 ou version ultérieure.
 
 ## Fonctions améliorées de la souris
 
@@ -143,9 +145,10 @@ charge du processeur est élevée.
 
 ## Correction d'un bogue lorsque le focus est coincée dans la barre des tâches lorsque vous appuyez sur Windows+numéros
 
-This feature has been removed as of version v1.18. If you need a more
-reliable task switching functionality, please consider using [Task Switcher
-add-on](https://github.com/mltony/nvda-task-switcher).
+Cette fonctionnalité a été supprimée à partir de la version v1.18. Si vous
+avez besoin d'une fonctionnalité de changement de tâche plus fiable,
+envisagez d'utiliser [l'extension Task
+Switcher](https://github.com/mltony/nvda-task-switcher).
 
 [[!tag dev stable]]
 
