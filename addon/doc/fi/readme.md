@@ -15,36 +15,18 @@ Asenna uusin versio NVDA:n lisäosakaupasta.
 * NVDA+Alt+numero: Siirrä taulukon
   ensimmäiselle/toiselle/kolmannelle/... kymmenennelle riville.
 
-## Poistetut taulukkonavigointikomennot
-
-Seuraavat taulukkonavigointikomennot on poistettu, koska ne sisältyvät
-NVDA:n uusimpaan versioon.
-
-* Siirrä taulukon ensimmäiseen/viimeiseen sarakkeeseen.
-* Siirrä taulukon ensimmäiselle/viimeiselle riville.
-* Lue taulukon tämänhetkinen sarake nykyisestä solusta alaspäin.
-* Lue taulukon tämänhetkinen rivi nykyisestä solusta alaspäin.
-* Lue taulukon tämänhetkinen sarake ylimmästä solusta alkaen.
-* Lue taulukon tämänhetkinen rivi sen alusta lähtien.
-
-Huom: Saat selville näiden ominaisuuksien oletusarvoiset
-NVDA-näppäinkomennot NVDA:n käyttöoppaasta.
-
 ## Taulukoiden kopiointi leikepöydälle
 
-Seuraavat pikanäppäimet kopioivat muotoiltuna joko koko taulukon, nykyisen
-rivin  tai nykyisen sarakkeen, jotta voit liittää sen taulukkona
-rikastekstieditoreihin, kuten Microsoft Wordiin tai WordPadiin.  -
-NVDA+Alt+T: näyttää ponnahdusvalikon, jossa on vaihtoehdot koko taulukon tai
-sen osan kopiointiin. Taulukoiden, rivien, sarakkeiden ja solujen kopiointia
-varten on myös erilliset komennot, mutta niille ei ole määritetty
-pikanäppäimiä. Ne on mahdollista määrittää NVDA:n
-Näppäinkomennot-valintaikkunassa.
+Seuraavilla pikanäppäimillä voit kopioida muotoiltuna joko koko taulukon tai
+nykyisen rivin/sarakkeen, jotta voit liittää sen taulukkona
+rikastekstieditoreihin, kuten Microsoft Word tai WordPad.
 
-## Laajennetut sananavigointikomennot
+* NVDA+Alt+T: Näyttää ponnahdusvalikon, jossa on vaihtoehdot taulukon tai
+  sen osan kopioimiseen.
 
-Tämä toiminnallisuus on siirretty versiosta 1.8 lähtien
-[Sananavigointi-lisäosaan](https://github.com/mltony/nvda-word-nav/).
+There are also separate scripts for copying tables, rows, columns and cells,
+but they don't have keyboard shortcuts assigned by default, custom keyboard
+shortcuts cfor them can be assigned in InputGestures dialog of NVDA.
 
 ## Automaattinen kielen vaihtaminen
 Mahdollistaa puhesyntetisaattorin kielen vaihtamisen automaattisesti
@@ -56,11 +38,8 @@ toistaiseksi mahdollista.
 
 ## Pikahakukomennot
 
-Voit määrittää enintään kolme säännöllistä lauseketta tekstin etsimiseen
-muokattavista kentistä. Niiden pikanäppäimiksi on määritetty
-oletusarvoisesti `Print Screen`, `Scroll Lock` ja `Pause`. Voit suorittaa
-haun eteen- tai taaksepäin painamalla `Vaihto`-näppäintä yhdessä näiden
-näppäinten kanssa.
+Pikahakukomennot on siirretty versiosta 1.18 alkaen
+[Sisennysnavigointi-lisäosaan](https://github.com/mltony/nvda-indent-nav).
 
 ## Estä häiritsevät NVDA:n "ei valittu" -ilmoitukset
 
@@ -98,23 +77,9 @@ Selvitä sovelluksen nimi seuraavasti:
    arvo.
 
 ## Ikkunoiden näyttäminen ja piilottaminen
-Voit piilottaa nykyisen ikkunan ja näyttää kaikki tällä hetkellä
-piilotettuina olevat. Tästä saattaa olla hyötyä, jos käytät useita ikkunoita
-samassa sovelluksessa (esim. Chromessa) ja haluat uudelleenjärjestää ne. -
-NVDA+Vaihto+-: piilota nykyinen ikkuna. - NVDA+Vaihto+=: näytä kaikki tällä
-hetkellä piilotettuina olevat ikkunat.
 
-Huom: Mikäli suljet NVDA:n, kun ikkuna on piilotettuna, sitä ei ole tällä
-hetkellä mahdollista tuoda näkyviin NVDA:n uudelleenkäynnistyksen jälkeen.
-
-## Konsolin parannukset
-
-Tämä lisäosa sisälsi aiemmin useita konsoliin liittyviä
-ominaisuuksia. Versiosta 1.8 lähtien ne on siirretty [Konsolin työkalupakki
--lisäosaan](https://github.com/mltony/nvda-console-toolkit/). Erityisesti:
-
-- Reaaliaikainen konsolitulostus - Äänimerkki konsolipäivityksille - Pakota
-Ctrl+V konsoleissa
+As of version v1.18 show/hide commands have been moved to [Task Switcher
+add-on](https://github.com/mltony/nvda-task-switcher).
 
 ## Anna äänimerkki, kun NVDA on varattu
 
@@ -122,16 +87,15 @@ Valitse tämä vaihtoehto, jos haluat NVDA:n antavan äänipalautteen, kun se on
 varattu. NVDA:n varattuna oleminen ei välttämättä tarkoita ongelmaa, vaan se
 on merkki käyttäjälle siitä, että NVDA-komentoja ei käsitellä heti.
 
-## Äänenvoimakkuuden säätö
+## Sovellusten äänenvoimakkuuden muuttaminen
 
-NVDA 2023.2:een lisättyyn WASAPIin liittyvien yhteensopivuusongelmien vuoksi
-äänenvoimakkuuden säätö on tilapäisesti poistettu, mutta se saatetaan
-palauttaa tulevaisuudessa.
+Tämä toiminnallisuus on sulautettu NVDA:n ytimeen, ja on käytettävissä
+versiossa 2024.3 tai sitä uudemmassa.
 
 ## Äänenjako
 
-Tämä toiminnallisuus on siirretty versiosta 1.16 lähtien
-[Äänijakaja-lisäosaan](https://github.com/opensourcesys/soundSplitter/).
+Tämä toiminnallisuus on sulautettu NVDA:n ytimeen, ja on käytettävissä
+versiossa 2024.2 tai sitä uudemmassa.
 
 ## Laajennetut hiiritoiminnot
 
@@ -173,12 +137,9 @@ kuormitettaessa.
 
 ## Kohdistuksen jääminen jumiin tehtäväpalkkiin painettaessa Win+numero-pikanäppäintä
 
-Windows 10:ssä ja mahdollisesti muissakin versioissa on bugi. Kun
-sovellusten välillä siirrytään Win+numero-pikanäppäimellä, kohdistus jää
-toisinaan jumiin tehtäväpalkkiin sen sijaan, että siirtäisi ikkunaan, johon
-ollaan vaihtamassa. Koska tämän raportoiminen Microsoftille on toivotonta,
-tähän lisäosaan on toteutettu kiertotie. Kun lisäosa havaitsee tämän
-ongelman, se toistaa matalan äänimerkin ja korjaa ongelman automaattisesti.
+Tämä ominaisuus on poistettu versiosta 1.18 alkaen. Mikäli tarvitset
+luotettavampaa tehtävänvaihtotoiminnallisuutta, harkitse [Task Switcher
+-lisäosan](https://github.com/mltony/nvda-task-switcher) käyttöä.
 
 [[!tag dev stable]]
 

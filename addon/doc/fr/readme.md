@@ -4,47 +4,31 @@ Cette extension contient un certain nombre de petites améliorations
 apportées au lecteur d'écran NVDA, chacune d'entre elles étant trop petite
 pour mériter une extension séparée.
 
-This add-on is compatible with NVDA versions 2022.4 and 2024.1.
+Cette extension est compatible avec les versions NVDA 2022.4 et 2024.1.
 
-## Downloads
+## Téléchargements
 
-Please install the latest version from NVDA add-on store.
+Veuillez installer la dernière version depuis l'add-on store de NVDA.
 
 ## Commandes de navigation améliorées dans les tableaux
 * NVDA+Contrôle+chiffre - aller à la 1ère/2ème/3ème/... 10ème colonne du
   tableau.
 * NVDA+Alt+chiffre - aller à la 1ère/2ème/3ème/... 10ème ligne du tableau.
 
-## Commandes de navigation supprimées dans les tableaux
-
-Les suivantes commandes de navigation dans les tableaux ont été supprimées
-car elles ont été intégrées dans la dernière version du noyau de NVDA.
-
-* Aller à la première/dernière colonne du tableau.
-* Aller à la première/dernière ligne du tableau.
-* Lire la colonne actuelle dans le tableau à partir de la cellule actuelle
-  vers le bas.
-* Lire la ligne actuelle dans le tableau à partir de la cellule actuelle.
-* Lire la colonne actuelle dans le tableau à partir du haut.
-* Lire la ligne actuelle dans le tableau à partir du début de la ligne.
-
-Remarque : Pour en savoir plus sur les gestes par défaut de NVDA pour ces
-fonctionnalités, veuillez vous référer au Guide de l'utilisateur de NVDA.
-
 ## Copier des tableaux dans le presse-papiers
 
-With the following shortcuts you can copy either the whole table or current
-row or current column in a formatted way, so that you can paste it as a
-table to rich text editors, such as Microsoft Word or WordPad.  - NVDA+Alt+T
-- shows popup menu with options to copy table or part of it.  There are also
-separate scripts for copying tables, rows, columns and cells, but they don't
-have keyboard shortcuts assigned by default, custom keyboard shortcuts cfor
-them can be assigned in InputGestures dialog of NVDA.
+Avec les raccourcis suivants, vous pouvez copier le tableau entier ou la
+ligne actuelle ou la colonne actuelle de manière formatée, afin que vous
+puissiez le coller comme un tableau dans un éditeurs de texte riches, tels
+que Microsoft Word ou WordPad.
 
-## Commandes de navigation améliorées dans les mots
+* NVDA+Alt+T - Affiche le menu contextuel avec des options pour copier le
+  tableau ou une partie de celui-ci.
 
-À partir de la version 1.8, cette fonctionnalité a été déplacée vers
-[l'extension WordNav](https://github.com/mltony/nvda-word-nav/).
+Il existe également des scripts distincts pour la copie des tableaux, des
+lignes, des colonnes et des cellules, mais aucun raccourci clavier n'est
+assigné par défaut, des raccourcis clavier personnalisés peuvent leur être
+assignés dans le dialogue  Gestes de commandes de NVDA.
 
 ## Commutation automatique de la langue
 Permet de changer automatiquement la langue de votre synthétiseur par le jeu
@@ -57,12 +41,8 @@ moment.
 
 ## Commandes de recherche rapide
 
-Vous pouvez avoir jusqu'à trois emplacements pour des expressions régulières
-configurables que vous recherchez fréquemment pour les champs
-modifiables. Par défaut, ils sont assignés aux touches `impression écran`,
-`arrêt défilement` et `pause` Vous pouvez effectuer une recherche en avant,
-ou une recherche en arrière en appuyant sur `Shift` combinée avec ces
-touches.
+À partir de la version v1.18, les commandes QuickSearch ont été déplacées
+vers [l'extension IndentNav](https://github.com/mltony/nvda-indent-nav).
 
 ## Supprimer l'annonce "non sélectionné" indésirable de NVDA
 
@@ -102,24 +82,10 @@ Afin de comprendre appName pour votre application, faites ceci :
    appName dans la dernière ligne.
 
 ## Affichage et masquage des fenêtres
-You can hide current window, and you can show all currently hidden
-windows. This might be useful if you use multiple windows in the same app
-(say Chrome) and you would like to rearrange them.  - NVDA+Shift+-: hide
-current window.  - NVDA+Shift+=: Show all currently closed windows.
 
-Veuillez noter que si vous quittez NVDA pendant qu'une fenêtre est masquée,
-il n'y a actuellement aucun moyen de l'afficher après le redémarrage de
-NVDA.
-
-## Améliorations de la console
-
-Auparavant, cette extension comprenait un certain nombre de fonctionnalités
-liées à la console. À partir de la version 1.8, toutes les fonctionnalités
-liées à la console ont été déplacées vers [l'extension Console
-Toolkit](https://github.com/mltony/nvda-console-toolkit/). Spécifiquement :
-
-- Real-time console output - Beep on console updates - Enforce Control+V in
-consoles
+À partir de la version v1.18, afficher/masquer les commandes ont été
+déplacées vers [l'extension Task
+Switcher](https://github.com/mltony/nvda-task-switcher).
 
 ## Bip lorsque NVDA est occupé
 
@@ -128,15 +94,15 @@ occupé. Le fait que NVDA soit occupé n'indique pas nécessairement un
 problème avec NVDA, mais c'est plutôt un signal à l'utilisateur que les
 commandes NVDA ne seront pas traitées immédiatement.
 
-## Réglage du volume
+## Réglage du volume de l'application
 
-Due to compatibility issues with the WASAPI added in NVDA-2023.2, the volume
-adjustment have been temporarily removed, but may be restored in the future.
+Cette fonctionnalité a été fusionnée dans le noyau NVDA et est disponible
+dans NVDA v2024.3 ou version ultérieure.
 
 ## Séparation de l'audio
 
-As of version 1.16 this functionality has been moved to [soundSplitter
-add-on](https://github.com/opensourcesys/soundSplitter/) maintained by Luke.
+Cette fonctionnalité a été fusionnée dans le noyau NVDA et est disponible
+dans NVDA v2024.2 ou version ultérieure.
 
 ## Fonctions améliorées de la souris
 
@@ -179,14 +145,10 @@ charge du processeur est élevée.
 
 ## Correction d'un bogue lorsque le focus est coincée dans la barre des tâches lorsque vous appuyez sur Windows+numéros
 
-Il y a un bogue dans Windows 10, et peut-être dans d'autres versions. Lors
-de la commutation entre les applications à l'aide du raccourci
-Windows+numéro, le focus est parfois coincé dans la zone de la barre des
-tâches au lieu de sauter vers la fenêtre existante. Depuis que l'essai de
-signaler ce bogue à Microsoft est sans espoir, une solution de contournement
-a été implémentée dans cette extension. L'extension détecte cette situation
-et joue un bip court à une faible hauteur lorsque cette situation est
-détectée, puis l'extension la corrige automatiquement.
+Cette fonctionnalité a été supprimée à partir de la version v1.18. Si vous
+avez besoin d'une fonctionnalité de changement de tâche plus fiable,
+envisagez d'utiliser [l'extension Task
+Switcher](https://github.com/mltony/nvda-task-switcher).
 
 [[!tag dev stable]]
 
