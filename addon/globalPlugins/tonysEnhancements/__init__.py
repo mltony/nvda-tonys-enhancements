@@ -1095,21 +1095,22 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         global gestureCounter, editorMovingCaret, performingShiftGesture
         gestureCounter += 1
         editorMovingCaret = False
-        if (
-            getConfig("blockDoubleInsert")  and
-            gesture.vkCode == winUser.VK_INSERT and
-            not gesture.isNVDAModifierKey
-        ):
-            tones.beep(500, 50)
-            return
-        if (
-            getConfig("blockDoubleCaps")  and
-            gesture.vkCode == winUser.VK_CAPITAL and
-            not gesture.isNVDAModifierKey
-        ):
-            tones.beep(500, 50)
-            return
-
+        # Check if gesture has the vkCode attribute
+        if hasattr(gesture, 'vkCode'):
+            if (
+                getConfig("blockDoubleInsert")  and
+                gesture.vkCode == winUser.VK_INSERT and
+                not gesture.isNVDAModifierKey
+            ):
+                tones.beep(500, 50)
+                return
+            if (
+                getConfig("blockDoubleCaps")  and
+                gesture.vkCode == winUser.VK_CAPITAL and
+                not gesture.isNVDAModifierKey
+            ):
+                tones.beep(500, 50)
+                return
         kb = gesture.identifiers
         if len(kb) == 0:
             pass
