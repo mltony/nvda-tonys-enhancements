@@ -79,6 +79,12 @@ In NVDA pressing Insert key twice in a row toggles insert mode in applications. 
 
 This option is disabled by default and must be enabled in the settings.
 
+## Blocking double Caps Lock keystroke
+
+In NVDA, when Caps Lock is set as an NVDA key, pressing it twice in a row toggles between uppercase and lowercase input modes. However, this can sometimes cause unintentional switching between these modes. Since this key’s behavior is unique and cannot be disabled through settings, this add-on offers a method to block this specific keyboard shortcut. When the double Caps Lock key press is blocked, you can still switch between uppercase and lowercase input modes by pressing NVDA+F2 followed by the Caps Lock key. 
+
+This option is disabled by default and must be enabled in the settings.
+
 ## System priority of NVDA process
 
 This allows to boost system priority of NVDA process, that might improve NVDA responsiveness, especially when CPU load is high.
