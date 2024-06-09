@@ -65,9 +65,9 @@ This functionality has been merged into NVDA core and is available in NVDA v2024
 
 * Alt+NumPadDivide: Point mouse cursor at current object and click it.
 * Alt+NumPadMultiply: Point mouse cursor at current object and right mouse button click on it.
-* Alt+NumPadPlus/NumPadMinus: Point mouse cursor at current object and scroll down/up. THis is useful for infinite scroll webpages and webpages that load more content on scroll.
 * Alt+NumPadDelete: Move mouse cursor out of the way to top left corner of the screen. This can be useful to prevent unwanted hover over windows in certain applications.
 
+The functionality for mouse wheel scrolling has been merged into NVDA core and is available in NVDA v2024.3 or later.
 
 ## Detecting insert mode in text editors
 

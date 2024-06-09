@@ -1301,20 +1301,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_RIGHTDOWN,0,0)
                 mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_RIGHTUP,0,0)
 
-    @script(description=_("Mouse wheel scroll down on current object."), gestures=['kb:Alt+NumPadPlus'])
-    def script_scrollDown(self, gesture):
-        with ReleaseControlModifier():
-            with MousePointerHover() as m:
-                ui.message(_("Scroll down"))
-                mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_WHEEL,0,0, -1000)
-
-    @script(description=_("Mouse wheel scroll up on current object."), gestures=['kb:Alt+NumPadMinus'])
-    def script_scrollUp(self, gesture):
-        with ReleaseControlModifier():
-            with MousePointerHover() as m:
-                ui.message(_("Scroll up"))
-                mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_WHEEL,0,0, 1000)
-
     @script(description=_("Move mouse pointer to top left corner."), gestures=['kb:Alt+NumPadDelete'])
     def script_mouseMoveToTopLeft(self, gesture):
         ui.message(_("Mouse pointer moved to top left corner. "))
