@@ -57,6 +57,10 @@ Check this option for NVDA to provide audio feedback when NVDA is busy. NVDA bei
 
 This functionality has been merged into NVDA core and is available in NVDA v2024.3 or later.
 
+## Mute microphone
+
+This add-on provides a command for switching the microphone. There is no gesture assigned to this command by default, you can assign a gesture in NVDA's "Input Gestures" dialog if needed.
+
 ## Sound split
 
 This functionality has been merged into NVDA core and is available in NVDA v2024.2 or later.

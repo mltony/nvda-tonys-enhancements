@@ -1268,7 +1268,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         if kb is not None:
             cls._DocumentWithTableNavigation__gestures["kb:%s" % kb] = scriptName
 
-    @script(description=_("Toggle microphone mute."), gestures=['kb:NVDA+Delete'])
+    @script(description=_("Toggle microphone mute."))
     def script_toggleMicrophoneMute(self, gesture):
         from  pycaw.utils import AudioUtilities, IAudioEndpointVolume
         microphone = AudioUtilities.CreateDevice(AudioUtilities.GetMicrophone())
