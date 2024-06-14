@@ -3,7 +3,7 @@
 Diese NVDA-Erweiterung enthält eine Reihe kleinerer Verbesserungen, von
 denen jede zu klein ist, um ein eigene NVDA-Erweiterung daraus zu machen.
 
-This add-on is compatible with NVDA versions 2022.4 and 2024.1.
+This add-on is compatible with NVDA version 2024.2 or later
 
 ## Downloads
 
@@ -93,6 +93,12 @@ ausgeführt wird.
 This functionality has been merged into NVDA core and is available in NVDA
 v2024.3 or later.
 
+## Mute microphone
+
+This add-on provides a command for switching the microphone. There is no
+gesture assigned to this command by default, you can assign a gesture in
+NVDA's "Input Gestures" dialog if needed.
+
 ## Sound-Aufteilung
 
 This functionality has been merged into NVDA core and is available in NVDA
@@ -104,13 +110,12 @@ v2024.2 or later.
   Objekt und führt darauf einen normalen Klick aus.
 * Alt+Nummernblock-Stern: Zeigt mit dem Mauszeiger auf das aktuelle Objekt
   und führt mit der Maustaste darauf einen Rechtsklick aus.
-* Alt+Nummernblock-Plus/Nummernblock-Minus: Den Mauszeiger auf das aktuelle
-  Objekt ziehen und nach unten/oben blättern. Dies ist nützlich für endlos
-  scrollende Webseiten und Webseiten, die beim Scrollen mehr Inhalt laden.
 * Alt+Nummernblock-Entf: Zieht den Mauszeiger aus dem Weg in die linke obere
   Ecke des Bildschirms. Dies kann nützlich sein, um unerwünschte
   überlappende Fenster in bestimmten Anwendungen zu vermeiden.
 
+The functionality for mouse wheel scrolling has been merged into NVDA core
+and is available in NVDA v2024.3 or later.
 
 ## Erkennung des Einfügemodus in Text-Editoren
 
@@ -128,6 +133,20 @@ Einstellungen nicht deaktiviert werden. Diese Erweiterung bietet eine
 Möglichkeit, diese Tastenkombination zu blockieren. Wenn der Doppeldruck
 blockiert ist, kann der Einfügemodus durch Drücken von NVDA+F2 und betätigen
 der Einfügen-Taste umgeschaltet werden.
+
+Diese Option ist standardmäßig ausgeshaltet und muss manuell in den
+Einstellungen aktiviert werden.
+
+## Blocking double Caps Lock keystroke
+
+In NVDA, when Caps Lock is set as an NVDA key, pressing it twice in a row
+toggles between uppercase and lowercase input modes. However, this can
+sometimes cause unintentional switching between these modes. Since this
+key’s behavior is unique and cannot be disabled through settings, this
+add-on offers a method to block this specific keyboard shortcut. When the
+double Caps Lock key press is blocked, you can still switch between
+uppercase and lowercase input modes by pressing NVDA+F2 followed by the Caps
+Lock key.
 
 Diese Option ist standardmäßig ausgeshaltet und muss manuell in den
 Einstellungen aktiviert werden.
