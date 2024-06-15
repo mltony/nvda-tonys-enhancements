@@ -3,7 +3,7 @@
 Tämä lisäosa sisältää useita pieniä NVDA-ruudunlukijan parannuksia, jotka
 ovat liian pieniä ansaitakseen erillisen lisäosan.
 
-Tämä lisäosa on yhteensopiva NVDA 2022.4:n ja 2024.1:n kanssa.
+This add-on is compatible with NVDA version 2024.2 or later
 
 ## Lataukset
 
@@ -78,8 +78,8 @@ Selvitä sovelluksen nimi seuraavasti:
 
 ## Ikkunoiden näyttäminen ja piilottaminen
 
-As of version v1.18 show/hide commands have been moved to [Task Switcher
-add-on](https://github.com/mltony/nvda-task-switcher).
+Näytä/Piilota-komennot on siirretty versiosta 1.18 alkaen [Task Switcher
+-lisäosaan](https://github.com/mltony/nvda-task-switcher).
 
 ## Anna äänimerkki, kun NVDA on varattu
 
@@ -92,6 +92,12 @@ on merkki käyttäjälle siitä, että NVDA-komentoja ei käsitellä heti.
 Tämä toiminnallisuus on sulautettu NVDA:n ytimeen, ja on käytettävissä
 versiossa 2024.3 tai sitä uudemmassa.
 
+## Mute microphone
+
+This add-on provides a command for switching the microphone. There is no
+gesture assigned to this command by default, you can assign a gesture in
+NVDA's "Input Gestures" dialog if needed.
+
 ## Äänenjako
 
 Tämä toiminnallisuus on sulautettu NVDA:n ytimeen, ja on käytettävissä
@@ -103,14 +109,12 @@ versiossa 2024.2 tai sitä uudemmassa.
   objektiin ja napsauta sitä.
 * Alt+Laskinnäppäimistön kertomerkki: Osoita hiirikohdistin nykyiseen
   objektiin ja napsauta siinä hiiren oikeaa näppäintä.
-* Alt+Laskinnäppäimistön plus/Laskinnäppäimistön miinus: Osoita
-  hiirikohdistin nykyiseen objektiin ja vieritä alas/ylös. Tästä on hyötyä
-  jatkuvan vierityksen verkkosivuilla sekä sellaisissa, jotka lataavat lisää
-  sisältöä vieritettäessä.
 * Alt+Laskinnäppäimistön Del: Siirrä hiirikohdistin näytön vasempaan
   yläkulmaan. Tästä voi olla hyötyä, kun halutaan estää hiiren jääminen
   ikkunoiden päälle tietyissä sovelluksissa.
 
+The functionality for mouse wheel scrolling has been merged into NVDA core
+and is available in NVDA v2024.3 or later.
 
 ## Lisäystilan havaitseminen tekstieditoreissa
 
@@ -125,6 +129,20 @@ erityinen näppäinpainallus, sitä ei voi poistaa käytöstä asetuksissa. Täm
 lisäosa tarjoaa tavan tämän pikanäppäimen estämiseen. Kun kaksinkertainen
 Insertin painallus on estetty, lisäystila voidaan ottaa käyttöön painamalla
 NVDA+F2 ja sitten Insert.
+
+Tämä asetus ei ole oletusarvoisesti käytössä, ja se on otettava käyttöön
+asetuksissa.
+
+## Blocking double Caps Lock keystroke
+
+In NVDA, when Caps Lock is set as an NVDA key, pressing it twice in a row
+toggles between uppercase and lowercase input modes. However, this can
+sometimes cause unintentional switching between these modes. Since this
+key’s behavior is unique and cannot be disabled through settings, this
+add-on offers a method to block this specific keyboard shortcut. When the
+double Caps Lock key press is blocked, you can still switch between
+uppercase and lowercase input modes by pressing NVDA+F2 followed by the Caps
+Lock key.
 
 Tämä asetus ei ole oletusarvoisesti käytössä, ja se on otettava käyttöön
 asetuksissa.

@@ -1,0 +1,118 @@
+# Tony 的增强 #
+
+该插件包含了对 NVDA 屏幕阅读器的众多小改进，每个改进都比较小，不值得单独开发一个插件。
+
+该插件与 NVDA 版本 2024.2 或更高版本兼容
+
+## 下载
+
+请从 NVDA 插件商店安装最新版本。
+
+## 表格导航命令增强
+* NVDA+Control+数字 - 跳转到表中的第 1/2/3/...第 10 列。
+* NVDA+Alt+数字 - 跳转到表中的第 1/2/3/...第 10 行。
+
+## 将表格复制到剪贴板
+
+With the following shortcuts you can copy either the whole table or current
+row or current column in a formatted way, so that you can paste it as a
+table to rich text editors, such as Microsoft Word or WordPad.
+
+* NVDA+Alt+T - shows popup menu with options to copy table or part of it.
+
+There are also separate scripts for copying tables, rows, columns and cells,
+but they don't have keyboard shortcuts assigned by default, custom keyboard
+shortcuts cfor them can be assigned in InputGestures dialog of NVDA.
+
+## 自动语言切换
+按字符集自动切换合成器的语言。可以在该插件的设置面板中配置每种语言的正则表达式。请确保您的合成器支持对应的语言。目前不支持在两种基于拉丁语的语言或两种字符集相似的语言之间切换。
+
+## 快捷搜索命令
+
+从 v1.18 开始，快捷搜索命令已移至 [缩进导航插件]
+
+## 禁止 NVDA 朗读“未选择”
+
+倘若您在文本编辑器中选中了一些文本。然后按一个键，例如“行首”或“上箭头”，光标位置发生改变。 NVDA
+会先朗读“未选择”，然后读出先前选择的内容，有时候会带来一些不便。此功能可禁止该行为。
+
+## 动态按键
+
+您可以将某些按键设置为动态按键。按下动态按键，NVDA 会检测当前聚焦的窗口是否有内容更新，如果该行已更新，NVDA
+则会自动读出。例如，文本编辑器中的某些按键应设置为动态按键，例如跳转到书签、跳转到另一行和调试按键，例如单步执行/跳过。
+
+动态按键表的格式很简单：每行包含一条规则，格式如下：
+```
+appName keystroke
+```
+其中“appName”是启用动态按键的应用程序名称，如果希望该动态按键全局生效，使用 * 即可。“keystroke”是 NVDA 格式的按键，例如
+`control+alt+shift+pageDown`。
+
+如需或许应用程序的 appName，请按以下步骤操作：
+
+1. 切换到相应的应用程序。
+2. 按 NVDA+Shift+Z 打开 NVDA Python 控制台。
+3. 输入 `focus.appModule.appName` 并按回车键。
+4. 按 F6 转到输出窗格并在最后一行找到 appName 的值。
+
+## 隐显窗口
+
+从 v1.18 版本开始，隐显窗口功能已移至
+[任务切换器插件](https://github.com/mltony/nvda-task-switcher)。
+
+## NVDA 忙碌时发出蜂鸣声
+
+选中此选项，在 NVDA 忙碌时提供音频反馈。 NVDA 忙碌并不一定表明出现了故障，该状态表示不会及时处理用户的输入。
+
+## 应用音量调节
+
+此功能已被合并到 NVDA 核心，并在 NVDA v2024.3 或更高版本中可用。
+
+## 麦克风静音
+
+该插件提供了用于切换麦克风的命令。默认情况下没有为此命令分配快捷键，如果需要，您可以在 NVDA 的“输入手势”对话框中为该命令设置一个快捷键。
+
+## 声音拆分
+
+此功能已被合并到 NVDA 核心，并在 NVDA v2024.2 或更高版本中可用。
+
+## 鼠标功能增强
+
+* Alt+数字键盘斜杠：将鼠标光标指向当前导航对象并单击。
+* Alt+数字键盘 星号：将鼠标光标指向当前对象并单击右键。
+* Alt+数字键盘删除：将鼠标光标移至屏幕左上角。可以解决在某些应用程序中鼠标被悬停在窗口上，导致不必要的鼠标朗读。
+
+鼠标滚轮滚动的功能已被合并到 NVDA 核心，并在 NVDA v2024.3 或更高版本中可用。
+
+## 检测文本编辑器中的插入模式
+
+如果启用此选项，NVDA 在检测到文本编辑器中启用了插入模式时会发出蜂鸣声。
+
+## 禁止双击插入键
+
+在 NVDA 中，连续按两次 Insert
+键可在应用程序中切换插入模式。然而，有时会因用户的误操作而开启插入模式。由于这是一个特殊的按键，因此无法在设置中禁用该行为。此插件提供了一种禁止双击插入键的方法。即使开启了禁止双击插入键，您仍然可以通过按
+NVDA+F2 然后按插入键来切换插入模式。
+
+该选项默认处于禁用状态，必须在设置中启用。
+
+## 禁止双击大小写锁定键
+
+在 NVDA 中，当大小写锁定键设作为 NVDA 键时，连续按两次
+大小写锁定键可切换大小写输入模式。然而，有时会因用户的误操作而意外切换。由于这是一个特殊的按键，因此无法在设置中禁用该行为。此插件提供了一种禁止双击大小写锁定键的方法。即使开启了禁止双击大小写锁定键，您仍然可以通过按
+NVDA+F2 然后按大小写锁定键来切换大小写输入模式。
+
+该选项默认处于禁用状态，必须在设置中启用。
+
+## NVDA进程的系统优先级
+
+该设置可以提高 NVDA 进程的系统优先级，从而有可能提高 NVDA 的响应能力，尤其是在 CPU 高负载运行时。
+
+## 修复按 Windows+数字时焦点会卡在任务栏中的错误
+
+自 v1.18
+版本起此功能已被删除。如果您需要更可靠的任务切换功能，请考虑使用[任务切换器插件](https://github.com/mltony/nvda-task-switcher)。
+
+[[!tag dev stable]]
+
+[1]: https://www.nvaccess.org/addonStore/legacy?file=tonysEnhancements

@@ -4,7 +4,7 @@ Este complemento aporta una serie de pequeñas mejoras para el lector de
 pantalla NVDA, insignificantes por sí solas para merecer complementos
 independientes.
 
-Este complemento es compatible con las versiones de NVDA 2022.4 y 2024.1.
+Este complemento es compatible con NVDA versión 2024.2 o posterior
 
 ## Descargas
 
@@ -98,6 +98,12 @@ un problema necesariamente, pero sirve como señal al usuario de que las
 Esta función se ha integrado en el núcleo de NVDA y está disponible en NVDA
 v2024.3 o posterior.
 
+## Silenciar micrófono
+
+Este complemento proporciona una orden para alternar el micrófono. No hay
+gesto asignado a esta orden por defecto, pero puedes asignarla desde el
+diálogo "Gestos de entrada" de NVDA si fuera necesario.
+
 ## División de sonido
 
 Esta función se ha integrado en el núcleo de NVDA y está disponible en NVDA
@@ -109,14 +115,12 @@ v2024.2 o posterior.
   clic.
 * Alt+multiplicar del teclado numérico: lleva el puntero al objeto actual y
   hace clic con el botón derecho del ratón.
-* Alt+más numérico o menos numérico: lleva el puntero del ratón al objeto
-  actual y desplaza hacia arriba o hacia abajo. Esto es útil en páginas web
-  con desplazamiento infinito y páginas web que cargan más contenido al
-  desplazarse.
 * Alt+suprimir del teclado numérico: mueve el puntero del ratón a la esquina
   superior izquierda de la pantalla. Esto puede ser útil para evitar
   desplazamientos no deseados en ventanas de ciertas aplicaciones.
 
+La funcionalidad de desplazamiento de la rueda del ratón se ha integrado en
+el núcleo de NVDA y está disponible en NVDA v2024.3 o posterior.
 
 ## Detección del modo de inserción en editores de texto
 
@@ -131,6 +135,20 @@ dispara el modo de inserción. Dado que esta es una tecla especial, no se
 puede desactivar en las opciones. Este complemento proporciona una manera de
 bloquear este atajo de teclado. Cuando se bloquea el Insert doble, todavía
 se puede conmutar el modo de inserción pulsando NVDA+f2 y luego insert.
+
+Esta opción viene desactivada por defecto y debe activarse desde la
+configuración.
+
+## Bloqueo del atajo de bloqueo de mayúsculas doble
+
+En NVDA, cuando el bloqueo de mayúsculas se configura como tecla de NVDA,
+conmuta entre mayúsculas y minúsculas al pulsarla rápidamente dos veces. Sin
+embargo, esto a veces puede causar una alternancia no intencionada entre
+estos modos. Ya que el comportamiento de esta tecla es único y no se puede
+deshabilitar en las opciones, este complemento ofrece un método para
+bloquear este atajo de teclado concreto. Cuando se bloquea la doble
+pulsación del bloqueo de mayúsculas, se puede cambiar entre mayúsculas y
+minúsculas pulsando NVDA+f2, seguido de la tecla bloqueo mayúsculas.
 
 Esta opción viene desactivada por defecto y debe activarse desde la
 configuración.

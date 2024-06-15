@@ -3,7 +3,7 @@
 Bu eklenti, NVDA ekran okuyucu için her biri ayrı bir eklentiyi hak
 etmeyecek kadar küçük olan bir dizi küçük iyileştirme içerir.
 
-Bu eklenti NVDA'nın 2022.4 ve 2024.1 sürümleriyle uyumludur.
+Bu eklenti NVDA 2024.2 ve sonraki sürümlerle uyumludur
 
 ## İndirin
 
@@ -93,6 +93,12 @@ komutunun hemen çalıştıramayacağının bir işaretidir.
 Bu işlevsellik NVDA çekirdeğiyle birleştirilmiştir ve NVDA v2024.3 veya
 sonraki sürümlerinde mevcuttur.
 
+## Mikrofonu sessize al
+
+Bu eklenti mikrofonu değiştirmek için bir komut sağlar. Varsayılan olarak bu
+komuta atanmış bir hareket yoktur, gerekirse NVDA'nın “Girdi Hareketleri”
+iletişim kutusunda bir hareket atayabilirsiniz.
+
 ## Ses ayırıcı
 
 Bu işlevsellik NVDA çekirdeğiyle birleştirilmiştir ve NVDA v2024.2 veya
@@ -103,13 +109,12 @@ sonraki sürümlerinde mevcuttur.
 * Alt+NumPad Bölü: Fare imlecini geçerli nesneye getirin ve tıklayın.
 * Alt+NumPad Çarpı: Fare imlecini geçerli nesneye getirin ve farenin sağ
   tuşuyla üzerine tıklayın.
-* Alt+NumPad Artı/NumPad Eksi: Fare imlecini geçerli nesneye getirin ve
-  aşağı/yukarı kaydırın. Bu, sonsuz kaydırmalı web sayfaları ve kaydırmada
-  daha fazla içerik yükleyen web sayfaları için kullanışlıdır.
 * Alt+NumPad Sil: Fare imlecini ekranın sol üst köşesine doğru hareket
   ettirin. Bu, belirli uygulamalarda istenmeyen pencerelerin üzerine gelmeyi
   önlemek için yararlı olabilir.
 
+Fare tekerleği kaydırma işlevi NVDA çekirdeğiyle birleştirilmiştir ve NVDA
+v2024.3 veya sonraki sürümlerinde mevcuttur.
 
 ## Metin editörlerinde ekleme modunu algılama
 
@@ -122,6 +127,21 @@ NVDA'da İnsert tuşuna arka arkaya iki kez basmak uygulamalarda ekleme modunu
 değiştirir. Ancak bu durum bazen yanlışlıkla olabilir. Bu özel bir kısayol
 tuşu olduğundan, ayarlarda devre dışı bırakılamaz. Bu eklenti, bu klavye
 kısayolunu engellemenizi sağlar.
+
+Bu seçenek varsayılan olarak devre dışıdır ve ayarlarda
+etkinleştirilmelidir.
+
+## Büyük Harf Kilidi için çift tuş vuruşunu engelleme
+
+NVDA'da, Büyük Harf Kilidi bir NVDA tuşu olarak ayarlandığında, bu tuşa art
+arda iki kez basıldığında büyük harf ve küçük harf giriş modları arasında
+geçiş yapılır. Ancak bu durum bazen bu modlar arasında istenmeden geçiş
+yapılmasına neden olabilir. Bu tuşun davranışı benzersiz olduğundan ve
+ayarlar aracılığıyla devre dışı bırakılamadığından, bu eklenti, bu özel
+klavye kısayolunu engellemeye yönelik bir yöntem sunar. Büyük Harf Kilidi
+tuşuna çift basılması engellendiğinde, NVDA+F2 tuşlarına ve ardından Büyük
+Harf Kilidi tuşuna basarak büyük ve küçük harf giriş modları arasında geçiş
+yapabilirsiniz.
 
 Bu seçenek varsayılan olarak devre dışıdır ve ayarlarda
 etkinleştirilmelidir.

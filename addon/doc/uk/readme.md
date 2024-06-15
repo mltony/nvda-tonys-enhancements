@@ -3,7 +3,7 @@
 Цей додаток містить низку невеликих поліпшень екранного читача NVDA, кожне з
 яких є занадто малим, щоб заслуговувати на окремий додаток.
 
-This add-on is compatible with NVDA versions 2022.4 and 2024.1.
+This add-on is compatible with NVDA version 2024.2 or later
 
 ## Downloads
 
@@ -93,6 +93,12 @@ add-on](https://github.com/mltony/nvda-task-switcher).
 This functionality has been merged into NVDA core and is available in NVDA
 v2024.3 or later.
 
+## Mute microphone
+
+This add-on provides a command for switching the microphone. There is no
+gesture assigned to this command by default, you can assign a gesture in
+NVDA's "Input Gestures" dialog if needed.
+
 ## Розділення звуку
 
 This functionality has been merged into NVDA core and is available in NVDA
@@ -104,13 +110,12 @@ v2024.2 or later.
   натискає його.
 * Alt+додатковий знак множення: наводить курсор миші на поточний об’єкт і
   натискає на ньому правою кнопкою миші.
-* Alt+додатковий плюс/додатковий мінус: Наводить курсор миші на поточний
-  об'єкт і прокручує вниз/вгору. Це корисно для сторінок з нескінченною
-  прокруткою та сторінок, які завантажують більше вмісту при прокрутці.
 * Alt+додатковий деліт: переміщає курсор миші у верхній лівий кут екрана. Це
   може бути корисним для запобігання небажаному наведенню курсора на вікна в
   певних програмах.
 
+The functionality for mouse wheel scrolling has been merged into NVDA core
+and is available in NVDA v2024.3 or later.
 
 ## Виявлення режиму вставки у текстових редакторах
 
@@ -125,6 +130,19 @@ v2024.2 or later.
 додаток надає можливість заблокувати цю комбінацію клавіш. Коли подвійний
 insert заблоковано, режим вставки і надалі можна вмикати натисканням NVDA+F2
 і потім insert.
+
+Цей параметр початково вимкнено, його можна увімкнути в налаштуваннях.
+
+## Blocking double Caps Lock keystroke
+
+In NVDA, when Caps Lock is set as an NVDA key, pressing it twice in a row
+toggles between uppercase and lowercase input modes. However, this can
+sometimes cause unintentional switching between these modes. Since this
+key’s behavior is unique and cannot be disabled through settings, this
+add-on offers a method to block this specific keyboard shortcut. When the
+double Caps Lock key press is blocked, you can still switch between
+uppercase and lowercase input modes by pressing NVDA+F2 followed by the Caps
+Lock key.
 
 Цей параметр початково вимкнено, його можна увімкнути в налаштуваннях.
 
