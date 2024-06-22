@@ -3,7 +3,7 @@
 Tämä lisäosa sisältää useita pieniä NVDA-ruudunlukijan parannuksia, jotka
 ovat liian pieniä ansaitakseen erillisen lisäosan.
 
-This add-on is compatible with NVDA version 2024.2 or later
+Tämä lisäosa on yhteensopiva NVDA 2024.2:n tai sitä uudempien kanssa
 
 ## Lataukset
 
@@ -24,9 +24,10 @@ rikastekstieditoreihin, kuten Microsoft Word tai WordPad.
 * NVDA+Alt+T: Näyttää ponnahdusvalikon, jossa on vaihtoehdot taulukon tai
   sen osan kopioimiseen.
 
-There are also separate scripts for copying tables, rows, columns and cells,
-but they don't have keyboard shortcuts assigned by default, custom keyboard
-shortcuts cfor them can be assigned in InputGestures dialog of NVDA.
+Taulukoiden, rivien, sarakkeiden ja solujen kopiointia varten on myös
+erilliset skriptit, mutta niille ei ole oletuksena määritetty
+pikanäppäimiä. Ne on mahdollista määrittää NVDA:n
+Näppäinkomennot-valintaikkunassa.
 
 ## Automaattinen kielen vaihtaminen
 Mahdollistaa puhesyntetisaattorin kielen vaihtamisen automaattisesti
@@ -92,11 +93,12 @@ on merkki käyttäjälle siitä, että NVDA-komentoja ei käsitellä heti.
 Tämä toiminnallisuus on sulautettu NVDA:n ytimeen, ja on käytettävissä
 versiossa 2024.3 tai sitä uudemmassa.
 
-## Mute microphone
+## Mykistä mikrofoni
 
-This add-on provides a command for switching the microphone. There is no
-gesture assigned to this command by default, you can assign a gesture in
-NVDA's "Input Gestures" dialog if needed.
+Tämä lisäosa tarjoaa komennon mikrofonin mykistämiseen ja mykistyksen
+poistamiseen. Sille ei ole oletusarvoisesti määritetty näppäinkomentoa,
+mutta voit tarvittaessa määrittää sellaisen NVDA:n
+"Näppäinkomennot"-valintaikkunassa.
 
 ## Äänenjako
 
@@ -113,36 +115,35 @@ versiossa 2024.2 tai sitä uudemmassa.
   yläkulmaan. Tästä voi olla hyötyä, kun halutaan estää hiiren jääminen
   ikkunoiden päälle tietyissä sovelluksissa.
 
-The functionality for mouse wheel scrolling has been merged into NVDA core
-and is available in NVDA v2024.3 or later.
+Hiiren rullan vieritystoiminnallisuus on sulautettu NVDA:n ytimeen, ja on
+käytettävissä versiossa 2024.3 tai sitä uudemmassa.
 
 ## Lisäystilan havaitseminen tekstieditoreissa
 
 Jos tämä asetus on käytössä, NVDA antaa äänimerkin, kun se havaitsee
 lisäystilan tekstieditoreissa.
 
-## Estä kaksinkertainen Insert-näppäimen painallus
+## Estä Insert-näppäimen kaksoispainallus
 
 NVDA:ssa Insert-näppäimen painaminen kahdesti peräkkäin ottaa sovelluksissa
 käyttöön lisäystilan. Joskus se kuitenkin tapahtuu vahingossa. Koska tämä on
 erityinen näppäinpainallus, sitä ei voi poistaa käytöstä asetuksissa. Tämä
-lisäosa tarjoaa tavan tämän pikanäppäimen estämiseen. Kun kaksinkertainen
-Insertin painallus on estetty, lisäystila voidaan ottaa käyttöön painamalla
+lisäosa tarjoaa tavan tämän pikanäppäimen estämiseen. Kun Insertin
+kaksoispainallus on estetty, lisäystila voidaan ottaa käyttöön painamalla
 NVDA+F2 ja sitten Insert.
 
 Tämä asetus ei ole oletusarvoisesti käytössä, ja se on otettava käyttöön
 asetuksissa.
 
-## Blocking double Caps Lock keystroke
+## Estä Caps Lock -näppäimen kaksoispainallus
 
-In NVDA, when Caps Lock is set as an NVDA key, pressing it twice in a row
-toggles between uppercase and lowercase input modes. However, this can
-sometimes cause unintentional switching between these modes. Since this
-key’s behavior is unique and cannot be disabled through settings, this
-add-on offers a method to block this specific keyboard shortcut. When the
-double Caps Lock key press is blocked, you can still switch between
-uppercase and lowercase input modes by pressing NVDA+F2 followed by the Caps
-Lock key.
+Kun Caps Lock on määritetty NVDA-näppäimeksi, sen painaminen kahdesti
+peräkkäin vaihtaa isojen ja pienten kirjainten välillä. Toisinaan se saattaa
+kuitenkin tapahtua vahingossa. Koska kyseessä on erikoisnäppäin eikä sitä
+voi poistaa käytöstä asetuksissa, tämä lisäosa tarjoaa menetelmän kyseisen
+näppäinpainalluksen estämiseen. Kun Caps Lockin kaksoispainallus on estetty,
+voit silti vaihtaa isojen ja pienten kirjainten välillä painamalla NVDA+F2
+ja sitten Caps Lock.
 
 Tämä asetus ei ole oletusarvoisesti käytössä, ja se on otettava käyttöön
 asetuksissa.

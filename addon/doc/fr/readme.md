@@ -4,7 +4,7 @@ Cette extension contient un certain nombre de petites améliorations
 apportées au lecteur d'écran NVDA, chacune d'entre elles étant trop petite
 pour mériter une extension séparée.
 
-This add-on is compatible with NVDA version 2024.2 or later
+Cette extension est compatible avec NVDA version 2024.2 ou ultérieure
 
 ## Téléchargements
 
@@ -25,9 +25,10 @@ que Microsoft Word ou WordPad.
 * NVDA+Alt+T - Affiche le menu contextuel avec des options pour copier le
   tableau ou une partie de celui-ci.
 
-There are also separate scripts for copying tables, rows, columns and cells,
-but they don't have keyboard shortcuts assigned by default, custom keyboard
-shortcuts cfor them can be assigned in InputGestures dialog of NVDA.
+Il existe également des scripts distincts pour la copie des tableaux, des
+lignes, des colonnes et des cellules, mais aucun raccourci clavier n'est
+assigné par défaut, des raccourcis clavier personnalisés peuvent leur être
+assignés dans le dialogue  Gestes de commandes de NVDA.
 
 ## Commutation automatique de la langue
 Permet de changer automatiquement la langue de votre synthétiseur par le jeu
@@ -98,11 +99,12 @@ commandes NVDA ne seront pas traitées immédiatement.
 Cette fonctionnalité a été fusionnée dans le noyau NVDA et est disponible
 dans NVDA v2024.3 ou version ultérieure.
 
-## Mute microphone
+## Couper le microphone
 
-This add-on provides a command for switching the microphone. There is no
-gesture assigned to this command by default, you can assign a gesture in
-NVDA's "Input Gestures" dialog if needed.
+Cette extension fournit une commande pour la commutation du
+microphone. Aucun geste n'est attribué à cette commande par défaut, vous
+pouvez attribuer un geste dans le dialogue "Gestes de commandes" de NVDA si
+nécessaire.
 
 ## Séparation de l'audio
 
@@ -119,8 +121,9 @@ dans NVDA v2024.2 ou version ultérieure.
   supérieur gauche de l'écran. Cela peut être utile pour empêcher le survol
   indésirable sur Windows dans certaines applications.
 
-The functionality for mouse wheel scrolling has been merged into NVDA core
-and is available in NVDA v2024.3 or later.
+La fonctionnalité de défilement avec la molette de la souris a été fusionnée
+dans le noyau NVDA et est disponible dans NVDA v2024.3 ou version
+ultérieure.
 
 ## Détection du mode insertion dans les éditeurs de texte
 
@@ -140,16 +143,18 @@ basculé en appuyant sur NVDA+F2 puis sur Insertion.
 Cette option est désactivée par défaut et doit être activée dans les
 paramètres.
 
-## Blocking double Caps Lock keystroke
+## Blocage de la double frappe de la touche Verrouillage Majuscules
 
-In NVDA, when Caps Lock is set as an NVDA key, pressing it twice in a row
-toggles between uppercase and lowercase input modes. However, this can
-sometimes cause unintentional switching between these modes. Since this
-key’s behavior is unique and cannot be disabled through settings, this
-add-on offers a method to block this specific keyboard shortcut. When the
-double Caps Lock key press is blocked, you can still switch between
-uppercase and lowercase input modes by pressing NVDA+F2 followed by the Caps
-Lock key.
+Dans NVDA, lorsque la touche verrouillage majuscules est défini comme touche
+NVDA, le fait d'appuyer deux fois de suite dans une rangée, bascule entre
+les modes de saisie majuscules et minuscules. Cependant, cela peut parfois
+entraîner un basculement involontaire entre ces modes. Étant donné que le
+comportement de cette touche est unique et ne peut pas être désactivé via
+les paramètres, cette extension propose une méthode pour bloquer ce
+raccourci clavier spécifique. Lorsque Un double appui sur la touche
+verrouillage majuscules  est bloquée, vous pouvez toujours basculer entre
+les modes de saisie majuscules et minuscules en appuyant sur NVDA+F2 suivi
+de la touche verrouillage majuscules.
 
 Cette option est désactivée par défaut et doit être activée dans les
 paramètres.

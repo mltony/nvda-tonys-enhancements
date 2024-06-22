@@ -14,15 +14,11 @@
 
 ## 将表格复制到剪贴板
 
-With the following shortcuts you can copy either the whole table or current
-row or current column in a formatted way, so that you can paste it as a
-table to rich text editors, such as Microsoft Word or WordPad.
+使用以下快捷键，您可以以格式化方式复制整个表格或当前行或当前列，以便将其作为表格粘贴到富文本编辑器，例如 Microsoft Word 或写字板。
 
-* NVDA+Alt+T - shows popup menu with options to copy table or part of it.
+* NVDA+Alt+T - 弹出一个菜单，其中包含复制表格或表格的一部分的选项。
 
-There are also separate scripts for copying tables, rows, columns and cells,
-but they don't have keyboard shortcuts assigned by default, custom keyboard
-shortcuts cfor them can be assigned in InputGestures dialog of NVDA.
+还支持为复制表格、行、列和单元格单独设置快捷键，如有需要，请前往“按键与手势”对话框中进行设置。
 
 ## 自动语言切换
 按字符集自动切换合成器的语言。可以在该插件的设置面板中配置每种语言的正则表达式。请确保您的合成器支持对应的语言。目前不支持在两种基于拉丁语的语言或两种字符集相似的语言之间切换。
