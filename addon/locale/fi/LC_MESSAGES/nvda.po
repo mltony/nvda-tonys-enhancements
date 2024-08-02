@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tonysEnhancements 1.16\n"
 "Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
 "POT-Creation-Date: 2023-09-22 20:25+0000\n"
-"PO-Revision-Date: 2023-09-23 21:29+0200\n"
+"PO-Revision-Date: 2024-07-27 12:51+0300\n"
 "Last-Translator: Jani Kinnunen <janikinnunen340@gmail.com>\n"
 "Language-Team: fi_FI <janikinnunen340@gmail.com>\n"
 "Language: fi\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.11\n"
+"X-Generator: Poedit 3.4.4\n"
 
 msgid "Normal,Above normal,High,Realtime"
 msgstr "Normaali,Normaalia korkeampi,Korkea,Reaaliaikainen"
@@ -36,7 +36,7 @@ msgstr "Peruuta"
 
 #. Translators: Title for the settings dialog
 msgid "Tony's enhancements  settings"
-msgstr "Tonyn laajennusten asetukset"
+msgstr "Tonyn laajennukset"
 
 #. checkbox Detect insert mode
 #. Translators: Checkbox for insert mode detection
@@ -66,7 +66,7 @@ msgstr "Piippaa, kun NVDA on varattu"
 #. Translators: Checkbox for windows_Number
 msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
 msgstr ""
-"Korjaa kohdistuksen jääminen tehtäväpalkkiin Win+numero-näppäimiä "
+"Korjaa kohdistuksen juuttuminen tehtäväpalkkiin Win+numero-näppäimiä "
 "painettaessa"
 
 #. checkbox suppress unselected
@@ -84,7 +84,7 @@ msgstr ""
 
 #. LangMap checkbox and multiline edit button
 msgid "Enable automatic language switching based on character set"
-msgstr "Ota käyttöön merkistöön perustuva automaattinen kielen vaihtaminen"
+msgstr "Ota käyttöön merkistöön perustuva automaattinen kielenvaihto"
 
 msgid "Edit language map"
 msgstr "Muokkaa kielimäärityksiä"
@@ -204,7 +204,7 @@ msgstr "Siirry taulukon %d. riville"
 
 msgid "Show popup menu with copy table to clipboard commands."
 msgstr ""
-"Näytä ponnahdusvalikko, jossa on taulukon leikepöydälle kopioivia komentoja"
+"Näytä ponnahdusvalikko, jossa on taulukon leikepöydälle kopioivia komentoja."
 
 msgid "Copy table cell to clipboard."
 msgstr "Kopioi taulukon solu leikepöydälle"
@@ -229,7 +229,7 @@ msgid "Show hidden windows."
 msgstr "Näytä piilotetut ikkunat"
 
 msgid "No windows hidden or all hidden windows have been already shown."
-msgstr "Piilotettuja ikkunoita ei ole tai ne kaikki ovat jo näkyvissä"
+msgstr "Piilotettuja ikkunoita ei ole tai ne ovat jo näkyvissä"
 
 #, python-format
 msgid "%d windows shown"
