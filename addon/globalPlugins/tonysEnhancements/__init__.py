@@ -6,8 +6,6 @@
 
 import addonHandler
 import api
-import bisect
-import collections
 import config
 import controlTypes
 import core
@@ -15,33 +13,22 @@ import copy
 import ctypes
 from ctypes import create_string_buffer, byref
 import documentBase
-import editableText
 import globalPluginHandler
 import gui
-from gui import guiHelper, nvdaControls
 from gui.settingsDialogs import SettingsPanel
 import html
 import inputCore
-import itertools
-import json
 import keyboardHandler
 import locationHelper
 from logHandler import log
-import math
 import mouseHandler
 import NVDAHelper
-from NVDAObjects import behaviors, NVDAObject
-from NVDAObjects.IAccessible import IAccessible
-from NVDAObjects.UIA import UIA
-from NVDAObjects.window import winword
 import nvwave
 import operator
-import os
 import re
-from scriptHandler import script, willSayAllResume
+from scriptHandler import script
 import speech
 from speech.priorities import SpeechPriority
-import string
 import struct
 import textInfos
 import threading
@@ -50,7 +37,6 @@ import tones
 import types
 import ui
 import watchdog
-import wave
 import winUser
 import wx
 
@@ -507,7 +493,7 @@ class Beeper:
 
     def fancyBeep(self, chord, length, left=10, right=10, repetitions=1 ):
         self.player.stop()
-        buffer = self.prepareFancyBeep(self, chord, length, left, right)
+        buffer = self.prepareFancyBeep(chord, length, left, right)
         self.player.feed(buffer)
         repetitions -= 1
         if repetitions > 0:
@@ -535,8 +521,6 @@ class Beeper:
         self.stopSignal = True
         self.player.stop()
 
-
-originalWaveOpen = None
 originalWatchdogAlive = None
 originalWatchdogAsleep = None
 
@@ -817,7 +801,7 @@ def executeAsynchronously(gen):
     """
     This function executes a generator-function in such a manner, that allows updates from the operating system to be processed during execution.
     For an example of such generator function, please see GlobalPlugin.script_editJupyter.
-    Specifically, every time the generator function yilds a positive number,, the rest of the generator function will be executed
+    Specifically, every time the generator function yields a positive number,, the rest of the generator function will be executed
     from within wx.CallLater() call.
     If generator function yields a value of 0, then the rest of the generator function
     will be executed from within wx.CallAfter() call.
@@ -1079,16 +1063,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
     def  removeHooks(self):
-        global originalWaveOpen
         inputCore.InputManager.executeGesture = self.originalExecuteGesture
-        nvwave.WavePlayer.open = originalWaveOpen
         watchdog.alive = originalWatchdogAlive
         watchdog.asleep = originalWatchdogAsleep
         self.myWatchdog.terminate()
         speech.speakSelectionChange = originalSpeakSelectionChange
         speech.speech.speak = originalSpeechSpeak
 
-    windowsSwitchingRe = re.compile(r':windows\+\d$')
     typingKeystrokeRe = re.compile(r':((shift\+)?[A-Za-z0-9]|space)$')
     shiftSelectionKeystroke = re.compile(r':(control\+)?shift\+((up|down|left|right)Arrow|home|end|pageUp|pageDown)$')
     def preExecuteGesture(self, selfself, gesture, *args, **kwargs):
