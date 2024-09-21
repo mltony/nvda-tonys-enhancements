@@ -55,7 +55,7 @@ Check this option for NVDA to provide audio feedback when NVDA is busy. NVDA bei
 
 ## Application Volume adjustment
 
-This functionality has been merged into NVDA core and is available in NVDA v2024.3 or later.
+This functionality has been merged into NVDA core and is available in NVDA v2025.1 or later.
 
 ## Mute microphone
 
