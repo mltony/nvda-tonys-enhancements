@@ -17,6 +17,10 @@ With the following shortcuts you can copy either the whole table or current row 
 - NVDA+Alt+T - shows popup menu with options to copy table or part of it.
 There are also separate scripts for copying tables, rows, columns and cells, but they don't have keyboard shortcuts  assigned by default, custom keyboard shortcuts cfor them can be assigned in InputGestures dialog of NVDA.
 
+## Clipboard history
+
+As of NVDA v2024.4 built-in Windows clipboard history feature works poorly with NVDA. As a drop-in replacement, this add-on provides a fully accessible clipboard history feature. It is bound to `Windows+V` by default, so it replaces the built-in feature.
+
 ## Automatic language switching
 Allows to automatically switch the language of your synthesizer by character set. Refgular expression for every language can be configured in the preferences window for this add-on. Please make sure that your synthesizer supports all the languages you're interested in. Switching between two Latin-based languages or two languages whose character sets are similar is not supported at this time.
 
