@@ -1023,6 +1023,142 @@ reloadLangMap()
 updatePriority()
 updateScrollLockBlocking()
 
+def getControlVGesture():
+    try:
+        return keyboardHandler.KeyboardInputGesture.fromName("Control+v")
+    except LookupError:
+        # This happens if vk code for letter V fails to resolve, when current keyboard layout is for example Russian
+        # vk code for V key is 86
+        return keyboardHandler.KeyboardInputGesture(modifiers={(winUser.VK_CONTROL, False)}, vkCode=86, scanCode=0, isExtended=False)
+
+def ephemeralCopyToClip(text: str):
+    """
+    Copies string to clipboard without leaving an entry in clipboard history.
+    """
+    with winUser.openClipboard(gui.mainFrame.Handle):
+        winUser.emptyClipboard()
+        winUser.setClipboardData(winUser.CF_UNICODETEXT, text)
+        ephemeralFormat = ctypes.windll.user32.RegisterClipboardFormatW("ExcludeClipboardContentFromMonitorProcessing")
+        ctypes.windll.user32.SetClipboardData(ephemeralFormat,None)
+
+class BackupClipboard:
+    def __init__(self, text):
+        try:
+            self.backup = api.getClipData()
+        except OSError:
+            self.backup = ""
+        self.text = text
+    def __enter__(self):
+        ephemeralCopyToClip(self.text)
+        return self
+    def __exit__(self, *args, **kwargs):
+        core.callLater(300, self.restore)
+    def restore(self):
+        ephemeralCopyToClip(self.backup)
+
+TEXT_FORMAT = "Text"
+def getClipboardEntries(maxEntries=50):
+    from .pywinsdk.relative import winsdk
+    from .pywinsdk.relative.winsdk.windows.applicationmodel.datatransfer import Clipboard
+    from .pywinsdk.relative.winsdk.windows.foundation import AsyncStatus
+    
+    def dummyAwait(result):
+        while result.status == AsyncStatus.STARTED:
+            wx.Yield()
+        if result.status == AsyncStatus.COMPLETED:
+            return result
+        raise RuntimeError(f"Bad async status {result.status}")
+
+    history = dummyAwait(Clipboard.get_history_items_async())
+    items = history.get_results()
+    itemTuples = []    
+    result = []
+    for i in range(maxEntries):
+        try:
+            item = items.items[i]
+        except OSError:
+            continue
+        content = item.content
+        avf = content.available_formats
+        avf2 = [avf.get_at(j) for j in range(avf.size)]
+        if TEXT_FORMAT not in avf2:
+            continue
+        itemTuples.append((item,content.get_text_async()))
+    for item, text in itemTuples:
+        text = dummyAwait(text)
+        value = text.get_results()
+        result.append(value)
+    return result
+
+def truncateLongString(s):
+    MAX_LEN = 1000
+    if len(s) > MAX_LEN:
+        s = s[:MAX_LEN] + "..."
+    return s
+
+# Adapted from Frequent Text add-on
+clipboardHistoryEntries = []
+class ClipboardHistoryDialog(wx.Dialog):
+    def __init__(self, *args, **kwds):
+        kwds["style"] = kwds.get("style", 0) | wx.DEFAULT_DIALOG_STYLE
+        wx.Dialog.__init__(self, *args, **kwds)
+        self.title = _("Clipboard history")
+        global clipboardHistoryEntries
+        self.listBlocks = clipboardHistoryEntries
+        self.listBlocksTruncated = [truncateLongString(s) for s in self.listBlocks]
+        
+        sizer_1 = wx.BoxSizer(wx.VERTICAL)
+        listLabel = wx.StaticText(self, wx.ID_ANY, _("Entries"))
+        sizer_1.Add(listLabel, 0, 0, 0)
+
+        self.BlocksList = wx.ListBox(self, wx.ID_ANY, choices=self.listBlocksTruncated, style=wx.LB_SINGLE)
+        self.BlocksList.SetFocus()
+        if len(self.listBlocks) != 0:
+            self.BlocksList.SetSelection(0)
+        sizer_1.Add(self.BlocksList, 0, 0, 0)
+
+        sizer_2 = wx.StdDialogButtonSizer()
+        sizer_1.Add(sizer_2, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALL, 4)
+
+        self.pasteButton = wx.Button(self, wx.ID_ANY, _("&Paste"))
+        if len(self.listBlocks) > 0:
+            self.pasteButton.SetDefault()
+        sizer_2.Add(self.pasteButton, 0, 0, 0)
+
+        self.button_CLOSE = wx.Button(self, wx.ID_CLOSE, "")
+        sizer_2.AddButton(self.button_CLOSE)
+
+        if self.BlocksList.GetCount() == 0:
+            self.pasteButton.Disable()
+
+        sizer_2.Realize()
+
+        self.SetSizer(sizer_1)
+        sizer_1.Fit(self)
+
+        self.SetEscapeId(self.button_CLOSE.GetId())
+
+        self.Layout()
+        self.Centre()
+
+        self.Bind(wx.EVT_BUTTON, self.onPaste, self.pasteButton)
+    
+    def onPaste(self, evt):
+        self.Hide()
+        evt.Skip()
+        # Get the name of selected block
+        name = self.listBlocks[self.BlocksList.GetSelection()]
+        pasteStr = name
+        with BackupClipboard(pasteStr):
+            focus = api.getFocusObject()
+            if focus.windowClassName == "ConsoleWindowClass":
+                # Windows console window - Control+V doesn't work here, so using an alternative method here
+                WM_COMMAND = 0x0111
+                watchdog.cancellableSendMessage(focus.windowHandle, WM_COMMAND, 0xfff1, 0)
+            else:
+                keyboardHandler.KeyboardInputGesture.fromName("Control+v").send()
+        self.Destroy()
+
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     scriptCategory = _("Tony's Enhancements")
 
@@ -1287,3 +1423,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def script_mouseMoveToTopLeft(self, gesture):
         ui.message(_("Mouse pointer moved to top left corner. "))
         mouseHandler.executeMouseMoveEvent(0, 0)
+
+    @script(description=_("Show clipboard history"), gestures=['kb:windows+v'])
+    def script_showClipboardHistory(self, gesture):
+        global clipboardHistoryEntries
+        clipboardHistoryEntries = getClipboardEntries()
+        gui.mainFrame.popupSettingsDialog(ClipboardHistoryDialog)
