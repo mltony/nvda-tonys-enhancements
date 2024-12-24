@@ -1234,7 +1234,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         else:
             kb = kb[0]
         focus = api.getFocusObject()
-        appName = focus.appModule.appName
+        try:
+            appName = focus.appModule.appName
+        except AttributeError:
+            appName = None
         if(
             dynamicKeystrokes is not None and (
                 ("*", kb) in dynamicKeystrokes
