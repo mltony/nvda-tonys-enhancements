@@ -62,13 +62,6 @@ msgstr "Estä Caps Lock -näppäimen tuplapainallukset"
 msgid "Beep when NVDA is busy"
 msgstr "Piippaa, kun NVDA on varattu"
 
-#. checkbox fix windows+Number
-#. Translators: Checkbox for windows_Number
-msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
-msgstr ""
-"Korjaa kohdistuksen juuttuminen tehtäväpalkkiin Win+numero-näppäimiä "
-"painettaessa"
-
 #. checkbox suppress unselected
 #. Translators: Checkbox for suppress unselected
 msgid "Suppress saying of 'unselected'."
@@ -88,18 +81,6 @@ msgstr "Ota käyttöön merkistöön perustuva automaattinen kielenvaihto"
 
 msgid "Edit language map"
 msgstr "Muokkaa kielimäärityksiä"
-
-#. QuickSearch regexp text edit
-msgid "QuickSearch1 regexp (assigned to PrintScreen)"
-msgstr "Pikahaku1:n sääntölauseke (liitetty PrintScreen-näppäimeen)"
-
-#. QuickSearch2 regexp text edit
-msgid "QuickSearch2 regexp (assigned to ScrollLock))"
-msgstr "Pikahaku2:n sääntölauseke (liitetty ScrollLock-näppäimeen))"
-
-#. QuickSearch3 regexp text edit
-msgid "QuickSearch3 regexp (assigned to Pause)"
-msgstr "Pikahaku3:n sääntölauseke (liitetty Pause-näppäimeen)"
 
 #. checkbox block scroll lock
 #. Translators: Checkbox for blocking scroll lock
@@ -180,19 +161,17 @@ msgstr "navigointiobjekti"
 msgid "repeat"
 msgstr "toista"
 
+msgid "Clipboard history"
+msgstr ""
+
+msgid "Entries"
+msgstr ""
+
+msgid "&Paste"
+msgstr ""
+
 msgid "Tony's Enhancements"
 msgstr "Tonyn laajennukset"
-
-msgid "QuickSearch"
-msgstr "Pikahaku"
-
-#, python-brace-format
-msgid ""
-"Performs QuickSearch back or forward in editables according to "
-"quickSearch{i} regexp"
-msgstr ""
-"Suorittaa pikahaun eteen- tai taaksepäin muokattavissa tekstikentissä "
-"pikahaku{i}:n sääntölausekkeen mukaisesti"
 
 #, python-format
 msgid "Move to the %d-th column in table"
@@ -218,23 +197,6 @@ msgstr "Kopioi taulukon rivi leikepöydälle"
 msgid "Copy the whole table to clipboard."
 msgstr "Kopioi koko taulukko leikepöydälle"
 
-msgid "Hide current window."
-msgstr "Piilota nykyinen ikkuna"
-
-#, python-format
-msgid "Hid current window. Now there are %d windows hidden."
-msgstr "Nykyinen ikkuna piilotettu. Piilotettuja ikkunoita on nyt %d."
-
-msgid "Show hidden windows."
-msgstr "Näytä piilotetut ikkunat"
-
-msgid "No windows hidden or all hidden windows have been already shown."
-msgstr "Piilotettuja ikkunoita ei ole tai ne ovat jo näkyvissä"
-
-#, python-format
-msgid "%d windows shown"
-msgstr "%d ikkunaa näytetään"
-
 msgid "Toggle microphone mute."
 msgstr "Vaihda mikrofonin mykistyksen tilaa"
 
@@ -257,23 +219,14 @@ msgstr "Vasen napsautus kohteessa {kind}"
 msgid "Right click on current object."
 msgstr "Napsauta hiiren oikeaa painiketta nykyisessä objektissa"
 
-msgid "Mouse wheel scroll down on current object."
-msgstr "Vieritä hiiren rullaa alas nykyisessä objektissa"
-
-msgid "Scroll down"
-msgstr "Vieritä alas"
-
-msgid "Mouse wheel scroll up on current object."
-msgstr "Vieritä hiiren rullaa ylös nykyisessä objektissa"
-
-msgid "Scroll up"
-msgstr "Vieritä ylös"
-
 msgid "Move mouse pointer to top left corner."
 msgstr "Siirrä hiiren osoitin vasempaan yläkulmaan"
 
 msgid "Mouse pointer moved to top left corner. "
 msgstr "Hiiren osoitin siirretty vasempaan yläkulmaan"
+
+msgid "Show clipboard history"
+msgstr ""
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
@@ -285,3 +238,57 @@ msgstr "Tonyn laajennukset"
 #. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
 msgid "Various NVDA enhancements."
 msgstr "Useita NVDA:n laajennuksia"
+
+#~ msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
+#~ msgstr ""
+#~ "Korjaa kohdistuksen juuttuminen tehtäväpalkkiin Win+numero-näppäimiä "
+#~ "painettaessa"
+
+#~ msgid "QuickSearch1 regexp (assigned to PrintScreen)"
+#~ msgstr "Pikahaku1:n sääntölauseke (liitetty PrintScreen-näppäimeen)"
+
+#~ msgid "QuickSearch2 regexp (assigned to ScrollLock))"
+#~ msgstr "Pikahaku2:n sääntölauseke (liitetty ScrollLock-näppäimeen))"
+
+#~ msgid "QuickSearch3 regexp (assigned to Pause)"
+#~ msgstr "Pikahaku3:n sääntölauseke (liitetty Pause-näppäimeen)"
+
+#~ msgid "QuickSearch"
+#~ msgstr "Pikahaku"
+
+#, python-brace-format
+#~ msgid ""
+#~ "Performs QuickSearch back or forward in editables according to "
+#~ "quickSearch{i} regexp"
+#~ msgstr ""
+#~ "Suorittaa pikahaun eteen- tai taaksepäin muokattavissa tekstikentissä "
+#~ "pikahaku{i}:n sääntölausekkeen mukaisesti"
+
+#~ msgid "Hide current window."
+#~ msgstr "Piilota nykyinen ikkuna"
+
+#, python-format
+#~ msgid "Hid current window. Now there are %d windows hidden."
+#~ msgstr "Nykyinen ikkuna piilotettu. Piilotettuja ikkunoita on nyt %d."
+
+#~ msgid "Show hidden windows."
+#~ msgstr "Näytä piilotetut ikkunat"
+
+#~ msgid "No windows hidden or all hidden windows have been already shown."
+#~ msgstr "Piilotettuja ikkunoita ei ole tai ne ovat jo näkyvissä"
+
+#, python-format
+#~ msgid "%d windows shown"
+#~ msgstr "%d ikkunaa näytetään"
+
+#~ msgid "Mouse wheel scroll down on current object."
+#~ msgstr "Vieritä hiiren rullaa alas nykyisessä objektissa"
+
+#~ msgid "Scroll down"
+#~ msgstr "Vieritä alas"
+
+#~ msgid "Mouse wheel scroll up on current object."
+#~ msgstr "Vieritä hiiren rullaa ylös nykyisessä objektissa"
+
+#~ msgid "Scroll up"
+#~ msgstr "Vieritä ylös"

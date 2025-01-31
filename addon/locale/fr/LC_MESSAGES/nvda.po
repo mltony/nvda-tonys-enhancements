@@ -9,12 +9,12 @@ msgstr ""
 "Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
 "POT-Creation-Date: 2023-09-22 20:25+0000\n"
 "PO-Revision-Date: 2023-09-24 13:55+0200\n"
+"Last-Translator: Rémy Ruiz <remyruiz@gmail.com>\n"
+"Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: Rémy Ruiz <remyruiz@gmail.com>\n"
-"Language-Team: \n"
 "X-Generator: Poedit 1.8.8\n"
 
 msgid "Normal,Above normal,High,Realtime"
@@ -61,13 +61,6 @@ msgstr "Bloquer le double Verrouillage majuscule"
 msgid "Beep when NVDA is busy"
 msgstr "Bip lorsque NVDA est occupé"
 
-#. checkbox fix windows+Number
-#. Translators: Checkbox for windows_Number
-msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
-msgstr ""
-"Corriger lorsque le focus est coincée dans la barre des tâches lorsque vous "
-"appuyez sur Windows+numéro"
-
 #. checkbox suppress unselected
 #. Translators: Checkbox for suppress unselected
 msgid "Suppress saying of 'unselected'."
@@ -89,20 +82,6 @@ msgstr ""
 
 msgid "Edit language map"
 msgstr "Modifier le tableau de correspondances de la langue"
-
-#. QuickSearch regexp text edit
-msgid "QuickSearch1 regexp (assigned to PrintScreen)"
-msgstr ""
-"Expression régulière de recherche rapide 1 (assignée à impression écran)"
-
-#. QuickSearch2 regexp text edit
-msgid "QuickSearch2 regexp (assigned to ScrollLock))"
-msgstr ""
-"Expression régulière de recherche rapide 2 (assignée à arrêt défilement)"
-
-#. QuickSearch3 regexp text edit
-msgid "QuickSearch3 regexp (assigned to Pause)"
-msgstr "Expression régulière de recherche rapide 3 (assignée à pause)"
 
 #. checkbox block scroll lock
 #. Translators: Checkbox for blocking scroll lock
@@ -183,19 +162,17 @@ msgstr "objet navigateur"
 msgid "repeat"
 msgstr "répéter"
 
+msgid "Clipboard history"
+msgstr ""
+
+msgid "Entries"
+msgstr ""
+
+msgid "&Paste"
+msgstr ""
+
 msgid "Tony's Enhancements"
 msgstr "Tony's Enhancements"
-
-msgid "QuickSearch"
-msgstr "Recherche rapide"
-
-#, python-brace-format
-msgid ""
-"Performs QuickSearch back or forward in editables according to "
-"quickSearch{i} regexp"
-msgstr ""
-"Effectuer une recherche rapide en arrière ou en avant dans  les champs "
-"modifiables en fonction de l'expression régulière de recherche rapide {i}"
 
 #, python-format
 msgid "Move to the %d-th column in table"
@@ -222,24 +199,6 @@ msgstr "Copier la ligne du tableau dans le presse-papiers."
 msgid "Copy the whole table to clipboard."
 msgstr "Copier le tableau entier dans le presse-papiers."
 
-msgid "Hide current window."
-msgstr "Masquer la fenêtre actuelle."
-
-#, python-format
-msgid "Hid current window. Now there are %d windows hidden."
-msgstr "Masquer la fenêtre actuelle. Maintenant, il y a %d fenêtres masquées."
-
-msgid "Show hidden windows."
-msgstr "Afficher les fenêtres masquées."
-
-msgid "No windows hidden or all hidden windows have been already shown."
-msgstr ""
-"Aucune fenêtre masquée ou toutes les fenêtres masquées n'a déjà été affichée."
-
-#, python-format
-msgid "%d windows shown"
-msgstr "%d fenêtres affichées"
-
 msgid "Toggle microphone mute."
 msgstr "Couper ou établir la coupure du microphone."
 
@@ -262,23 +221,14 @@ msgstr "Clic gauche de la souris à {kind}"
 msgid "Right click on current object."
 msgstr "Clic droit de la souris à l'objet actuel."
 
-msgid "Mouse wheel scroll down on current object."
-msgstr "Défilement vers le bas de la roulette de la souris à l'objet actuel."
-
-msgid "Scroll down"
-msgstr "Défilement bas"
-
-msgid "Mouse wheel scroll up on current object."
-msgstr "Défilement vers le haut de la roulette de la souris à l'objet actuel."
-
-msgid "Scroll up"
-msgstr "Défilement haut"
-
 msgid "Move mouse pointer to top left corner."
 msgstr "Déplacer le pointeur de la souris vers le coin supérieur gauche."
 
 msgid "Mouse pointer moved to top left corner. "
 msgstr "Le pointeur de la souris s'est déplacé vers le coin supérieur gauche."
+
+msgid "Show clipboard history"
+msgstr ""
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
@@ -290,3 +240,64 @@ msgstr "Tony's enhancements"
 #. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
 msgid "Various NVDA enhancements."
 msgstr "Diverses améliorations pour NVDA."
+
+#~ msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
+#~ msgstr ""
+#~ "Corriger lorsque le focus est coincée dans la barre des tâches lorsque "
+#~ "vous appuyez sur Windows+numéro"
+
+#~ msgid "QuickSearch1 regexp (assigned to PrintScreen)"
+#~ msgstr ""
+#~ "Expression régulière de recherche rapide 1 (assignée à impression écran)"
+
+#~ msgid "QuickSearch2 regexp (assigned to ScrollLock))"
+#~ msgstr ""
+#~ "Expression régulière de recherche rapide 2 (assignée à arrêt défilement)"
+
+#~ msgid "QuickSearch3 regexp (assigned to Pause)"
+#~ msgstr "Expression régulière de recherche rapide 3 (assignée à pause)"
+
+#~ msgid "QuickSearch"
+#~ msgstr "Recherche rapide"
+
+#, python-brace-format
+#~ msgid ""
+#~ "Performs QuickSearch back or forward in editables according to "
+#~ "quickSearch{i} regexp"
+#~ msgstr ""
+#~ "Effectuer une recherche rapide en arrière ou en avant dans  les champs "
+#~ "modifiables en fonction de l'expression régulière de recherche rapide {i}"
+
+#~ msgid "Hide current window."
+#~ msgstr "Masquer la fenêtre actuelle."
+
+#, python-format
+#~ msgid "Hid current window. Now there are %d windows hidden."
+#~ msgstr ""
+#~ "Masquer la fenêtre actuelle. Maintenant, il y a %d fenêtres masquées."
+
+#~ msgid "Show hidden windows."
+#~ msgstr "Afficher les fenêtres masquées."
+
+#~ msgid "No windows hidden or all hidden windows have been already shown."
+#~ msgstr ""
+#~ "Aucune fenêtre masquée ou toutes les fenêtres masquées n'a déjà été "
+#~ "affichée."
+
+#, python-format
+#~ msgid "%d windows shown"
+#~ msgstr "%d fenêtres affichées"
+
+#~ msgid "Mouse wheel scroll down on current object."
+#~ msgstr ""
+#~ "Défilement vers le bas de la roulette de la souris à l'objet actuel."
+
+#~ msgid "Scroll down"
+#~ msgstr "Défilement bas"
+
+#~ msgid "Mouse wheel scroll up on current object."
+#~ msgstr ""
+#~ "Défilement vers le haut de la roulette de la souris à l'objet actuel."
+
+#~ msgid "Scroll up"
+#~ msgstr "Défilement haut"

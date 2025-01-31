@@ -64,12 +64,6 @@ msgstr "Büyük harf kilidi tuşuna iki kez basılmasını engelle"
 msgid "Beep when NVDA is busy"
 msgstr "NVDA meşgulken bip sesi çıkar"
 
-#. checkbox fix windows+Number
-#. Translators: Checkbox for windows_Number
-msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
-msgstr ""
-"Windows+rakam'a basıldığında odağın görev çubuğunda takılı kalmasını engelle"
-
 #. checkbox suppress unselected
 #. Translators: Checkbox for suppress unselected
 msgid "Suppress saying of 'unselected'."
@@ -89,18 +83,6 @@ msgstr "Karakter setine göre otomatik dil geçişini etkinleştir"
 
 msgid "Edit language map"
 msgstr "Dil haritasını düzenle"
-
-#. QuickSearch regexp text edit
-msgid "QuickSearch1 regexp (assigned to PrintScreen)"
-msgstr "ÇabukAra1 regexp (ekran çıktısı tuşuna atanmış)"
-
-#. QuickSearch2 regexp text edit
-msgid "QuickSearch2 regexp (assigned to ScrollLock))"
-msgstr "ÇabukAra2 regexp (ScrollLock'a atanmış)"
-
-#. QuickSearch3 regexp text edit
-msgid "QuickSearch3 regexp (assigned to Pause)"
-msgstr "ÇabukAra3 regexp (Pause tuşuna atanmış)"
 
 #. checkbox block scroll lock
 #. Translators: Checkbox for blocking scroll lock
@@ -139,14 +121,12 @@ msgstr "Hücre kopyalandı"
 msgid "Row copied"
 msgstr "Satır kopyalandı"
 
-#| msgid "Row copied"
 msgid "Partial row copied"
 msgstr "Satırın bir kısmı kopyalandı"
 
 msgid "Column copied"
 msgstr "Sütun kopyalandı"
 
-#| msgid "Column copied"
 msgid "Partial column copied"
 msgstr "Sütunun bir kısmı kopyalandı"
 
@@ -159,7 +139,6 @@ msgstr "&Hücreyi kopyala"
 msgid "Copy &column"
 msgstr "S&ütunu kopyala"
 
-#| msgid "Read column starting from current cell"
 msgid "Copy column from current cell &down"
 msgstr "Sütunu geçerli hücre&den aşağıya doğru kopyala"
 
@@ -184,19 +163,17 @@ msgstr "nesne sunucusu"
 msgid "repeat"
 msgstr "tekrar"
 
+msgid "Clipboard history"
+msgstr ""
+
+msgid "Entries"
+msgstr ""
+
+msgid "&Paste"
+msgstr ""
+
 msgid "Tony's Enhancements"
 msgstr "Tony'nin Geliştirmeleri"
-
-msgid "QuickSearch"
-msgstr "Çabuk arama"
-
-#, python-brace-format
-msgid ""
-"Performs QuickSearch back or forward in editables according to "
-"quickSearch{i} regexp"
-msgstr ""
-"Düzenlenebilir alanlarda çabukArama{i} regexp için İleri ya da geriye doğru "
-"çabukArama yapar"
 
 #, python-format
 msgid "Move to the %d-th column in table"
@@ -221,23 +198,6 @@ msgstr "Tablo satırını panoya kopyala."
 msgid "Copy the whole table to clipboard."
 msgstr "Tüm tabloyu panoya kopyala."
 
-msgid "Hide current window."
-msgstr "Geçerli pencereyi gizle."
-
-#, python-format
-msgid "Hid current window. Now there are %d windows hidden."
-msgstr "Geçerli pencereyi gizle. Şimdi gizlenmiş %d pencere var."
-
-msgid "Show hidden windows."
-msgstr "Gizli pencereleri göster."
-
-msgid "No windows hidden or all hidden windows have been already shown."
-msgstr "Gizli pencere yok veya tüm gizli pencereler gösteriliyor."
-
-#, python-format
-msgid "%d windows shown"
-msgstr "%d pencere gösteriliyor"
-
 msgid "Toggle microphone mute."
 msgstr "Mikrofonu kapatıp aç."
 
@@ -260,23 +220,14 @@ msgstr "{kind} üzerine sol tık"
 msgid "Right click on current object."
 msgstr "Mevcut nesneye sağ tıkla."
 
-msgid "Mouse wheel scroll down on current object."
-msgstr "Fare tekerleği, geçerli nesne üzerinde aşağı kaydırır."
-
-msgid "Scroll down"
-msgstr "Aşağı kaydır"
-
-msgid "Mouse wheel scroll up on current object."
-msgstr "Fare tekerleği, geçerli nesne üzerinde yukarı kaydırır."
-
-msgid "Scroll up"
-msgstr "Yukarı kaydır"
-
 msgid "Move mouse pointer to top left corner."
 msgstr "Fare imlecini sol üst köşeye taşı."
 
 msgid "Mouse pointer moved to top left corner. "
 msgstr "Fare imleci sol üst köşeye taşındı "
+
+msgid "Show clipboard history"
+msgstr ""
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
@@ -286,9 +237,62 @@ msgstr "Tony'nin Geliştirmeleri"
 
 #. Add-on description
 #. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
-#| msgid "Tony's Enhancements"
 msgid "Various NVDA enhancements."
 msgstr "Çeşitli NVDA geliştirmeleri."
+
+#~ msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
+#~ msgstr ""
+#~ "Windows+rakam'a basıldığında odağın görev çubuğunda takılı kalmasını "
+#~ "engelle"
+
+#~ msgid "QuickSearch1 regexp (assigned to PrintScreen)"
+#~ msgstr "ÇabukAra1 regexp (ekran çıktısı tuşuna atanmış)"
+
+#~ msgid "QuickSearch2 regexp (assigned to ScrollLock))"
+#~ msgstr "ÇabukAra2 regexp (ScrollLock'a atanmış)"
+
+#~ msgid "QuickSearch3 regexp (assigned to Pause)"
+#~ msgstr "ÇabukAra3 regexp (Pause tuşuna atanmış)"
+
+#~ msgid "QuickSearch"
+#~ msgstr "Çabuk arama"
+
+#, python-brace-format
+#~ msgid ""
+#~ "Performs QuickSearch back or forward in editables according to "
+#~ "quickSearch{i} regexp"
+#~ msgstr ""
+#~ "Düzenlenebilir alanlarda çabukArama{i} regexp için İleri ya da geriye "
+#~ "doğru çabukArama yapar"
+
+#~ msgid "Hide current window."
+#~ msgstr "Geçerli pencereyi gizle."
+
+#, python-format
+#~ msgid "Hid current window. Now there are %d windows hidden."
+#~ msgstr "Geçerli pencereyi gizle. Şimdi gizlenmiş %d pencere var."
+
+#~ msgid "Show hidden windows."
+#~ msgstr "Gizli pencereleri göster."
+
+#~ msgid "No windows hidden or all hidden windows have been already shown."
+#~ msgstr "Gizli pencere yok veya tüm gizli pencereler gösteriliyor."
+
+#, python-format
+#~ msgid "%d windows shown"
+#~ msgstr "%d pencere gösteriliyor"
+
+#~ msgid "Mouse wheel scroll down on current object."
+#~ msgstr "Fare tekerleği, geçerli nesne üzerinde aşağı kaydırır."
+
+#~ msgid "Scroll down"
+#~ msgstr "Aşağı kaydır"
+
+#~ msgid "Mouse wheel scroll up on current object."
+#~ msgstr "Fare tekerleği, geçerli nesne üzerinde yukarı kaydırır."
+
+#~ msgid "Scroll up"
+#~ msgstr "Yukarı kaydır"
 
 #~ msgid "NVDA volume"
 #~ msgstr "NVDA ses düzeyi"

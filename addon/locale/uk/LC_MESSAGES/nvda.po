@@ -16,35 +16,28 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-Bookmarks: 25,-1,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:184
 msgid "Normal,Above normal,High,Realtime"
 msgstr "Нормальний, Вище норми, Високий, Реальний час"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:198
 #, python-format
 msgid "Failed to set process priority to %s."
 msgstr "Не вдалося встановити пріоритет процесу на %s."
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:198
 msgid "Tony's enhancement add-on encountered an error"
 msgstr "У додатку Tony's enhancements виникла помилка"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:218
 msgid "OK"
 msgstr "Гаразд"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:220
 msgid "Cancel"
 msgstr "Скасувати"
 
 #. Translators: Title for the settings dialog
-#: addon\globalPlugins\tonysEnhancements\__init__.py:280
 msgid "Tony's enhancements  settings"
 msgstr "Налаштування Tony's enhancements"
 
 #. checkbox Detect insert mode
 #. Translators: Checkbox for insert mode detection
-#: addon\globalPlugins\tonysEnhancements\__init__.py:289
 msgid ""
 "Detect insert mode in text documents and beep on every keystroke when insert "
 "mode is on."
@@ -54,39 +47,26 @@ msgstr ""
 
 #. checkbox block double insert
 #. Translators: Checkbox for block double insert
-#: addon\globalPlugins\tonysEnhancements\__init__.py:296
 msgid "Block double insert"
 msgstr "Блокувати подвійний insert"
 
 #. checkbox block double caps
 #. Translators: Checkbox for block double caps
-#: addon\globalPlugins\tonysEnhancements\__init__.py:301
 msgid "Block double Caps Lock"
 msgstr "Блокувати подвійний Caps Lock"
 
 #. checkbox Busy beep
 #. Translators: Checkbox for busy beep
-#: addon\globalPlugins\tonysEnhancements\__init__.py:307
 msgid "Beep when NVDA is busy"
 msgstr "Звуковий сигнал, коли NVDA зайнята"
 
-#. checkbox fix windows+Number
-#. Translators: Checkbox for windows_Number
-#: addon\globalPlugins\tonysEnhancements\__init__.py:312
-msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
-msgstr ""
-"Виправляти застрягання фокуса на панелі завдань під час натискання "
-"Windows+цифра"
-
 #. checkbox suppress unselected
 #. Translators: Checkbox for suppress unselected
-#: addon\globalPlugins\tonysEnhancements\__init__.py:318
 msgid "Suppress saying of 'unselected'."
 msgstr "Приглушити вислів «не виділено»."
 
 #. Dynamic keystrokes table
 #. Translators: Label for dynamic keystrokes table edit box
-#: addon\globalPlugins\tonysEnhancements\__init__.py:324
 msgid ""
 "Edit dynamic keystrokes table - see add-on documentation for more information"
 msgstr ""
@@ -94,269 +74,221 @@ msgstr ""
 "додатка для отримання додаткової інформації"
 
 #. LangMap checkbox and multiline edit button
-#: addon\globalPlugins\tonysEnhancements\__init__.py:330
 msgid "Enable automatic language switching based on character set"
 msgstr "Увімкнути автоматичне перемикання мови на основі набору символів"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:333
-#: addon\globalPlugins\tonysEnhancements\__init__.py:402
 msgid "Edit language map"
 msgstr "Редагувати мовну мапу"
 
-#. QuickSearch regexp text edit
-#: addon\globalPlugins\tonysEnhancements\__init__.py:337
-msgid "QuickSearch1 regexp (assigned to PrintScreen)"
-msgstr "Регулярний вираз швидкий пошук1 (призначено для друк екрана)"
-
-#. QuickSearch2 regexp text edit
-#: addon\globalPlugins\tonysEnhancements\__init__.py:341
-msgid "QuickSearch2 regexp (assigned to ScrollLock))"
-msgstr "Регулярний вираз швидкий пошук2 (призначено для ScrollLock)"
-
-#. QuickSearch3 regexp text edit
-#: addon\globalPlugins\tonysEnhancements\__init__.py:345
-msgid "QuickSearch3 regexp (assigned to Pause)"
-msgstr "Регулярний вираз швидкий пошук3 (призначено для Pause)"
-
 #. checkbox block scroll lock
 #. Translators: Checkbox for blocking scroll lock
-#: addon\globalPlugins\tonysEnhancements\__init__.py:350
 msgid "Suppress scroll lock mode announcements"
 msgstr "Приглушити оголошення про режим прокрутки"
 
 #. System priority Combo box
 #. Translators: Label for system priority combo box
-#: addon\globalPlugins\tonysEnhancements\__init__.py:355
 msgid "NVDA process system priority:"
 msgstr "Системний пріоритет процесу NVDA:"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:366
-#: addon\globalPlugins\tonysEnhancements\__init__.py:392
 msgid "Error"
 msgstr "Помилка"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:377
 msgid "Edit dynamic keystrokes table"
 msgstr "Редагувати таблицю динамічних сполучень клавіш"
 
 #. Translators: The message reported when a user attempts to use a table movement command
 #. when the cursor is not within a table.
-#: addon\globalPlugins\tonysEnhancements\__init__.py:578
 msgid "Not in a table cell"
 msgstr "Не в комірці таблиці"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:592
 msgid "Cannot find edge of table in this direction"
 msgstr "Не вдалося знайти край таблиці в цьому напрямку"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:605
+#, python-brace-format
 msgid "Cannot find {axis} with index {index} in this table"
 msgstr "Не вдалося знайти {axis} з індексом {index} у цій таблиці"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:671
-#: addon\globalPlugins\tonysEnhancements\__init__.py:727
 msgid "Not in a table!"
 msgstr "Не в таблиці!"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:690
 msgid "Cell copied"
 msgstr "Комірку скопійовано"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:697
 msgid "Row copied"
 msgstr "Рядок скопійовано"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:703
 msgid "Partial row copied"
 msgstr "Скопійовано частину рядка"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:709
 msgid "Column copied"
 msgstr "Стовпець скопійовано"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:715
 msgid "Partial column copied"
 msgstr "Скопійовано частину стовпця"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:721
 msgid "Table copied"
 msgstr "Таблицю скопійовано"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:735
 msgid "Copy ce&ll"
 msgstr "&Копіювати комірку"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:736
 msgid "Copy &column"
 msgstr "Копіювати &стовпець"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:737
 msgid "Copy column from current cell &down"
 msgstr "Копіювати стовпець від поточної комірки &вниз"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:738
 msgid "Copy &row"
 msgstr "Копіювати &рядок"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:739
 msgid "Copy row from current cell to the ri&ght"
 msgstr "Копіювати рядок від поточної комірки &праворуч"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:740
 msgid "Copy &table"
 msgstr "Копіювати &таблицю"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1007
 msgid "focusable object"
 msgstr "об'єкт фокусування"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1011
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1017
 msgid "current review character"
 msgstr "поточний символ перегляду"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1021
 msgid "navigator object"
 msgstr "об'єктний навігатор"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1041
 msgid "repeat"
 msgstr "повторити"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1066
+msgid "Clipboard history"
+msgstr ""
+
+msgid "Entries"
+msgstr ""
+
+msgid "&Paste"
+msgstr ""
+
 msgid "Tony's Enhancements"
 msgstr "Tony's Enhancements"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1108
-msgid "QuickSearch"
-msgstr "Швидкий пошук"
-
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1109
-msgid ""
-"Performs QuickSearch back or forward in editables according to "
-"quickSearch{i} regexp"
-msgstr ""
-"Виконує швидкий пошук вперед або назад у редагованих файлах відповідно до "
-"регулярних виразів швидкого пошуку{i}"
-
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1286
 #, python-format
 msgid "Move to the %d-th column in table"
 msgstr "Перейти до %d-го стовпця в таблиці"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1294
 #, python-format
 msgid "Move to the %d-th row in table"
 msgstr "Перейти до %d-го рядка в таблиці"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1302
 msgid "Show popup menu with copy table to clipboard commands."
 msgstr ""
 "Показати спливаюче меню з командами копіювання таблиці до буфера обміну."
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1308
 msgid "Copy table cell to clipboard."
 msgstr "Копіювати комірку таблиці в буфер обміну."
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1314
 msgid "Copy table column to clipboard."
 msgstr "Копіювати стовпець таблиці в буфер обміну."
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1320
 msgid "Copy table row to clipboard."
 msgstr "Копіювати рядок таблиці в буфер обміну."
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1326
 msgid "Copy the whole table to clipboard."
 msgstr "Копіювати всю таблицю в буфер обміну."
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1395
-msgid "Hide current window."
-msgstr "Приховати поточне вікно."
-
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1405
-#, python-format
-msgid "Hid current window. Now there are %d windows hidden."
-msgstr "Поточне вікно приховане. Тепер приховано %d вікон."
-
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1408
-msgid "Show hidden windows."
-msgstr "Показати приховані вікна."
-
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1411
-msgid "No windows hidden or all hidden windows have been already shown."
-msgstr "Немає прихованих вікон або всі приховані вікна вже показано."
-
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1421
-#, python-format
-msgid "%d windows shown"
-msgstr "показано %d вікон"
-
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1425
 msgid "Toggle microphone mute."
 msgstr "Перемикає вимкнення звуку мікрофона."
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1430
 msgid "Default microphone not found."
 msgstr "Основний мікрофон не знайдено."
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1435
 msgid "Muted microphone"
 msgstr "Мікрофон вимкнено"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1435
 msgid "Unmuted microphone"
 msgstr "Мікрофон увімкнено"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1441
 msgid "Left click on current object."
 msgstr "Клацніть лівою кнопкою миші на поточному об'єкті."
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1446
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1455
+#, python-brace-format
 msgid "Left click on {kind}"
 msgstr "Клацніть лівою кнопкою миші на {kind}"
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1450
 msgid "Right click on current object."
 msgstr "Клацніть правою кнопкою миші на поточному об'єкті."
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1459
-msgid "Mouse wheel scroll down on current object."
-msgstr "Прокручує  колесо миші на поточному об’єкті вниз."
-
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1463
-msgid "Scroll down"
-msgstr "Прокрутити вниз"
-
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1466
-msgid "Mouse wheel scroll up on current object."
-msgstr "Прокручує  колесо миші на поточному об’єкті вгору."
-
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1470
-msgid "Scroll up"
-msgstr "Прокрутити вгору"
-
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1473
 msgid "Move mouse pointer to top left corner."
 msgstr "Перемістити вказівник миші у верхній лівий кут."
 
-#: addon\globalPlugins\tonysEnhancements\__init__.py:1475
 msgid "Mouse pointer moved to top left corner. "
 msgstr "Вказівник миші переміщено у верхній лівий кут. "
+
+msgid "Show clipboard history"
+msgstr ""
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
 #. to be shown on installation and add-on information found in Add-ons Manager.
-#: buildVars.py:23
 msgid "Tony's enhancements"
 msgstr "Tony's enhancements"
 
 #. Add-on description
 #. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
-#: buildVars.py:26
 msgid "Various NVDA enhancements."
 msgstr "Різні покращення NVDA."
+
+#~ msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
+#~ msgstr ""
+#~ "Виправляти застрягання фокуса на панелі завдань під час натискання "
+#~ "Windows+цифра"
+
+#~ msgid "QuickSearch1 regexp (assigned to PrintScreen)"
+#~ msgstr "Регулярний вираз швидкий пошук1 (призначено для друк екрана)"
+
+#~ msgid "QuickSearch2 regexp (assigned to ScrollLock))"
+#~ msgstr "Регулярний вираз швидкий пошук2 (призначено для ScrollLock)"
+
+#~ msgid "QuickSearch3 regexp (assigned to Pause)"
+#~ msgstr "Регулярний вираз швидкий пошук3 (призначено для Pause)"
+
+#~ msgid "QuickSearch"
+#~ msgstr "Швидкий пошук"
+
+#~ msgid ""
+#~ "Performs QuickSearch back or forward in editables according to "
+#~ "quickSearch{i} regexp"
+#~ msgstr ""
+#~ "Виконує швидкий пошук вперед або назад у редагованих файлах відповідно до "
+#~ "регулярних виразів швидкого пошуку{i}"
+
+#~ msgid "Hide current window."
+#~ msgstr "Приховати поточне вікно."
+
+#, python-format
+#~ msgid "Hid current window. Now there are %d windows hidden."
+#~ msgstr "Поточне вікно приховане. Тепер приховано %d вікон."
+
+#~ msgid "Show hidden windows."
+#~ msgstr "Показати приховані вікна."
+
+#~ msgid "No windows hidden or all hidden windows have been already shown."
+#~ msgstr "Немає прихованих вікон або всі приховані вікна вже показано."
+
+#, python-format
+#~ msgid "%d windows shown"
+#~ msgstr "показано %d вікон"
+
+#~ msgid "Mouse wheel scroll down on current object."
+#~ msgstr "Прокручує  колесо миші на поточному об’єкті вниз."
+
+#~ msgid "Scroll down"
+#~ msgstr "Прокрутити вниз"
+
+#~ msgid "Mouse wheel scroll up on current object."
+#~ msgstr "Прокручує  колесо миші на поточному об’єкті вгору."
+
+#~ msgid "Scroll up"
+#~ msgstr "Прокрутити вгору"
 
 #~ msgid "Normal"
 #~ msgstr "Нормальний"

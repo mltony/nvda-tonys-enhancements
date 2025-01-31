@@ -62,11 +62,6 @@ msgstr "Bloqueio de caps lock duplo"
 msgid "Beep when NVDA is busy"
 msgstr "Apitar quando o NVDA está ocupado"
 
-#. checkbox fix windows+Number
-#. Translators: Checkbox for windows_Number
-msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
-msgstr "Fixar o foco preso na barra de tarefas ao pressionar Windows+Number"
-
 #. checkbox suppress unselected
 #. Translators: Checkbox for suppress unselected
 msgid "Suppress saying of 'unselected'."
@@ -87,18 +82,6 @@ msgstr ""
 
 msgid "Edit language map"
 msgstr "Editar mapa de línguas"
-
-#. QuickSearch regexp text edit
-msgid "QuickSearch1 regexp (assigned to PrintScreen)"
-msgstr "pesquisaRápida1 regexp (atribuído ao PrintScreen)"
-
-#. QuickSearch2 regexp text edit
-msgid "QuickSearch2 regexp (assigned to ScrollLock))"
-msgstr "pesquisaRápida2 regexp (atribuído a ScrollLock))"
-
-#. QuickSearch3 regexp text edit
-msgid "QuickSearch3 regexp (assigned to Pause)"
-msgstr "pesquisaRápida3 regexp (atribuído à Pausa)"
 
 #. checkbox block scroll lock
 #. Translators: Checkbox for blocking scroll lock
@@ -179,19 +162,17 @@ msgstr "objecto do Navegador"
 msgid "repeat"
 msgstr "repetir"
 
+msgid "Clipboard history"
+msgstr ""
+
+msgid "Entries"
+msgstr ""
+
+msgid "&Paste"
+msgstr ""
+
 msgid "Tony's Enhancements"
 msgstr "Melhorias do Tony"
-
-msgid "QuickSearch"
-msgstr "QPesquisaRápida"
-
-#, python-brace-format
-msgid ""
-"Performs QuickSearch back or forward in editables according to "
-"quickSearch{i} regexp"
-msgstr ""
-"Executa QuickSearch para trás ou para a frente em títulos editáveis de "
-"acordo com quickSearch{i} regexp"
 
 #, python-format
 msgid "Move to the %d-th column in table"
@@ -218,23 +199,6 @@ msgstr "Copiar linha da tabela para a área de transferência."
 msgid "Copy the whole table to clipboard."
 msgstr "Copiar toda a tabela para a área de transferência."
 
-msgid "Hide current window."
-msgstr "Ocultar a janela atual."
-
-#, python-format
-msgid "Hid current window. Now there are %d windows hidden."
-msgstr "Janela actual oculta. Agora existem %d janelas ocultas."
-
-msgid "Show hidden windows."
-msgstr "Mostrar janelas ocultas."
-
-msgid "No windows hidden or all hidden windows have been already shown."
-msgstr "Nenhuma janela oculta ou todas as janelas ocultas já foram mostradas."
-
-#, python-format
-msgid "%d windows shown"
-msgstr "%d janelas mostradas"
-
 msgid "Toggle microphone mute."
 msgstr "Alternar o silenciamento do microfone."
 
@@ -257,23 +221,14 @@ msgstr "Clique com o botão esquerdo em {kind}"
 msgid "Right click on current object."
 msgstr "Clique com o botão direito do rato no objeto atual."
 
-msgid "Mouse wheel scroll down on current object."
-msgstr "Deslocação da roda do rato para baixo no objeto atual."
-
-msgid "Scroll down"
-msgstr "Role para baixo"
-
-msgid "Mouse wheel scroll up on current object."
-msgstr "A roda do rato desloca-se para cima no objeto atual."
-
-msgid "Scroll up"
-msgstr "Percorrer para cima"
-
 msgid "Move mouse pointer to top left corner."
 msgstr "Mova o ponteiro do rato para o canto superior esquerdo."
 
 msgid "Mouse pointer moved to top left corner. "
 msgstr "O ponteiro do rato moveu-se para o canto superior esquerdo "
+
+msgid "Show clipboard history"
+msgstr ""
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
@@ -285,3 +240,56 @@ msgstr "Melhorias do Tony"
 #. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
 msgid "Various NVDA enhancements."
 msgstr "Várias melhorias no NVDA."
+
+#~ msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
+#~ msgstr "Fixar o foco preso na barra de tarefas ao pressionar Windows+Number"
+
+#~ msgid "QuickSearch1 regexp (assigned to PrintScreen)"
+#~ msgstr "pesquisaRápida1 regexp (atribuído ao PrintScreen)"
+
+#~ msgid "QuickSearch2 regexp (assigned to ScrollLock))"
+#~ msgstr "pesquisaRápida2 regexp (atribuído a ScrollLock))"
+
+#~ msgid "QuickSearch3 regexp (assigned to Pause)"
+#~ msgstr "pesquisaRápida3 regexp (atribuído à Pausa)"
+
+#~ msgid "QuickSearch"
+#~ msgstr "QPesquisaRápida"
+
+#, python-brace-format
+#~ msgid ""
+#~ "Performs QuickSearch back or forward in editables according to "
+#~ "quickSearch{i} regexp"
+#~ msgstr ""
+#~ "Executa QuickSearch para trás ou para a frente em títulos editáveis de "
+#~ "acordo com quickSearch{i} regexp"
+
+#~ msgid "Hide current window."
+#~ msgstr "Ocultar a janela atual."
+
+#, python-format
+#~ msgid "Hid current window. Now there are %d windows hidden."
+#~ msgstr "Janela actual oculta. Agora existem %d janelas ocultas."
+
+#~ msgid "Show hidden windows."
+#~ msgstr "Mostrar janelas ocultas."
+
+#~ msgid "No windows hidden or all hidden windows have been already shown."
+#~ msgstr ""
+#~ "Nenhuma janela oculta ou todas as janelas ocultas já foram mostradas."
+
+#, python-format
+#~ msgid "%d windows shown"
+#~ msgstr "%d janelas mostradas"
+
+#~ msgid "Mouse wheel scroll down on current object."
+#~ msgstr "Deslocação da roda do rato para baixo no objeto atual."
+
+#~ msgid "Scroll down"
+#~ msgstr "Role para baixo"
+
+#~ msgid "Mouse wheel scroll up on current object."
+#~ msgstr "A roda do rato desloca-se para cima no objeto atual."
+
+#~ msgid "Scroll up"
+#~ msgstr "Percorrer para cima"
