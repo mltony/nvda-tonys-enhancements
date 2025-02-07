@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tonysEnhancements 1.16\n"
 "Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
 "POT-Creation-Date: 2023-09-22 20:25+0000\n"
-"PO-Revision-Date: 2024-07-27 12:51+0300\n"
+"PO-Revision-Date: 2025-02-04 03:03+0200\n"
 "Last-Translator: Jani Kinnunen <janikinnunen340@gmail.com>\n"
 "Language-Team: fi_FI <janikinnunen340@gmail.com>\n"
 "Language: fi\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 
 msgid "Normal,Above normal,High,Realtime"
 msgstr "Normaali,Normaalia korkeampi,Korkea,Reaaliaikainen"
@@ -162,13 +162,13 @@ msgid "repeat"
 msgstr "toista"
 
 msgid "Clipboard history"
-msgstr ""
+msgstr "Leikepöydän historia"
 
 msgid "Entries"
-msgstr ""
+msgstr "Kohteet"
 
 msgid "&Paste"
-msgstr ""
+msgstr "&Liitä"
 
 msgid "Tony's Enhancements"
 msgstr "Tonyn laajennukset"
@@ -226,7 +226,7 @@ msgid "Mouse pointer moved to top left corner. "
 msgstr "Hiiren osoitin siirretty vasempaan yläkulmaan"
 
 msgid "Show clipboard history"
-msgstr ""
+msgstr "Näytä leikepöydän historia"
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on

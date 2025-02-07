@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tony'nin Geliştirmeleri\n"
 "Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
 "POT-Creation-Date: 2023-09-22 20:25+0000\n"
-"PO-Revision-Date: 2024-05-19 15:39+0300\n"
+"PO-Revision-Date: 2025-02-01 12:31+0300\n"
 "Last-Translator: Umut KORKMAZ <umutkork@gmail.com>\n"
 "Language-Team: Çağrı Doğan ve Umut KORKMAZ <umutkork@gmail.com>\n"
 "Language: tr_TR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 "X-Poedit-Basepath: ../../../globalPlugins/tonysEnhancements\n"
 "X-Poedit-SearchPath-0: .\n"
 
@@ -164,13 +164,13 @@ msgid "repeat"
 msgstr "tekrar"
 
 msgid "Clipboard history"
-msgstr ""
+msgstr "Pano Geçmişi"
 
 msgid "Entries"
-msgstr ""
+msgstr "Girişler"
 
 msgid "&Paste"
-msgstr ""
+msgstr "Ya&pıştır"
 
 msgid "Tony's Enhancements"
 msgstr "Tony'nin Geliştirmeleri"
@@ -227,7 +227,7 @@ msgid "Mouse pointer moved to top left corner. "
 msgstr "Fare imleci sol üst köşeye taşındı "
 
 msgid "Show clipboard history"
-msgstr ""
+msgstr "Pano Geçmişini Göster"
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on

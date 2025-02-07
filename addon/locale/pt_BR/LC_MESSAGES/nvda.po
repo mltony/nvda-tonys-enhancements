@@ -1,41 +1,43 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Copyright (C) 2025 NVDA Contributors.
 # This file is distributed under the same license as the tonysEnhancements package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Josevan Barbosa Fernandes <josevanfernandes@yahoo.com.br>, 2025.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: tonysEnhancements 1.16\n"
 "Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
 "POT-Creation-Date: 2023-09-22 20:25+0000\n"
-"PO-Revision-Date: 2025-02-01 18:37+0100\n"
-"Last-Translator: José Manuel Delicado <jm.delicado@nvda.es>\n"
-"Language-Team: \n"
-"Language: es\n"
+"PO-Revision-Date: 2025-02-02 13:47-0300\n"
+"Last-Translator: Josevan Fernandes <josevanfernandes@yahoo.com.br>\n"
+"Language-Team: NVDA Brazilian Portuguese translation team (Equipe de "
+"tradução do NVDA para Português Brasileiro) <clever97@gmail.com>\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.5\n"
 
 msgid "Normal,Above normal,High,Realtime"
-msgstr "Normal,Por encima de lo normal,Alta,Tiempo real"
+msgstr "Normal,Above normal,High,Realtime"
 
 #, python-format
 msgid "Failed to set process priority to %s."
-msgstr "Fallo al configurar la prioridad del proceso en %s."
+msgstr "Falha ao definir a prioridade do processo como %s."
 
 msgid "Tony's enhancement add-on encountered an error"
-msgstr "El complemento Mejoras de Tony ha encontrado un error"
+msgstr "O complemento de aprimoramento do Tony encontrou um erro"
 
 msgid "OK"
-msgstr "Aceptar"
+msgstr "OK"
 
 msgid "Cancel"
 msgstr "Cancelar"
 
 #. Translators: Title for the settings dialog
 msgid "Tony's enhancements  settings"
-msgstr "Opciones de Mejoras de Tony"
+msgstr "Configurações de Tony's enhancements"
 
 #. checkbox Detect insert mode
 #. Translators: Checkbox for insert mode detection
@@ -43,41 +45,40 @@ msgid ""
 "Detect insert mode in text documents and beep on every keystroke when insert "
 "mode is on."
 msgstr ""
-"Detectar modo de inserción en documentos de texto y pitar con cada pulsación "
-"de teclado cuando el modo de inserción esté activado."
+"Detectar o modo de inserção em documentos de texto e emitir um bipe a cada "
+"pressionamento de tecla quando o modo de inserção estiver ativado."
 
 #. checkbox block double insert
 #. Translators: Checkbox for block double insert
 msgid "Block double insert"
-msgstr "Bloquear el insert doble"
+msgstr "Bloco de inserção dupla"
 
 #. checkbox block double caps
 #. Translators: Checkbox for block double caps
 msgid "Block double Caps Lock"
-msgstr "Bloquear el bloqueo de mayúsculas doble"
+msgstr "Bloqueio duplo Caps Lock"
 
 #. checkbox Busy beep
 #. Translators: Checkbox for busy beep
 msgid "Beep when NVDA is busy"
-msgstr "Pitar cuando NVDA está ocupado"
+msgstr "Bip quando o NVDA está ocupado"
 
 #. checkbox suppress unselected
 #. Translators: Checkbox for suppress unselected
 msgid "Suppress saying of 'unselected'."
-msgstr "Eliminar la verbalización de 'no seleccionado'."
+msgstr "Suprimir a indicação de “não selecionado”."
 
 #. Dynamic keystrokes table
 #. Translators: Label for dynamic keystrokes table edit box
 msgid ""
 "Edit dynamic keystrokes table - see add-on documentation for more information"
 msgstr ""
-"Editar tabla de atajos dinámicos - consulta la documentación del complemento "
-"para más información"
+"Editar a tabela dinâmica de pressionamentos de teclas - consulte a "
+"documentação do complemento para obter mais informações"
 
 #. LangMap checkbox and multiline edit button
 msgid "Enable automatic language switching based on character set"
-msgstr ""
-"Habilitar cambio de idioma automático basado en el conjunto de caracteres"
+msgstr "Ativar a troca automática de idioma com base no conjunto de caracteres"
 
 msgid "Edit language map"
 msgstr "Editar mapa de idiomas"
@@ -85,156 +86,157 @@ msgstr "Editar mapa de idiomas"
 #. checkbox block scroll lock
 #. Translators: Checkbox for blocking scroll lock
 msgid "Suppress scroll lock mode announcements"
-msgstr "Eliminar anuncios del modo de bloqueo de desplazamiento"
+msgstr "Suprimir anúncios de modo de bloqueio de rolagem"
 
 #. System priority Combo box
 #. Translators: Label for system priority combo box
 msgid "NVDA process system priority:"
-msgstr "Prioridad del proceso de NVDA en el sistema:"
+msgstr "Prioridade do sistema do processo NVDA:"
 
 msgid "Error"
-msgstr "Error"
+msgstr "Erro"
 
 msgid "Edit dynamic keystrokes table"
-msgstr "Editar tabla de atajos dinámicos"
+msgstr "Editar a tabela dinâmica de pressionamentos de teclas"
 
 #. Translators: The message reported when a user attempts to use a table movement command
 #. when the cursor is not within a table.
 msgid "Not in a table cell"
-msgstr "No estás en una celda de tabla"
+msgstr "Não em uma célula de tabela"
 
 msgid "Cannot find edge of table in this direction"
-msgstr "No se puede encontrar el borde de la tabla en esta dirección"
+msgstr "Não é possível encontrar a borda da mesa nessa direção"
 
 #, python-brace-format
 msgid "Cannot find {axis} with index {index} in this table"
-msgstr "No se puede encontrar {axis} con índice {index} en esta tabla"
+msgstr "Não é possível encontrar {axis} com o índice {index} nesta tabela"
 
 msgid "Not in a table!"
-msgstr "¡No estás en una tabla!"
+msgstr "Não em uma mesa!"
 
 msgid "Cell copied"
-msgstr "Celda copiada"
+msgstr "Célula copiada"
 
 msgid "Row copied"
-msgstr "Fila copiada"
+msgstr "Linha copiada"
 
 msgid "Partial row copied"
-msgstr "Fila parcial copiada"
+msgstr "Linha parcial copiada"
 
 msgid "Column copied"
-msgstr "Columna copiada"
+msgstr "Coluna copiada"
 
 msgid "Partial column copied"
-msgstr "Columna parcial copiada"
+msgstr "Coluna parcial copiada"
 
 msgid "Table copied"
-msgstr "Tabla copiada"
+msgstr "Tabela copiada"
 
 msgid "Copy ce&ll"
-msgstr "Copiar c&elda"
+msgstr "Copiar cé&lula"
 
 msgid "Copy &column"
-msgstr "Copiar &columna"
+msgstr "Copiar &coluna"
 
 msgid "Copy column from current cell &down"
-msgstr "Copiar columna desde la celda actual hacia &abajo"
+msgstr "Copiar coluna da célula atual e para &baixo"
 
 msgid "Copy &row"
-msgstr "Copiar &fila"
+msgstr "Copiar &linha"
 
 msgid "Copy row from current cell to the ri&ght"
-msgstr "Copiar fila desde la celda actual a la &derecha"
+msgstr "Copiar linha da célula atual para a di&reita"
 
 msgid "Copy &table"
-msgstr "Copiar &tabla"
+msgstr "Copiar &tabela"
 
 msgid "focusable object"
-msgstr "objeto enfocable"
+msgstr "objeto focalizável"
 
 msgid "current review character"
-msgstr "carácter actual en revisión"
+msgstr "caráter de revisão atual"
 
 msgid "navigator object"
-msgstr "objeto en el navegador"
+msgstr "objeto do navegador"
 
 msgid "repeat"
 msgstr "repetir"
 
 msgid "Clipboard history"
-msgstr "Historial del portapapeles"
+msgstr "Histórico da área de transferência"
 
 msgid "Entries"
 msgstr "Entradas"
 
 msgid "&Paste"
-msgstr "&Pegar"
+msgstr "&Colar"
 
 msgid "Tony's Enhancements"
-msgstr "Mejoras de Tony"
+msgstr "Tony's Enhancements"
 
 #, python-format
 msgid "Move to the %d-th column in table"
-msgstr "Moverse a la columna %d en la tabla"
+msgstr "Mover para a %d-ésima coluna na tabela"
 
 #, python-format
 msgid "Move to the %d-th row in table"
-msgstr "Moverse a la fila %d en la tabla"
+msgstr "Mover para a %d-ésima linha na tabela"
 
 msgid "Show popup menu with copy table to clipboard commands."
 msgstr ""
-"Mostrar menú emergente con órdenes para copiar una tabla al portapapeles."
+"Mostrar menu pop-up com comandos de cópia da tabela para a área de "
+"transferência."
 
 msgid "Copy table cell to clipboard."
-msgstr "Copiar celda de la tabla al portapapeles."
+msgstr "Copiar célula da tabela para a área de transferência."
 
 msgid "Copy table column to clipboard."
-msgstr "Copiar columna de la tabla al portapapeles."
+msgstr "Copiar coluna da tabela para a área de transferência."
 
 msgid "Copy table row to clipboard."
-msgstr "Copiar fila de la tabla al portapapeles."
+msgstr "Copiar a linha da tabela para a área de transferência."
 
 msgid "Copy the whole table to clipboard."
-msgstr "Copiar la tabla completa al portapapeles."
+msgstr "Copie a tabela inteira para a área de transferência."
 
 msgid "Toggle microphone mute."
-msgstr "Conmutar silencio del micrófono."
+msgstr "Alternar o mudo do microfone."
 
 msgid "Default microphone not found."
-msgstr "No se encuentra el micrófono predeterminado."
+msgstr "O microfone padrão não foi encontrado."
 
 msgid "Muted microphone"
-msgstr "Micrófono silenciado"
+msgstr "Microfone mudo"
 
 msgid "Unmuted microphone"
-msgstr "Micrófono abierto"
+msgstr "Microfone sem som"
 
 msgid "Left click on current object."
-msgstr "Clic izquierdo en el objeto actual."
+msgstr "Clique com o botão esquerdo do mouse no objeto atual."
 
 #, python-brace-format
 msgid "Left click on {kind}"
-msgstr "Clic izquierdo en {kind}"
+msgstr "Clique com o botão esquerdo do mouse em {kind}"
 
 msgid "Right click on current object."
-msgstr "Clic derecho en el objeto actual."
+msgstr "Clique com o botão direito do mouse no objeto atual."
 
 msgid "Move mouse pointer to top left corner."
-msgstr "Mover puntero del ratón a la esquina superior izquierda."
+msgstr "Mova o ponteiro do mouse para o canto superior esquerdo."
 
 msgid "Mouse pointer moved to top left corner. "
-msgstr "Puntero del ratón movido a la esquina superior izquierda. "
+msgstr "O ponteiro do mouse foi movido para o canto superior esquerdo. "
 
 msgid "Show clipboard history"
-msgstr "Mostrar historial del portapapeles"
+msgstr "Mostrar histórico da área de transferência"
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
 #. to be shown on installation and add-on information found in Add-ons Manager.
 msgid "Tony's enhancements"
-msgstr "Mejoras de Tony"
+msgstr "Tony's enhancements"
 
 #. Add-on description
 #. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
 msgid "Various NVDA enhancements."
-msgstr "Diversas mejoras para NVDA."
+msgstr "Diversos aprimoramentos do NVDA."

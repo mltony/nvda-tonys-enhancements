@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: 'tonysEnhancements' '1.16'\n"
 "Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
 "POT-Creation-Date: 2023-09-13 06:30+0800\n"
-"PO-Revision-Date: 2023-09-13 06:33+0800\n"
+"PO-Revision-Date: 2025-02-02 18:10+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.5\n"
 
 msgid "Normal,Above normal,High,Realtime"
 msgstr "正常,高于正常,高,实时"
@@ -63,7 +63,7 @@ msgstr "NVDA 忙碌时发出蜂鸣声"
 #. checkbox suppress unselected
 #. Translators: Checkbox for suppress unselected
 msgid "Suppress saying of 'unselected'."
-msgstr "禁止朗读“未选择”"
+msgstr "禁止朗读“未选择”。"
 
 #. Dynamic keystrokes table
 #. Translators: Label for dynamic keystrokes table edit box
@@ -86,7 +86,7 @@ msgstr "禁止朗读滚动锁定模式"
 #. System priority Combo box
 #. Translators: Label for system priority combo box
 msgid "NVDA process system priority:"
-msgstr "NVDA 进程优先级"
+msgstr "NVDA 进程优先级："
 
 msgid "Error"
 msgstr "错误"
@@ -107,7 +107,7 @@ msgid "Cannot find {axis} with index {index} in this table"
 msgstr "找不到索引为 {index} {axis} 的单元格"
 
 msgid "Not in a table!"
-msgstr "未在表格中"
+msgstr "未在表格中！"
 
 msgid "Cell copied"
 msgstr "已复制单元格"
@@ -158,13 +158,13 @@ msgid "repeat"
 msgstr "重复"
 
 msgid "Clipboard history"
-msgstr ""
+msgstr "剪贴板历史记录"
 
 msgid "Entries"
-msgstr ""
+msgstr "条目"
 
 msgid "&Paste"
-msgstr ""
+msgstr "粘贴(&P)"
 
 msgid "Tony's Enhancements"
 msgstr "Tony的增强"
@@ -221,7 +221,7 @@ msgid "Mouse pointer moved to top left corner. "
 msgstr "将鼠标指针移至左上角。"
 
 msgid "Show clipboard history"
-msgstr ""
+msgstr "显示剪贴板历史记录"
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
