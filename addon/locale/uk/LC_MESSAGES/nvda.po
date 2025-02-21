@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
 "POT-Creation-Date: 2023-09-21 06:11+0300\n"
-"PO-Revision-Date: 2023-09-25 11:58+0300\n"
+"PO-Revision-Date: 2025-02-21 20:04+0200\n"
 "Last-Translator: Heorhii <nvda.translation.uk@gmail.com>\n"
 "Language-Team: \n"
 "Language: uk\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.5\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-Bookmarks: 25,-1,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
@@ -160,13 +160,13 @@ msgid "repeat"
 msgstr "повторити"
 
 msgid "Clipboard history"
-msgstr ""
+msgstr "Історія буфера обміну"
 
 msgid "Entries"
-msgstr ""
+msgstr "Записи"
 
 msgid "&Paste"
-msgstr ""
+msgstr "&Вставити"
 
 msgid "Tony's Enhancements"
 msgstr "Tony's Enhancements"
@@ -224,7 +224,7 @@ msgid "Mouse pointer moved to top left corner. "
 msgstr "Вказівник миші переміщено у верхній лівий кут. "
 
 msgid "Show clipboard history"
-msgstr ""
+msgstr "Показати історію буфера обміну"
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
