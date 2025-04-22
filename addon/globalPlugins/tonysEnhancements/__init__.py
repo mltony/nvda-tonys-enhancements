@@ -425,7 +425,7 @@ class Beeper:
             channels=2,
             samplesPerSec=int(tones.SAMPLE_RATE),
             bitsPerSample=16,
-            outputDevice=config.conf["speech"]["outputDevice"],
+            outputDevice=config.conf["audio"]["outputDevice"],
             wantDucking=False
         )
         self.stopSignal = False
@@ -1234,10 +1234,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         else:
             kb = kb[0]
         focus = api.getFocusObject()
-        try:
-            appName = focus.appModule.appName
-        except AttributeError:
-            appName = None
+        appName = focus.appModule.appName
         if(
             dynamicKeystrokes is not None and (
                 ("*", kb) in dynamicKeystrokes
