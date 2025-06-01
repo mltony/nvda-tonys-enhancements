@@ -1028,7 +1028,7 @@ class MousePointerHover:
 # For some reason Since some Windows update around March 2025 we cannot resolve keystrokes right away - this throws an exception.
 # Doing it with a delay of 3 seconds.
 #reloadDynamicKeystrokes()
-core.callLater(3000, reloadDynamicKeystrokes)
+core.callLater(5000, reloadDynamicKeystrokes)
 reloadLangMap()
 updatePriority()
 updateScrollLockBlocking()
