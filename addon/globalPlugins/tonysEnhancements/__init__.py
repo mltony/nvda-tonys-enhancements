@@ -134,10 +134,14 @@ def parseDynamicKeystrokes(s):
         if len(tokens) != 2:
             raise ValueError(f"Dynamic shortcuts configuration: invalid line: {line}")
         app = tokens[0]
+        keystroke = tokens[1].rstrip()
         try:
-            kb = keyboardHandler.KeyboardInputGesture.fromName(tokens[1]).identifiers[0]
+            kb = keyboardHandler.KeyboardInputGesture.fromName(keystroke).identifiers[0]
         except (KeyError, IndexError):
-            raise ValueError(f"Invalid kb shortcut {tokens[1]} ")
+            raise ValueError(f"Invalid kb shortcut {keystroke}")
+        except LookupError:
+            log.error(f"Invalid kb shortcut {keystroke}")
+            continue
         result.add((app, kb))
     return result
 
@@ -421,12 +425,16 @@ class Beeper:
     MAX_BEEP_COUNT = MAX_CRACKLE_LEN // (BEEP_LEN + PAUSE_LEN)
 
     def __init__(self):
+        try:
+            outputDevice=config.conf["speech"]["outputDevice"]
+        except KeyError:
+            outputDevice=config.conf["audio"]["outputDevice"]
         self.player = nvwave.WavePlayer(
             channels=2,
             samplesPerSec=int(tones.SAMPLE_RATE),
             bitsPerSample=16,
-            outputDevice=config.conf["audio"]["outputDevice"],
-            wantDucking=False
+            outputDevice=outputDevice,
+            wantDucking=False,
         )
         self.stopSignal = False
 
@@ -1017,8 +1025,10 @@ class MousePointerHover:
 
         pass
 
-
-reloadDynamicKeystrokes()
+# For some reason Since some Windows update around March 2025 we cannot resolve keystrokes right away - this throws an exception.
+# Doing it with a delay of 3 seconds.
+#reloadDynamicKeystrokes()
+core.callLater(3000, reloadDynamicKeystrokes)
 reloadLangMap()
 updatePriority()
 updateScrollLockBlocking()
