@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: tonysEnhancements 1.16\n"
 "Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
 "POT-Creation-Date: 2024-02-02 20:25+0000\n"
-"PO-Revision-Date: 2024-05-10 22:39+0100\n"
+"PO-Revision-Date: 2025-04-25 20:10+0100\n"
 "Last-Translator: Ângelo Abrantes <ampa4374@gmail.com>\n"
 "Language-Team: \n"
 "Language: pt_PT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.6\n"
 
 msgid "Normal,Above normal,High,Realtime"
 msgstr "Normal,Acima do normal,Alto,Tempo Real"
@@ -163,13 +163,13 @@ msgid "repeat"
 msgstr "repetir"
 
 msgid "Clipboard history"
-msgstr ""
+msgstr "Histórico da área de transferência"
 
 msgid "Entries"
-msgstr ""
+msgstr "Entradas"
 
 msgid "&Paste"
-msgstr ""
+msgstr "&Colar"
 
 msgid "Tony's Enhancements"
 msgstr "Melhorias do Tony"
@@ -228,7 +228,7 @@ msgid "Mouse pointer moved to top left corner. "
 msgstr "O ponteiro do rato moveu-se para o canto superior esquerdo "
 
 msgid "Show clipboard history"
-msgstr ""
+msgstr "Mostrar o histórico da área de transferência"
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
