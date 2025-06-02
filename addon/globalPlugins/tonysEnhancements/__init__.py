@@ -39,6 +39,8 @@ import ui
 import watchdog
 import winUser
 import wx
+from . import audio
+import globalVars
 
 winmm = ctypes.windll.winmm
 
@@ -115,6 +117,10 @@ def initConfiguration():
         "quickSearch2" : f"string( default='')",
         "quickSearch3" : f"string( default='')",
         "priority" : "integer( default=0, min=0, max=3)",
+        "soundSplitState": "integer(default=0)",
+        "includedSoundSplitModes": "int_list(default=list(0, 2, 3))",
+        "applicationsSoundVolume": "integer(default=100, min=0, max=100)",
+        "applicationsSoundMuted": "boolean(default=False)",
     }
     config.conf.spec[module] = confspec
 
@@ -1033,6 +1039,8 @@ reloadLangMap()
 updatePriority()
 updateScrollLockBlocking()
 
+audio.initialize()
+
 def getControlVGesture():
     try:
         return keyboardHandler.KeyboardInputGesture.fromName("Control+v")
@@ -1439,3 +1447,60 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         global clipboardHistoryEntries
         clipboardHistoryEntries = getClipboardEntries()
         gui.mainFrame.popupSettingsDialog(ClipboardHistoryDialog)
+
+    @script(
+        description=_(
+            # Translators: Describes a command.
+            "Increases the volume of other applications",
+        ),
+        gestures=['kb:NVDA+Alt+PageUp']
+    )
+    def script_increaseApplicationsVolume(self, gesture: "inputCore.InputGesture") -> None:
+        audio.appsVolume._adjustAppsVolume(5)
+
+    @script(
+        description=_(
+            # Translators: Describes a command.
+            "Decreases the volume of other applications",
+        ),
+        gestures=['kb:NVDA+Alt+PageDown']
+    )
+    def script_decreaseApplicationsVolume(self, gesture: "inputCore.InputGesture") -> None:
+        audio.appsVolume._adjustAppsVolume(-5)
+
+    @script(
+        description=_(
+            # Translators: Describes a command.
+            "Mutes or unmutes other applications",
+        ),
+    )
+    def script_toggleApplicationsMute(self, gesture: "inputCore.InputGesture") -> None:
+        appsVolume._toggleAppsVolumeMute()
+
+    def findVolumeSetting(self):
+        settings = [
+            setting
+            for setting in globalVars.settingsRing.settings
+            if setting.setting.id == 'volume'
+        ]
+        return settings[0]
+        
+
+
+    @script(
+        description=_("Increases the volume of NVDA",),
+        gestures=("kb:NVDA+Control+PageUp",),
+    )
+    def script_increaseNVDAVolume(self, gesture):
+        newVolume = self.findVolumeSetting().increase()
+        msg = _("{} percent NVDA volume").format(newVolume)
+        ui.message(msg)
+
+    @script(
+        description=_("Decreases the volume of NVDA",),
+        gestures=("kb:NVDA+Control+PageDown",),
+    )
+    def script_decreaseNVDAVolume(self, gesture):
+        newVolume = self.findVolumeSetting().decrease()
+        msg = _("{} percent NVDA volume").format(newVolume)
+        ui.message(msg)
