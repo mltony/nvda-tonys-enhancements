@@ -226,6 +226,28 @@ msgstr "Вказівник миші переміщено у верхній лі�
 msgid "Show clipboard history"
 msgstr "Показати історію буфера обміну"
 
+#. Translators: Describes a command.
+msgid "Increases the volume of other applications"
+msgstr ""
+
+#. Translators: Describes a command.
+msgid "Decreases the volume of other applications"
+msgstr ""
+
+#. Translators: Describes a command.
+msgid "Mutes or unmutes other applications"
+msgstr ""
+
+msgid "Increases the volume of NVDA"
+msgstr ""
+
+#, fuzzy
+msgid "{} percent NVDA volume"
+msgstr "Гучність NVDA"
+
+msgid "Decreases the volume of NVDA"
+msgstr ""
+
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
 #. to be shown on installation and add-on information found in Add-ons Manager.
@@ -327,9 +349,6 @@ msgstr "Різні покращення NVDA."
 #, python-format
 #~ msgid "NVDA+Alt+%d"
 #~ msgstr "NVDA+Alt+%d"
-
-#~ msgid "NVDA volume"
-#~ msgstr "Гучність NVDA"
 
 #~ msgid "Applications volume"
 #~ msgstr "Гучність додатків"

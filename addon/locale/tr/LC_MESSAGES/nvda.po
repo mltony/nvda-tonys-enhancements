@@ -229,6 +229,30 @@ msgstr "Fare imleci sol üst köşeye taşındı "
 msgid "Show clipboard history"
 msgstr "Pano Geçmişini Göster"
 
+#. Translators: Describes a command.
+msgid "Increases the volume of other applications"
+msgstr ""
+
+#. Translators: Describes a command.
+msgid "Decreases the volume of other applications"
+msgstr ""
+
+#. Translators: Describes a command.
+msgid "Mutes or unmutes other applications"
+msgstr ""
+
+#, fuzzy
+msgid "Increases the volume of NVDA"
+msgstr "NVDA sesini artır."
+
+#, fuzzy
+msgid "{} percent NVDA volume"
+msgstr "NVDA sesini düşür."
+
+#, fuzzy
+msgid "Decreases the volume of NVDA"
+msgstr "NVDA sesini düşür."
+
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
 #. to be shown on installation and add-on information found in Add-ons Manager.
@@ -327,12 +351,6 @@ msgstr "Çeşitli NVDA geliştirmeleri."
 
 #~ msgid "Read row starting from the beginning"
 #~ msgstr "Satırı ilkinden başlayarak oku"
-
-#~ msgid "Increase NVDA volume."
-#~ msgstr "NVDA sesini artır."
-
-#~ msgid "Decrease NVDA volume."
-#~ msgstr "NVDA sesini düşür."
 
 #, python-format
 #~ msgid "NVDA volume %d"

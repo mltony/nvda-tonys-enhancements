@@ -230,6 +230,27 @@ msgstr "O ponteiro do rato moveu-se para o canto superior esquerdo "
 msgid "Show clipboard history"
 msgstr "Mostrar o histórico da área de transferência"
 
+#. Translators: Describes a command.
+msgid "Increases the volume of other applications"
+msgstr ""
+
+#. Translators: Describes a command.
+msgid "Decreases the volume of other applications"
+msgstr ""
+
+#. Translators: Describes a command.
+msgid "Mutes or unmutes other applications"
+msgstr ""
+
+msgid "Increases the volume of NVDA"
+msgstr ""
+
+msgid "{} percent NVDA volume"
+msgstr ""
+
+msgid "Decreases the volume of NVDA"
+msgstr ""
+
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
 #. to be shown on installation and add-on information found in Add-ons Manager.
