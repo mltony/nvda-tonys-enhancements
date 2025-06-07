@@ -441,6 +441,7 @@ class Beeper:
             bitsPerSample=16,
             outputDevice=outputDevice,
             wantDucking=False,
+            purpose=nvwave.AudioPurpose.SOUNDS,
         )
         self.stopSignal = False
 
