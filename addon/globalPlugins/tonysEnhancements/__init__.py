@@ -39,9 +39,7 @@ import ui
 import watchdog
 import winUser
 import wx
-from . import audio
 import globalVars
-
 winmm = ctypes.windll.winmm
 
 
@@ -121,6 +119,7 @@ def initConfiguration():
         "includedSoundSplitModes": "int_list(default=list(0, 2, 3))",
         "applicationsSoundVolume": "integer(default=100, min=0, max=100)",
         "applicationsSoundMuted": "boolean(default=False)",
+        "applicationsVolumeEnabled" : "boolean( default=True)",
     }
     config.conf.spec[module] = confspec
 
@@ -195,6 +194,9 @@ def updatePriority():
 
 addonHandler.initTranslation()
 initConfiguration()
+if getConfig("applicationsVolumeEnabled"):
+    from . import audio
+    audio.initialize()
 
 class MultilineEditTextDialog(wx.Dialog):
     def __init__(self, parent, text, title_string, onTextComplete):
@@ -333,6 +335,10 @@ class SettingsDialog(SettingsPanel):
         self.priorityCombobox = sHelper.addLabeledControl(label, wx.Choice, choices=priorityNames)
         index = getConfig("priority")
         self.priorityCombobox.Selection = index
+      # checkbox enable apps volume
+        label = _("Enable applications volume adjustment (requires restart)")
+        self.applicationsVolumeEnabledCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.applicationsVolumeEnabledCheckbox.Value = getConfig("applicationsVolumeEnabled")
 
     def dynamicCallback(self, result, text, keystroke):
         if result == wx.ID_OK:
@@ -409,6 +415,7 @@ class SettingsDialog(SettingsPanel):
         updateScrollLockBlocking()
         setConfig("priority", self.priorityCombobox.Selection)
         updatePriority()
+        setConfig("applicationsVolumeEnabled", self.applicationsVolumeEnabledCheckbox.Value)
 
 class Memoize:
     def __init__(self, f):
@@ -1040,7 +1047,6 @@ reloadLangMap()
 updatePriority()
 updateScrollLockBlocking()
 
-audio.initialize()
 
 def getControlVGesture():
     try:
@@ -1457,6 +1463,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         gestures=['kb:NVDA+Alt+PageUp']
     )
     def script_increaseApplicationsVolume(self, gesture: "inputCore.InputGesture") -> None:
+        if not getConfig("applicationsVolumeEnabled"):
+            ui.message(_("Applications volume feature of Tony's enhancements add-on is disabled. Please enable it in settings first."))
+            return
         audio.appsVolume._adjustAppsVolume(5)
 
     @script(
@@ -1467,6 +1476,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         gestures=['kb:NVDA+Alt+PageDown']
     )
     def script_decreaseApplicationsVolume(self, gesture: "inputCore.InputGesture") -> None:
+        if not getConfig("applicationsVolumeEnabled"):
+            ui.message(_("Applications volume feature of Tony's enhancements add-on is disabled. Please enable it in settings first."))
+            return
         audio.appsVolume._adjustAppsVolume(-5)
 
     @script(
@@ -1476,6 +1488,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         ),
     )
     def script_toggleApplicationsMute(self, gesture: "inputCore.InputGesture") -> None:
+        if not getConfig("applicationsVolumeEnabled"):
+            ui.message(_("Applications volume feature of Tony's enhancements add-on is disabled. Please enable it in settings first."))
+            return
         appsVolume._toggleAppsVolumeMute()
 
     def findVolumeSetting(self):
