@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tony'nin Geliştirmeleri\n"
 "Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
-"POT-Creation-Date: 2023-09-22 20:25+0000\n"
-"PO-Revision-Date: 2025-02-01 12:31+0300\n"
+"POT-Creation-Date: 2025-06-08 23:50+0300\n"
+"PO-Revision-Date: 2025-06-09 00:12+0300\n"
 "Last-Translator: Umut KORKMAZ <umutkork@gmail.com>\n"
 "Language-Team: Çağrı Doğan ve Umut KORKMAZ <umutkork@gmail.com>\n"
 "Language: tr_TR\n"
@@ -16,32 +16,36 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 "X-Poedit-Basepath: ../../../globalPlugins/tonysEnhancements\n"
 "X-Poedit-SearchPath-0: .\n"
 
+#: __init__.py:179
 msgid "Normal,Above normal,High,Realtime"
 msgstr "Normal,Normalin üzerinde,Yüksek,Gerçek Zamanlı"
 
+#: __init__.py:193
 #, python-format
 msgid "Failed to set process priority to %s."
 msgstr "İşlem önceliği %s olarak ayarlanamadı."
 
+#: __init__.py:193
 msgid "Tony's enhancement add-on encountered an error"
 msgstr "Tony'nin geliştirmeleri eklentisi bir hatayla karşılaştı"
 
+#: __init__.py:216
 msgid "OK"
 msgstr "Tamam"
 
+#: __init__.py:218
 msgid "Cancel"
 msgstr "İptal"
 
-#. Translators: Title for the settings dialog
+#: __init__.py:278
 msgid "Tony's enhancements  settings"
 msgstr "Tony'nin geliştirmeleri ayarları"
 
-#. checkbox Detect insert mode
-#. Translators: Checkbox for insert mode detection
+#: __init__.py:287
 msgid ""
 "Detect insert mode in text documents and beep on every keystroke when insert "
 "mode is on."
@@ -49,220 +53,318 @@ msgstr ""
 "Metin belgelerinde ekleme (insert) modunu algıla ve ekleme modu açıkken her "
 "tuşa basıldığında bip sesi çıkar."
 
-#. checkbox block double insert
-#. Translators: Checkbox for block double insert
+#: __init__.py:294
 msgid "Block double insert"
 msgstr "İnsert tuşuna iki kez basılmasını engelle"
 
-#. checkbox block double caps
-#. Translators: Checkbox for block double caps
+#: __init__.py:299
 msgid "Block double Caps Lock"
 msgstr "Büyük harf kilidi tuşuna iki kez basılmasını engelle"
 
-#. checkbox Busy beep
-#. Translators: Checkbox for busy beep
+#: __init__.py:305
 msgid "Beep when NVDA is busy"
 msgstr "NVDA meşgulken bip sesi çıkar"
 
-#. checkbox suppress unselected
-#. Translators: Checkbox for suppress unselected
+#: __init__.py:310
 msgid "Suppress saying of 'unselected'."
 msgstr "'seçili değil' denmesini engelle."
 
-#. Dynamic keystrokes table
-#. Translators: Label for dynamic keystrokes table edit box
+#: __init__.py:315
 msgid ""
 "Edit dynamic keystrokes table - see add-on documentation for more information"
 msgstr ""
 "Dinamik tuş girişleri tablosunu düzenle - daha fazla bilgi için eklenti "
 "belgelerine bakın"
 
-#. LangMap checkbox and multiline edit button
+#: __init__.py:321
 msgid "Enable automatic language switching based on character set"
 msgstr "Karakter setine göre otomatik dil geçişini etkinleştir"
 
+#: __init__.py:324 __init__.py:385
 msgid "Edit language map"
 msgstr "Dil haritasını düzenle"
 
-#. checkbox block scroll lock
-#. Translators: Checkbox for blocking scroll lock
+#: __init__.py:329
 msgid "Suppress scroll lock mode announcements"
-msgstr "Scroll lock modu duyurularını engelle"
+msgstr "Kaydırma kilidi modu duyurularını engelle"
 
-#. System priority Combo box
-#. Translators: Label for system priority combo box
+#: __init__.py:334
 msgid "NVDA process system priority:"
 msgstr "NVDA işlem sistem önceliği:"
 
+#: __init__.py:339
+msgid "Enable applications volume adjustment (requires restart)"
+msgstr "Uygulamaların ses ayarını etkinleştir (yeniden başlatma gerektirir)"
+
+#: __init__.py:349 __init__.py:375
 msgid "Error"
 msgstr "Hata"
 
+#: __init__.py:360
 msgid "Edit dynamic keystrokes table"
 msgstr "Dinamik tuş girişi tablosunu düzenle"
 
-#. Translators: The message reported when a user attempts to use a table movement command
-#. when the cursor is not within a table.
+#: __init__.py:561
 msgid "Not in a table cell"
 msgstr "Tablo hücresinde değil"
 
+#: __init__.py:575
 msgid "Cannot find edge of table in this direction"
 msgstr "Bu yönde tablo kenarı bulunamadı"
 
+#: __init__.py:588
 #, python-brace-format
 msgid "Cannot find {axis} with index {index} in this table"
 msgstr "Bu tabloda {index} endeksli {axis} bulunamadı"
 
+#: __init__.py:654 __init__.py:710
 msgid "Not in a table!"
 msgstr "Tabloda değil!"
 
+#: __init__.py:673
 msgid "Cell copied"
 msgstr "Hücre kopyalandı"
 
+#: __init__.py:680
 msgid "Row copied"
 msgstr "Satır kopyalandı"
 
+#: __init__.py:686
 msgid "Partial row copied"
 msgstr "Satırın bir kısmı kopyalandı"
 
+#: __init__.py:692
 msgid "Column copied"
 msgstr "Sütun kopyalandı"
 
+#: __init__.py:698
 msgid "Partial column copied"
 msgstr "Sütunun bir kısmı kopyalandı"
 
+#: __init__.py:704
 msgid "Table copied"
 msgstr "Tablo kopyalandı"
 
+#: __init__.py:718
 msgid "Copy ce&ll"
 msgstr "&Hücreyi kopyala"
 
+#: __init__.py:719
 msgid "Copy &column"
 msgstr "S&ütunu kopyala"
 
+#: __init__.py:720
 msgid "Copy column from current cell &down"
 msgstr "Sütunu geçerli hücre&den aşağıya doğru kopyala"
 
+#: __init__.py:721
 msgid "Copy &row"
 msgstr "&Satırı kopyala"
 
+#: __init__.py:722
 msgid "Copy row from current cell to the ri&ght"
 msgstr "Satırı &geçerli hücreden sağa doğru kopyalar"
 
+#: __init__.py:723
 msgid "Copy &table"
 msgstr "&Tabloyu kopyala"
 
+#: __init__.py:990
 msgid "focusable object"
 msgstr "odaklanabilir nesne"
 
+#: __init__.py:994 __init__.py:1000
 msgid "current review character"
 msgstr "mevcut inceleme karakteri"
 
+#: __init__.py:1004
 msgid "navigator object"
 msgstr "nesne sunucusu"
 
+#: __init__.py:1024
 msgid "repeat"
 msgstr "tekrar"
 
+#: __init__.py:1130
 msgid "Clipboard history"
 msgstr "Pano Geçmişi"
 
+#: __init__.py:1136
 msgid "Entries"
 msgstr "Girişler"
 
+#: __init__.py:1148
 msgid "&Paste"
 msgstr "Ya&pıştır"
 
+#: __init__.py:1188
 msgid "Tony's Enhancements"
 msgstr "Tony'nin Geliştirmeleri"
 
+#: __init__.py:1357
 #, python-format
 msgid "Move to the %d-th column in table"
 msgstr "Tablodaki %d numaralı sütuna git"
 
+#: __init__.py:1365
 #, python-format
 msgid "Move to the %d-th row in table"
 msgstr "Tablodaki %d  numaralı satıra git"
 
+#: __init__.py:1373
 msgid "Show popup menu with copy table to clipboard commands."
 msgstr "Tabloyu panoya kopyalamakla ilgili komutları içeren menüyü göster."
 
+#: __init__.py:1379
 msgid "Copy table cell to clipboard."
 msgstr "Tablo hücresini panoya kopyala."
 
+#: __init__.py:1385
 msgid "Copy table column to clipboard."
 msgstr "Tablo sütununu panoya kopyala."
 
+#: __init__.py:1391
 msgid "Copy table row to clipboard."
 msgstr "Tablo satırını panoya kopyala."
 
+#: __init__.py:1397
 msgid "Copy the whole table to clipboard."
 msgstr "Tüm tabloyu panoya kopyala."
 
+#: __init__.py:1413
 msgid "Toggle microphone mute."
 msgstr "Mikrofonu kapatıp aç."
 
+#: __init__.py:1418
 msgid "Default microphone not found."
 msgstr "Varsayılan mikrofon bulunamadı."
 
+#: __init__.py:1423
 msgid "Muted microphone"
 msgstr "Mikrofon kapalı"
 
+#: __init__.py:1423
 msgid "Unmuted microphone"
 msgstr "Mikrofon açık"
 
+#: __init__.py:1429
 msgid "Left click on current object."
 msgstr "Mevcut nesneye sol tıkla."
 
+#: __init__.py:1434 __init__.py:1443
 #, python-brace-format
 msgid "Left click on {kind}"
 msgstr "{kind} üzerine sol tık"
 
+#: __init__.py:1438
 msgid "Right click on current object."
 msgstr "Mevcut nesneye sağ tıkla."
 
+#: __init__.py:1447
 msgid "Move mouse pointer to top left corner."
 msgstr "Fare imlecini sol üst köşeye taşı."
 
+#: __init__.py:1449
 msgid "Mouse pointer moved to top left corner. "
 msgstr "Fare imleci sol üst köşeye taşındı "
 
+#: __init__.py:1452
 msgid "Show clipboard history"
 msgstr "Pano Geçmişini Göster"
 
-#. Translators: Describes a command.
+#: __init__.py:1461
 msgid "Increases the volume of other applications"
-msgstr ""
+msgstr "Diğer uygulamaların ses düzeyini arttır"
 
-#. Translators: Describes a command.
+#: __init__.py:1467 __init__.py:1480 __init__.py:1492
+msgid ""
+"Applications volume feature of Tony's enhancements add-on is disabled. "
+"Please enable it in settings first."
+msgstr ""
+"Tony'nin geliştirmeleri eklentisinin uygulama ses düzeyi özelliği devre dışı "
+"bırakıldı. Lütfen önce ayarlarda etkinleştirin."
+
+#: __init__.py:1474
 msgid "Decreases the volume of other applications"
-msgstr ""
+msgstr "Diğer uygulamaların ses düzeyini azalt"
 
-#. Translators: Describes a command.
+#: __init__.py:1487
 msgid "Mutes or unmutes other applications"
-msgstr ""
+msgstr "Diğer uygulamaların sesini aç/kapat"
 
-#, fuzzy
+#: __init__.py:1507
 msgid "Increases the volume of NVDA"
-msgstr "NVDA sesini artır."
+msgstr "NVDA ses düzeyini arttır"
 
-#, fuzzy
+#: __init__.py:1512 __init__.py:1521
+#| msgid "Decrease NVDA volume."
 msgid "{} percent NVDA volume"
-msgstr "NVDA sesini düşür."
+msgstr "NVDA ses düzeyi yüzde {}"
 
-#, fuzzy
+#: __init__.py:1516
+#| msgid "Decrease NVDA volume."
 msgid "Decreases the volume of NVDA"
-msgstr "NVDA sesini düşür."
+msgstr "NVDA ses düzeyini azalt"
 
-#. Add-on summary, usually the user visible name of the addon.
-#. Translators: Summary for this add-on
-#. to be shown on installation and add-on information found in Add-ons Manager.
-msgid "Tony's enhancements"
-msgstr "Tony'nin Geliştirmeleri"
+#: audio/appsVolume.py:108
+#| msgid "Applications volume %d"
+msgid "Application volume control disabled"
+msgstr "Uygulama ses kontrolü devre dışı"
 
-#. Add-on description
-#. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
-msgid "Various NVDA enhancements."
-msgstr "Çeşitli NVDA geliştirmeleri."
+#: audio/appsVolume.py:126
+#| msgid "Decrease applications volume."
+msgid "{} percent application volume"
+msgstr "Uygulama ses düzeği yüzde {}"
+
+#: audio/appsVolume.py:139
+msgid "Muted other applications"
+msgstr "Diğer uygulamaların sesi kapalı"
+
+#: audio/appsVolume.py:142
+msgid "Unmuted other applications"
+msgstr "Diğer uygulamaların sesi kapatıldı"
+
+#: audio/soundSplit.py:41
+#| msgid ""
+#| "Split NVDA sound and applications' sounds into left and right channels."
+msgid "NVDA on the left and applications on the right"
+msgstr "NVDA solda ve diğer uygulamalar sağda"
+
+#: audio/soundSplit.py:43
+#| msgid ""
+#| "Split NVDA sound and applications' sounds into left and right channels."
+msgid "NVDA on the left and applications in both channels"
+msgstr "NVDA solda ve diğer uygulamalar iki kanalda"
+
+#: audio/soundSplit.py:45
+msgid "NVDA on the right and applications on the left"
+msgstr "NVDA sağda ve uygulamalar solda"
+
+#: audio/soundSplit.py:47
+msgid "NVDA on the right and applications in both channels"
+msgstr "NVDA sağda ve diğer uygulamalar iki kanalda"
+
+#: audio/soundSplit.py:49
+msgid "NVDA in both channels and applications on the left"
+msgstr "NVDA iki kanalda, uygulamalar solda"
+
+#: audio/soundSplit.py:51
+msgid "NVDA in both channels and applications on the right"
+msgstr "NVDA iki kanalda, uygulamalar sağda"
+
+#: audio/soundSplit.py:181
+msgid ""
+"Warning: couldn't set volumes for sound split: one of audio sessions is "
+"either mono, or has more than 2 audio channels."
+msgstr ""
+"Uyarı: ses bölünmesi için ses düzeyi ayarlanamadı: ses oturumlarından biri "
+"ya mono ya da 2'den fazla ses kanalına sahip."
+
+#~ msgid "Tony's enhancements"
+#~ msgstr "Tony'nin Geliştirmeleri"
+
+#~ msgid "Various NVDA enhancements."
+#~ msgstr "Çeşitli NVDA geliştirmeleri."
 
 #~ msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
 #~ msgstr ""
@@ -324,10 +426,6 @@ msgstr "Çeşitli NVDA geliştirmeleri."
 #~ msgid "Applications volume"
 #~ msgstr "Uygulama ses düzeyi"
 
-#~ msgid ""
-#~ "Split NVDA sound and applications' sounds into left and right channels."
-#~ msgstr "NVDA sesini ve uygulamaların seslerini sol ve sağ kanallara ayır."
-
 #~ msgid "Switch left and right during sound split."
 #~ msgstr "Ses ayırma sırasında sola ve sağa geçiş yap."
 
@@ -358,13 +456,6 @@ msgstr "Çeşitli NVDA geliştirmeleri."
 
 #~ msgid "Increase applications volume."
 #~ msgstr "Uygulama sesini arttır."
-
-#~ msgid "Decrease applications volume."
-#~ msgstr "Uygulama sesini düşür."
-
-#, python-format
-#~ msgid "Applications volume %d"
-#~ msgstr "Uygulama ses düzeyi %d"
 
 #~ msgid "Toggle sound split."
 #~ msgstr "Ses ayırmayı aç/kapat."

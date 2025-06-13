@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: tonysEnhancements 1.16\n"
 "Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
 "POT-Creation-Date: 2023-09-22 20:25+0000\n"
-"PO-Revision-Date: 2025-02-01 18:37+0100\n"
+"PO-Revision-Date: 2025-06-07 09:29+0200\n"
 "Last-Translator: José Manuel Delicado <jm.delicado@nvda.es>\n"
 "Language-Team: \n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 
 msgid "Normal,Above normal,High,Realtime"
 msgstr "Normal,Por encima de lo normal,Alta,Tiempo real"
@@ -230,24 +230,24 @@ msgstr "Mostrar historial del portapapeles"
 
 #. Translators: Describes a command.
 msgid "Increases the volume of other applications"
-msgstr ""
+msgstr "Aumenta el volumen de otras aplicaciones"
 
 #. Translators: Describes a command.
 msgid "Decreases the volume of other applications"
-msgstr ""
+msgstr "Disminuye el volumen de otras aplicaciones"
 
 #. Translators: Describes a command.
 msgid "Mutes or unmutes other applications"
-msgstr ""
+msgstr "Silencia o desilencia otras aplicaciones"
 
 msgid "Increases the volume of NVDA"
-msgstr ""
+msgstr "Aumenta el volumen de NVDA"
 
 msgid "{} percent NVDA volume"
-msgstr ""
+msgstr "Volumen de NVDA al {} por ciento"
 
 msgid "Decreases the volume of NVDA"
-msgstr ""
+msgstr "Disminuye el volumen de NVDA"
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on

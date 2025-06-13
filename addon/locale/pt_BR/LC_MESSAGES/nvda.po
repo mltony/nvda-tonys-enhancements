@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: tonysEnhancements 1.16\n"
 "Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
 "POT-Creation-Date: 2023-09-22 20:25+0000\n"
-"PO-Revision-Date: 2025-02-02 13:47-0300\n"
-"Last-Translator: Josevan Fernandes <josevanfernandes@yahoo.com.br>\n"
+"PO-Revision-Date: 2025-06-08 16:27-0300\n"
+"Last-Translator: Josevan Barbosa Fernandes <josevanfernandes@yahoo.com.br>\n"
 "Language-Team: NVDA Brazilian Portuguese translation team (Equipe de "
 "tradução do NVDA para Português Brasileiro) <clever97@gmail.com>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 
 msgid "Normal,Above normal,High,Realtime"
 msgstr "Normal,Above normal,High,Realtime"
@@ -232,24 +232,24 @@ msgstr "Mostrar histórico da área de transferência"
 
 #. Translators: Describes a command.
 msgid "Increases the volume of other applications"
-msgstr ""
+msgstr "Aumenta o volume de outros aplicativos"
 
 #. Translators: Describes a command.
 msgid "Decreases the volume of other applications"
-msgstr ""
+msgstr "Diminui o volume de outros aplicativos"
 
 #. Translators: Describes a command.
 msgid "Mutes or unmutes other applications"
-msgstr ""
+msgstr "Silenciar ou ativar o silêncio de outros aplicativos"
 
 msgid "Increases the volume of NVDA"
-msgstr ""
+msgstr "Aumenta o volume do NVDA"
 
 msgid "{} percent NVDA volume"
-msgstr ""
+msgstr "{} por cento do volume do NVDA"
 
 msgid "Decreases the volume of NVDA"
-msgstr ""
+msgstr "Diminui o volume do NVDA"
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on

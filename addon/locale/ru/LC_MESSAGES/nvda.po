@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: tonysEnhancements 1.16\n"
 "Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
 "POT-Creation-Date: 2024-02-02 20:25+0000\n"
-"PO-Revision-Date: 2025-02-01 23:48+0300\n"
+"PO-Revision-Date: 2025-06-10 22:19+0300\n"
 "Last-Translator: Ruslan Kolodyazhni <rupelodn@gmail.com>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -233,24 +233,24 @@ msgstr "Показать историю буфера обмена"
 
 #. Translators: Describes a command.
 msgid "Increases the volume of other applications"
-msgstr ""
+msgstr "Увеличивает громкость других приложений"
 
 #. Translators: Describes a command.
 msgid "Decreases the volume of other applications"
-msgstr ""
+msgstr "Уменьшает громкость других приложений"
 
 #. Translators: Describes a command.
 msgid "Mutes or unmutes other applications"
-msgstr ""
+msgstr "Отключает или включает звук других приложений"
 
 msgid "Increases the volume of NVDA"
-msgstr ""
+msgstr "Увеличивает громкость NVDA"
 
 msgid "{} percent NVDA volume"
-msgstr ""
+msgstr "{} процентов громкости NVDA"
 
 msgid "Decreases the volume of NVDA"
-msgstr ""
+msgstr "Уменьшает громкость NVDA"
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
@@ -262,56 +262,3 @@ msgstr "Улучшения от Тони"
 #. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
 msgid "Various NVDA enhancements."
 msgstr "Различные усовершенствования для NVDA."
-
-#~ msgid "Fix focus being stuck in the taskbar when pressing Windows+Number"
-#~ msgstr ""
-#~ "Исправлять зависание фокуса на панели задач при нажатии Windows + цифра"
-
-#~ msgid "QuickSearch1 regexp (assigned to PrintScreen)"
-#~ msgstr "Регулярное выражение QuickSearch1 (назначенное для PrintScreen)"
-
-#~ msgid "QuickSearch2 regexp (assigned to ScrollLock))"
-#~ msgstr "Регулярное выражение QuickSearch2 (назначенное для ScrollLock))"
-
-#~ msgid "QuickSearch3 regexp (assigned to Pause)"
-#~ msgstr "Регулярное выражение QuickSearch3 (назначено для Пауза)"
-
-#~ msgid "QuickSearch"
-#~ msgstr "Быстрый поиск"
-
-#, python-brace-format
-#~ msgid ""
-#~ "Performs QuickSearch back or forward in editables according to "
-#~ "quickSearch{i} regexp"
-#~ msgstr ""
-#~ "Выполняет быстрый поиск назад или вперёд в редактируемых файлах в "
-#~ "соответствии с регулярным выражением быстрого поиска {i}"
-
-#~ msgid "Hide current window."
-#~ msgstr "Скрыть текущее окно."
-
-#, python-format
-#~ msgid "Hid current window. Now there are %d windows hidden."
-#~ msgstr "Скрыть текущее окно. Теперь скрыто %d окон."
-
-#~ msgid "Show hidden windows."
-#~ msgstr "Показать скрытые окна."
-
-#~ msgid "No windows hidden or all hidden windows have been already shown."
-#~ msgstr "Нет скрытых окон или все скрытые окна уже показаны."
-
-#, python-format
-#~ msgid "%d windows shown"
-#~ msgstr "показано %d окон"
-
-#~ msgid "Mouse wheel scroll down on current object."
-#~ msgstr "Прокручивает вниз объект под курсором мыши."
-
-#~ msgid "Scroll down"
-#~ msgstr "Прокручено вниз"
-
-#~ msgid "Mouse wheel scroll up on current object."
-#~ msgstr "Прокручивает вверх объект под курсором мыши."
-
-#~ msgid "Scroll up"
-#~ msgstr "Прокручено вверх"

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tonysEnhancements 1.16\n"
 "Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
 "POT-Creation-Date: 2023-09-22 20:25+0000\n"
-"PO-Revision-Date: 2025-02-04 03:03+0200\n"
+"PO-Revision-Date: 2025-06-07 14:13+0300\n"
 "Last-Translator: Jani Kinnunen <janikinnunen340@gmail.com>\n"
 "Language-Team: fi_FI <janikinnunen340@gmail.com>\n"
 "Language: fi\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 
 msgid "Normal,Above normal,High,Realtime"
 msgstr "Normaali,Normaalia korkeampi,Korkea,Reaaliaikainen"
@@ -175,11 +175,11 @@ msgstr "Tonyn laajennukset"
 
 #, python-format
 msgid "Move to the %d-th column in table"
-msgstr "Siirry taulukon %d. sarakkeeseen"
+msgstr "Siirry taulukossa sarakkeeseen %d"
 
 #, python-format
 msgid "Move to the %d-th row in table"
-msgstr "Siirry taulukon %d. riville"
+msgstr "Siirry taulukossa riville %d"
 
 msgid "Show popup menu with copy table to clipboard commands."
 msgstr ""
@@ -230,24 +230,24 @@ msgstr "Näytä leikepöydän historia"
 
 #. Translators: Describes a command.
 msgid "Increases the volume of other applications"
-msgstr ""
+msgstr "Lisää muiden sovellusten äänenvoimakkuutta"
 
 #. Translators: Describes a command.
 msgid "Decreases the volume of other applications"
-msgstr ""
+msgstr "Vähentää muiden sovellusten äänenvoimakkuutta"
 
 #. Translators: Describes a command.
 msgid "Mutes or unmutes other applications"
-msgstr ""
+msgstr "Mykistää muut sovellukset tai poistaa niiden mykistyksen"
 
 msgid "Increases the volume of NVDA"
-msgstr ""
+msgstr "Lisää NVDA:n äänenvoimakkuutta"
 
 msgid "{} percent NVDA volume"
-msgstr ""
+msgstr "{} prosenttia NVDA:n äänenvoimakkuus"
 
 msgid "Decreases the volume of NVDA"
-msgstr ""
+msgstr "Vähentää NVDA:n äänenvoimakkuutta"
 
 #. Add-on summary, usually the user visible name of the addon.
 #. Translators: Summary for this add-on
