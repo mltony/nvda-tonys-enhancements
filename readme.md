@@ -59,7 +59,13 @@ Check this option for NVDA to provide audio feedback when NVDA is busy. NVDA bei
 
 ## Application Volume adjustment
 
-This functionality has been merged into NVDA core and is available in NVDA v2025.1 or later.
+This feature allows you to adjust the volume of NVDA and other applications independently. The following commands are available:
+
+* NVDA+Ctrl+PageUp: Increases the volume of NVDA.
+* NVDA+Ctrl+PageDown: Decreases the volume of NVDA.
+* NVDA+Alt+PageUp: Increases the volume of other applications.
+* NVDA+Alt+PageDown: Decreases the volume of other applications.
+* Mute or unmute other applications: This command does not have a default gesture assigned. You can assign a custom one in NVDA's "Input Gestures" dialog.
 
 ## Mute microphone
 
