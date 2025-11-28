@@ -41,6 +41,7 @@ import winUser
 import wx
 import globalVars
 winmm = ctypes.windll.winmm
+import winBindings
 
 
 debug = False
@@ -458,13 +459,13 @@ class Beeper:
         levels = self.uniformSample(levels, self.MAX_BEEP_COUNT )
         beepLen = self.BEEP_LEN
         pauseLen = self.PAUSE_LEN
-        pauseBufSize = NVDAHelper.generateBeep(None,self.BASE_FREQ,pauseLen,0, 0)
-        beepBufSizes = [NVDAHelper.generateBeep(None,self.getPitch(l), beepLen, volume, volume) for l in levels]
+        pauseBufSize = NVDAHelper.localLib.generateBeep(None,self.BASE_FREQ,pauseLen,0, 0)
+        beepBufSizes = [NVDAHelper.localLib.generateBeep(None,self.getPitch(l), beepLen, volume, volume) for l in levels]
         bufSize = sum(beepBufSizes) + len(levels) * pauseBufSize
         buf = ctypes.create_string_buffer(bufSize)
         bufPtr = 0
         for l in levels:
-            bufPtr += NVDAHelper.generateBeep(
+            bufPtr += NVDAHelper.localLib.generateBeep(
                 ctypes.cast(ctypes.byref(buf, bufPtr), ctypes.POINTER(ctypes.c_char)),
                 self.getPitch(l), beepLen, volume, volume)
             bufPtr += pauseBufSize # add a short pause
@@ -496,7 +497,7 @@ class Beeper:
         beepLen = length
         freqs = self.getChordFrequencies(chord)
         intSize = 8 # bytes
-        bufSize = max([NVDAHelper.generateBeep(None,freq, beepLen, right, left) for freq in freqs])
+        bufSize = max([NVDAHelper.localLib.generateBeep(None,freq, beepLen, right, left) for freq in freqs])
         if bufSize % intSize != 0:
             bufSize += intSize
             bufSize -= (bufSize % intSize)
@@ -504,7 +505,7 @@ class Beeper:
         result = [0] * (bufSize//intSize)
         for freq in freqs:
             buf = ctypes.create_string_buffer(bufSize)
-            NVDAHelper.generateBeep(buf, freq, beepLen, right, left)
+            NVDAHelper.localLib.generateBeep(buf, freq, beepLen, right, left)
             bytes = bytearray(buf)
             unpacked = struct.unpack("<%dQ" % (bufSize // intSize), bytes)
             result = map(operator.add, result, unpacked)
@@ -915,9 +916,9 @@ class NoLocationException(Exception):
     pass
 
 class ReleaseControlModifier:
-    AttachThreadInput = winUser.user32.AttachThreadInput
-    GetKeyboardState = winUser.user32.GetKeyboardState
-    SetKeyboardState = winUser.user32.SetKeyboardState
+    AttachThreadInput = winBindings.user32.AttachThreadInput
+    GetKeyboardState = winBindings.user32.GetKeyboardState
+    SetKeyboardState = winBindings.user32.SetKeyboardState
 
     def __init__(self, obj=None):
         if obj is None:
@@ -952,7 +953,7 @@ def isWindowTopmost(hwnd):
     return exStyle & WS_EX_TOPMOST != 0
 
 def setWindowTopmost(hwnd, level):
-    winUser.user32.SetWindowPos(
+    winBindings.user32.SetWindowPos(
         hwnd,
         level,
         0, 0, 0, 0,
