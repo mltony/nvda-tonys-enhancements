@@ -43,6 +43,7 @@ import globalVars
 winmm = ctypes.windll.winmm
 import winBindings
 import winKernel
+import os,sys
 
 debug = False
 if debug:
@@ -55,8 +56,6 @@ if debug:
         with LOG_MUTEX:
             f = open(LOG_FILE_NAME, "a", encoding='utf-8')
             print(s, file=f)
-            #f.write(s.encode('UTF-8'))
-            #f.write('\n')
             f.close()
 else:
     def mylog(*arg, **kwarg):
@@ -1087,11 +1086,18 @@ class BackupClipboard:
     def restore(self):
         ephemeralCopyToClip(self.backup)
 
+def initWinRT():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    site_packages = os.path.join(script_dir, "site-packages")
+    sys.path.insert(0, site_packages)
+
+initWinRT()
+
 TEXT_FORMAT = "Text"
 def getClipboardEntries(maxEntries=50):
-    from .pywinsdk.relative import winsdk
-    from .pywinsdk.relative.winsdk.windows.applicationmodel.datatransfer import Clipboard
-    from .pywinsdk.relative.winsdk.windows.foundation import AsyncStatus
+    #from .pywinsdk.relative import winsdk
+    from winrt.windows.applicationmodel.datatransfer import Clipboard
+    from winrt.windows.foundation import AsyncStatus
     
     def dummyAwait(result):
         while result.status == AsyncStatus.STARTED:
@@ -1180,14 +1186,14 @@ class ClipboardHistoryDialog(wx.Dialog):
         # Get the name of selected block
         name = self.listBlocks[self.BlocksList.GetSelection()]
         pasteStr = name
-        with BackupClipboard(pasteStr):
-            focus = api.getFocusObject()
-            if focus.windowClassName == "ConsoleWindowClass":
-                # Windows console window - Control+V doesn't work here, so using an alternative method here
-                WM_COMMAND = 0x0111
-                watchdog.cancellableSendMessage(focus.windowHandle, WM_COMMAND, 0xfff1, 0)
-            else:
-                keyboardHandler.KeyboardInputGesture.fromName("Control+v").send()
+        api.copyToClip(pasteStr)
+        focus = api.getFocusObject()
+        if focus.windowClassName == "ConsoleWindowClass":
+            # Windows console window - Control+V doesn't work here, so using an alternative method here
+            WM_COMMAND = 0x0111
+            watchdog.cancellableSendMessage(focus.windowHandle, WM_COMMAND, 0xfff1, 0)
+        else:
+            keyboardHandler.KeyboardInputGesture.fromName("Control+v").send()
         self.Destroy()
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
