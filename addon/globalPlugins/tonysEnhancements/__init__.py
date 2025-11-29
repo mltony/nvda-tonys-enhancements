@@ -42,7 +42,7 @@ import wx
 import globalVars
 winmm = ctypes.windll.winmm
 import winBindings
-
+import winKernel
 
 debug = False
 if debug:
@@ -189,9 +189,14 @@ priorityValues = [
 def updatePriority():
     index = getConfig("priority")
     priority = priorityValues[index]
-    result = ctypes.windll.kernel32.SetPriorityClass(ctypes.windll.kernel32.GetCurrentProcess(), priority)
+    kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)
+    SetPriorityClass = kernel32.SetPriorityClass
+    SetPriorityClass.restype = ctypes.wintypes.BOOL
+    SetPriorityClass.argtypes = [ctypes.wintypes.HANDLE, ctypes.wintypes.DWORD]
+    result = SetPriorityClass(winKernel.GetCurrentProcess(), priority)
     if result == 0:
-        gui.messageBox(_("Failed to set process priority to %s.") % priorityNames[index], _("Tony's enhancement add-on encountered an error"), wx.OK|wx.ICON_WARNING, None)
+        err = ctypes.GetLastError()
+        log.error(f"Tony's enhancements add-on failed to set process priority to {priorityNames[index]} error={err}.")
 
 addonHandler.initTranslation()
 initConfiguration()
@@ -917,8 +922,8 @@ class NoLocationException(Exception):
 
 class ReleaseControlModifier:
     AttachThreadInput = winBindings.user32.AttachThreadInput
-    GetKeyboardState = winBindings.user32.GetKeyboardState
-    SetKeyboardState = winBindings.user32.SetKeyboardState
+    GetKeyboardState = winBindings.user32.dll.GetKeyboardState
+    SetKeyboardState = winBindings.user32.dll.SetKeyboardState
 
     def __init__(self, obj=None):
         if obj is None:
