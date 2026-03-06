@@ -85,21 +85,24 @@ class _AudioSessionNotificationListener(AudioSessionNotification):
 		self.callback = weakref.ref(callback)
 
 	def on_session_created(self, new_session: AudioSession):
-		pid = new_session.ProcessId
-		if pid != globalVars.appPid:
-			process = new_session.Process
-			if process is not None:
-				exe = os.path.basename(process.exe())
-				isNvda = exe.lower() == "nvda.exe"
-				if isNvda:
-					# This process must be NVDA running on secure screen.
-					# We shouldn't change volume of such process.
-					return
-		audioSessionEventsListener = _AudioSessionEventsListener(self.callback(), pid, new_session)
-		new_session.register_notification(audioSessionEventsListener)
-		with self.callback()._lock:
-			self.callback()._audioSessionEventListeners.add(audioSessionEventsListener)
-		self.callback().onSessionUpdate(new_session)
+		try:
+			pid = new_session.ProcessId
+			if pid != globalVars.appPid:
+				process = new_session.Process
+				if process is not None:
+					exe = os.path.basename(process.exe())
+					isNvda = exe.lower() == "nvda.exe"
+					if isNvda:
+						# This process must be NVDA running on secure screen.
+						# We shouldn't change volume of such process.
+						return
+			audioSessionEventsListener = _AudioSessionEventsListener(self.callback(), pid, new_session)
+			new_session.register_notification(audioSessionEventsListener)
+			with self.callback()._lock:
+				self.callback()._audioSessionEventListeners.add(audioSessionEventsListener)
+			self.callback().onSessionUpdate(new_session)
+		except Exception:
+			return
 
 
 class DummyAudioSessionCallback:
@@ -193,7 +196,7 @@ def _applyToAllAudioSessions(
 
 module = "tonysEnhancements"
 def getConfig(key):
-    value = config.conf[module][key]
-    return value
+	value = config.conf[module][key]
+	return value
 def setConfig(key, value):
-    config.conf[module][key] = value
+	config.conf[module][key] = value
