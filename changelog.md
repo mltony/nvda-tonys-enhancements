@@ -1,1 +1,4 @@
-Use this file to explain what has changed in your add-on since the previous release. This will be included automatically in the release description when used with GitHub actions.
+## 1.22.6
+
+* Added an optional **Improve status bar detection** setting. It helps NVDA read complete native Windows status bars, including Clacogui's, when its normal lookup fails.
+* The setting is disabled by default and takes effect immediately when applied.

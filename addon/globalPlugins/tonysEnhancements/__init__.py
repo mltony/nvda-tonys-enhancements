@@ -44,6 +44,7 @@ winmm = ctypes.windll.winmm
 import winBindings
 import winKernel
 import os,sys
+from .status_bar import StatusBarFallback
 
 debug = False
 if debug:
@@ -109,6 +110,7 @@ def initConfiguration():
         "fixWindowNumber" : "boolean( default=False)",
         "detectInsertMode" : "boolean( default=False)",
         "suppressUnselected" : "boolean( default=False)",
+        "improveStatusBarDetection": "boolean(default=False)",
         "enableLangMap" : "boolean( default=False)",
         "langMap" : f"string( default='{defaultLangMap}')",
         "quickSearch1" : f"string( default='')",
@@ -315,6 +317,11 @@ class SettingsDialog(SettingsPanel):
         label = _("Suppress saying of 'unselected'.")
         self.suppressUnselectedCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
         self.suppressUnselectedCheckbox.Value = getConfig("suppressUnselected")
+      # checkbox improved status bar detection
+        # Translators: Checkbox enabling a fallback for status bars NVDA cannot locate.
+        label = _("Improve status bar detection")
+        self.improveStatusBarDetectionCheckbox = sHelper.addItem(wx.CheckBox(self, label=label))
+        self.improveStatusBarDetectionCheckbox.Value = getConfig("improveStatusBarDetection")
       # Dynamic keystrokes table
         # Translators: Label for dynamic keystrokes table edit box
         label = _("Edit dynamic keystrokes table - see add-on documentation for more information")
@@ -410,6 +417,7 @@ class SettingsDialog(SettingsPanel):
         setConfig("blockDoubleCaps", self.blockDoubleCapsCheckbox.Value)
         setConfig("busyBeep", self.busyBeepCheckbox.Value)
         setConfig("suppressUnselected", self.suppressUnselectedCheckbox.Value)
+        setConfig("improveStatusBarDetection", self.improveStatusBarDetectionCheckbox.Value)
         setConfig("detectInsertMode", self.detectInsertModeCheckbox.Value)
         setConfig("dynamicKeystrokesTable", self.dynamicKeystrokesTable)
         reloadDynamicKeystrokes()
@@ -1206,11 +1214,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.injectTableFunctions()
         self.lastConsoleUpdateTime = 0
         self.beeper = Beeper()
+        self._statusBarFallback = StatusBarFallback(lambda: getConfig("improveStatusBarDetection"))
 
     def createMenu(self):
         gui.settingsDialogs.NVDASettingsDialog.categoryClasses.append(SettingsDialog)
 
     def terminate(self):
+        self._statusBarFallback.terminate()
         from  pycaw.utils import AudioUtilities
         microphone = AudioUtilities.CreateDevice(AudioUtilities.GetMicrophone())
         if microphone is not None:

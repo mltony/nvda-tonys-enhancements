@@ -21,6 +21,12 @@ There are also separate scripts for copying tables, rows, columns and cells, but
 
 As of NVDA v2024.4 built-in Windows clipboard history feature works poorly with NVDA. As a drop-in replacement, this add-on provides a fully accessible clipboard history feature. It is bound to `Windows+V` by default, so it replaces the built-in feature.
 
+## Improved status bar detection
+
+Enable **Improve status bar detection** in **NVDA Settings → Tony's enhancements settings** if the report status bar command (`NVDA+End` in the desktop keyboard layout, or `NVDA+Shift+End` in the laptop layout) skips information in an application such as Clacogui.
+
+When NVDA cannot locate the status bar normally, this feature looks for a visible native Windows status bar and reads its complete accessible text. Existing app-specific status bar handling is preserved. The option is disabled by default and takes effect immediately when you apply the setting, including when switching configuration profiles.
+
 ## Automatic language switching
 Allows to automatically switch the language of your synthesizer by character set. Refgular expression for every language can be configured in the preferences window for this add-on. Please make sure that your synthesizer supports all the languages you're interested in. Switching between two Latin-based languages or two languages whose character sets are similar is not supported at this time.
 
